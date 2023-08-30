@@ -5,14 +5,31 @@ title: Lynn Study
 enableRobotsTXT: true
 enableGitInfo: true
 
-module:
-  imports:
-    - path: github.com/imfing/hextra
-
 outputs:
   home: [HTML]
   page: [HTML]
   section: [HTML, RSS]
+
+defaultContentLanguage: zh-cn
+languages:
+  zh-cn:
+    languageName: 简体中文
+    weight: 1
+  en:
+    languageName: English
+    weight: 2
+
+module:
+  hugoVersion:
+    extended: true
+    min: "0.111.0"
+
+  imports:
+    - path: github.com/imfing/hextra
+
+  mounts:
+  - source: i18n
+    target: i18n
 
 markup:
   goldmark:
@@ -43,7 +60,7 @@ menu:
         - type: search
     - name: GitHub
       weight: 5
-      url: "https://github.com/imfing/hextra"
+      url: "https://github.com/lynnclub/study"
       params:
         - icon: github
 
@@ -87,4 +104,4 @@ params:
 
   editURL:
     enable: true
-    base: "https://github.com/lynnclub/study/edit/main/exampleSite/content"
+    base: "https://github.com/lynnclub/study/edit/main/content"
