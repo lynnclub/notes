@@ -87,4 +87,4 @@ params:
 
   editURL:
     enable: true
-    base: "https://github.com/imfing/hextra/edit/main/exampleSite/content"
+    base: "https://github.com/lynnclub/study/edit/main/exampleSite/content"
