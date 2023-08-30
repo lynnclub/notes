@@ -1,7 +1,6 @@
 ---
-title: ""
-layout: hextra-home
-date: 2023-08-30T18:54:56+08:00
+title: "Content"
+date: 2023-08-30T22:11:15+08:00
 draft: true
 ---
 
