@@ -10,4 +10,4 @@
 
 创建文件
 
-`hugo new docs/it`
+`hugo new docs/计算机/基础`

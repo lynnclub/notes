@@ -1,3 +1,8 @@
+---
+title: "Elasticsearch"
+date: 2023-08-31T13:58:26+08:00
+draft: true
+---
 
 Elasticsearch提供了多种API来执行不同类型的搜索操作，包括全文搜索、聚合、过滤等。以下是一些常用的Elasticsearch搜索API示例：
 

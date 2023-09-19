@@ -1,7 +1,13 @@
+---
+title: "FileBeat"
+date: 2023-08-31T13:58:26+08:00
+draft: true
+---
+
 ES 索引
 
-```json
 PUT /_index_template/laravel-log
+```json
 {
   "index_patterns": ["laravel-log*"],
   "template": {
@@ -31,9 +37,9 @@ PUT /_index_template/laravel-log
     }
   }
 }
+```
 
 PUT /laravel-log-test
-```
 
 filebeat 配置文件
 
