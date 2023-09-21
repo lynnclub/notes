@@ -42,16 +42,16 @@ enableInlineShortcodes: true
 
 menu:
   main:
-    - identifier: documentation
-      name: Documentation
+    - identifier: docs
+      name: 文档
       pageRef: /docs
       weight: 1
     - identifier: blog
-      name: Blog
+      name: 博客
       pageRef: /blog
       weight: 2
     - identifier: about
-      name: About
+      name: 关于
       pageRef: /about
       weight: 3
     - name: Search
@@ -70,10 +70,6 @@ menu:
       params:
         type: separator
       weight: 1
-    - identifier: about
-      name: "About"
-      pageRef: "/about"
-      weight: 2
     - identifier: hugoDocs
       name: "Hugo Docs ↗"
       url: "https://gohugo.io/documentation/"
