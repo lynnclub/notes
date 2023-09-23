@@ -3,6 +3,9 @@ title: "Golang"
 weight: 6
 ---
 
+官方网站  
+[go.dev](https://go.dev/)
+
 基础语法  
 [Go语言教程](https://www.runoob.com/go/go-tutorial.html)
 
