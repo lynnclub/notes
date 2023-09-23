@@ -11,7 +11,7 @@ weight: 7
 
 ## 生命周期
 
-![生命周期](/notes/images/computer/php.png)
+![生命周期](/notes/images/programming/php.png)
 
 PHP 生命周期中关键的四个调用：MINT（模块初始化） -> RINT（请求初始化） -> RSHUTDOWN（请求关闭） -> MSHOTDOWN（模块关闭）
 

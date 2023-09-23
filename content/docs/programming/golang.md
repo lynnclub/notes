@@ -37,15 +37,15 @@ weight: 6
 
 值类型
 
-![值类型](/notes/images/computer/golang.png)
+![值类型](/notes/images/programming/golang.png)
 
 引用类型
 
-![引用类型](/notes/images/computer/golang1.png)
+![引用类型](/notes/images/programming/golang1.png)
 
 go语言没有引用传递，都是值传递。
 
-![值传递](/notes/images/computer/golang2.png)
+![值传递](/notes/images/programming/golang2.png)
 
 ## 特性
 
@@ -183,7 +183,7 @@ G：goroutine，有独立的栈空间、定时器，可复用。初始化的栈�
 M：machine，系统内核线程，记录线程栈信息，当goroutine调度到线程时，使用该goroutine自己的栈信息。  
 P：processor，虚拟处理器，小于等于cpu核心数，最大作用是拥有G本地队列、链表、一些cache和状态。
 
-![GMP](/notes/images/computer/golang3.png)
+![GMP](/notes/images/programming/golang3.png)
 
 问：一个协程占用多少内存？  
 答：20万个协程占用了500M内存，50万KB，平均一个协程占用2.5KB。

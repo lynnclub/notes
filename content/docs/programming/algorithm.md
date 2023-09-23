@@ -23,11 +23,11 @@ n/2^k=1，即k=log2n，底数省略，得出时间复杂度O(log n)
 
 增长数据
 
-![增长数据](/notes/images/computer/algorithm1.png)
+![增长数据](/notes/images/programming/algorithm1.png)
 
 增长曲线
 
-![增长曲线](/notes/images/computer/algorithm2.png)
+![增长曲线](/notes/images/programming/algorithm2.png)
 
 ## 排序算法
 
@@ -44,7 +44,7 @@ n/2^k=1，即k=log2n，底数省略，得出时间复杂度O(log n)
 
 排序时间复杂度
 
-![排序时间复杂度](/notes/images/computer/algorithm_sort.png)
+![排序时间复杂度](/notes/images/programming/algorithm_sort.png)
 
 ### 冒泡排序
 

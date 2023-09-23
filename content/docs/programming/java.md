@@ -19,13 +19,13 @@ Redhat 接替 Oracle 维护 JDK 的长期支持版，比如 OpenJDK 8 和 OpenJD
 
 ### JDK 16 贡献排名
 
-![JDK 16 贡献排名](/notes/images/computer/java1.png)
+![JDK 16 贡献排名](/notes/images/programming/java1.png)
 
 参与贡献的厂商，几乎都有自己的OpenJDK发行版，并且在各自领域推行自家JDK，Java阵营四分五裂。
 
 ### JDK版本使用率
 
-![JDK 16 贡献排名](/notes/images/computer/java2.png)
+![JDK 16 贡献排名](/notes/images/programming/java2.png)
 
 ### 版本选择
 
@@ -38,10 +38,10 @@ Java8还没有拆分出OracleJDK，可以免费使用，可以不使用OpenJDK�
 
 Java8
 
-![Java8](/notes/images/computer/java3.png)
+![Java8](/notes/images/programming/java3.png)
 
 Java8 openjdk
-![Java8 openjdk](/notes/images/computer/java4.png)
+![Java8 openjdk](/notes/images/programming/java4.png)
 
 JRE下载地址 [https://www.java.com/zh-CN/download/](https://www.java.com/zh-CN/download/)  
 JDK下载地址 [https://www.oracle.com/java/technologies/downloads/#java8-mac](https://www.oracle.com/java/technologies/downloads/#java8-mac)
@@ -79,7 +79,7 @@ HashSet：基于HashMap实现，不允许有重复元素的集合
 
 Java集合框架图
 
-![Java集合框架图](/notes/images/computer/java5.png)
+![Java集合框架图](/notes/images/programming/java5.png)
 
 ## 历代框架
 
@@ -95,7 +95,7 @@ SpringBoot：基于Spring4.0设计，SSM脚手架，功能完整、开箱即用
 
 ## Spring架构图
 
-![Spring架构图](/notes/images/computer/java6.png)
+![Spring架构图](/notes/images/programming/java6.png)
 
 标注：org.springframework 是新版组织名称，springframework 是16年前的历史版本。
 
@@ -103,7 +103,7 @@ SpringBoot：基于Spring4.0设计，SSM脚手架，功能完整、开箱即用
 
 IOC（控制反转）容器是个实例池，工厂模式，通过反射等方式自动实例化。JavaBean 是一种可重用组件，为了方便容器将其自动实例化，JavaBean 需要定义无参数构造函数。
 
-![Spring容器与Bean](/notes/images/computer/java7.png)
+![Spring容器与Bean](/notes/images/programming/java7.png)
 
 ## Maven
 
@@ -138,7 +138,7 @@ java -jar command-1.0-SNAPSHOT.jar
 
 开源包可以从maven 中央仓库 自动拉取，还支持私有部署的 远程仓库，但是私有的本地包需要手动导入，最终都是使用本地仓库。 本地仓库在用户目录下的 .m2/repository/ 目录。
 
-![repository](/notes/images/computer/java8.png)
+![repository](/notes/images/programming/java8.png)
 
 #### 查询中央仓库
 
@@ -170,7 +170,7 @@ mvn idea:idea
 
 标注：maven依赖太难用了，根本不知道依赖类在哪个包，就算知道了也不知道应该用哪个版本，需要试。
 
-![maven依赖问题](/notes/images/computer/java9.png)
+![maven依赖问题](/notes/images/programming/java9.png)
 
 ## 区分环境
 
