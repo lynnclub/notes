@@ -1,4 +1,4 @@
-baseURL: https://lynnclub.github.io/study
+baseURL: https://lynnclub.github.io/notes
 languageCode: zh-cn
 title: Lynn Notes
 
@@ -60,7 +60,7 @@ menu:
         - type: search
     - name: GitHub
       weight: 5
-      url: "https://github.com/lynnclub/study"
+      url: "https://github.com/lynnclub/notes"
       params:
         - icon: github
 
@@ -100,4 +100,4 @@ params:
 
   editURL:
     enable: true
-    base: "https://github.com/lynnclub/study/edit/main/content"
+    base: "https://github.com/lynnclub/notes/edit/main/content"
