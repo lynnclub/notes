@@ -4,10 +4,10 @@ weight: 7
 ---
 
 官方网站  
-[php.net](https://www.php.net/)
+[https://www.php.net/](https://www.php.net/)
 
 基础语法  
-[PHP教程](https://www.runoob.com/php/php-tutorial.html)
+[https://www.runoob.com/php/php-tutorial.html](https://www.runoob.com/php/php-tutorial.html)
 
 ## 生命周期
 
