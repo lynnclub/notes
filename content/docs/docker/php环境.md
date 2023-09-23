@@ -1,7 +1,7 @@
 php-fpm 和 composer
 
 ```bash
-FROM alpine:3.18
+FROM alpine:3.15
 
 # 阿里云镜像（全国推荐）
 #RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
