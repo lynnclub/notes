@@ -10,4 +10,4 @@
 
 创建文件
 
-`hugo new docs/计算机/基础`
+`hugo new docs/programming/language.md`

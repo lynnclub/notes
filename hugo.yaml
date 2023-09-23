@@ -1,6 +1,6 @@
 baseURL: https://lynnclub.github.io/study
 languageCode: zh-cn
-title: Lynn Study
+title: Lynn Notes
 
 enableRobotsTXT: true
 enableGitInfo: true
