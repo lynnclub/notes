@@ -1,4 +1,4 @@
-module github.com/lynnclub/study
+module github.com/lynnclub/notes
 
 go 1.19
 
