@@ -50,9 +50,9 @@ menu:
       name: 科学
       pageRef: /science
       weight: 2
-    - identifier: economy
-      name: 经济
-      pageRef: /economy
+    - identifier: philosophy
+      name: 哲学
+      pageRef: /philosophy
       weight: 3
     - identifier: live
       name: 活着
