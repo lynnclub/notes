@@ -1,8 +1,6 @@
 ---
-title: 容器
-weight: 3
-sidebar:
-  open: true
+title: 构建
+weight: 4
 ---
 
 {{< cards >}}

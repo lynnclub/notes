@@ -1,10 +1,10 @@
 ---
 title: "设计模式"
 weight: 4
-draft: true
+type: "docs"
 ---
 
-![设计模式](/notes/images/programming/data_structure.png)
+![设计模式](design_pattern.png)
 
 单例模式：类只能有一个实例，提供一个全局的访问点。  
 简单工厂：工厂类根据传入的参量决定创建出那种产品类的实例。  
