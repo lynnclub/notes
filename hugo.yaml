@@ -1,6 +1,6 @@
 baseURL: https://lynnclub.github.io/notes
 languageCode: zh-cn
-title: Lynn Notes
+title: 林恩笔记
 
 enableRobotsTXT: true
 enableGitInfo: true
@@ -50,24 +50,28 @@ menu:
       name: 科学
       pageRef: /science
       weight: 2
+    - identifier: economy
+      name: 经济
+      pageRef: /economy
+      weight: 3
     - identifier: live
       name: 活着
       pageRef: /live
-      weight: 3
+      weight: 4
     - identifier: essay
       name: 随笔
       pageRef: /essay
-      weight: 4
+      weight: 5
     - identifier: about
       name: 关于
       pageRef: /about
-      weight: 5
-    - name: Search
       weight: 6
+    - name: Search
+      weight: 7
       params:
         - type: search
     - name: GitHub
-      weight: 7
+      weight: 8
       url: "https://github.com/lynnclub/notes"
       params:
         - icon: github
@@ -78,13 +82,17 @@ menu:
       params:
         type: separator
       weight: 1
+    - identifier: about
+      name: 关于
+      pageRef: /about
+      weight: 2
     - identifier: hugoDocs
       name: "Hugo Docs ↗"
       url: "https://gohugo.io/documentation/"
       weight: 3
 
 params:
-  description: Modern, responsive, batteries-included Hugo theme for creating beautiful static websites.
+  description: 林恩笔记
 
   navbar:
     displayTitle: true
