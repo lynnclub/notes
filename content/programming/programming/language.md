@@ -1,5 +1,6 @@
 ---
 title: "语言"
+type: "docs"
 weight: 5
 ---
 

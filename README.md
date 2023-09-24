@@ -2,7 +2,7 @@
 
 创建文件
 
-`hugo new docs/programming/language.md`
+`hugo new programming/programming/language.md`
 
 测试启动
 

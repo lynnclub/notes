@@ -1,38 +1,46 @@
 ---
 title: "网络"
+type: "docs"
+weight: 15
 ---
 
 ## 分层模型
 
-![ISO网络模型](/notes/images/programming/network1.png)
+TCP/IP模型
 
-![网络模型](/notes/images/programming/network.png)
+![TCP/IP模型](network.png)
+
+ISO/OSI模型
+
+![OSI模型](network1.png)
 
 ## TCP三次握手、四次挥手
 
-TCP三次握手是建立TCP连接的过程，它确保了通信双方之间的可靠性和同步性。下面是TCP三次握手的步骤：
+TCP三次握手是建立TCP连接的过程，确保通信双方之间的可靠性和同步性。下面是TCP三次握手的步骤：
 
 1. 第一次握手（SYN）：客户端向服务器发送一个SYN（同步）报文段。这个报文段中包含了初始序列号（ISN）和设置SYN标志位，表示客户端请求建立连接。
 2. 第二次握手（SYN + ACK）：服务器收到客户端的SYN报文段后，确认序列号，并发送一个带有SYN和ACK（确认）标志位的报文段作为响应。服务器端也会为自己的初始序列号生成一个随机的ISN。
 3. 第三次握手（ACK）：客户端收到服务器的SYN + ACK报文段后，确认序列号并发送一个带有ACK标志位的报文段给服务器。这个报文段的序列号是服务器发送的SYN报文段的确认序列号加1，表示客户端已经接受到了服务器的确认，并告知服务器连接已建立。
 
-完成了这个三次握手过程后，TCP连接就建立起来了，双方可以开始进行数据的传输。
+完成三次握手后，TCP连接就建立起来了，双方可以开始进行数据的传输，最终通过四次挥手释放TCP连接。
 
-这个三次握手的过程是为了确保客户端和服务器都同意建立连接，并且双方都知道对方的序列号，以便在数据传输过程中进行**可靠的顺序传送和数据确认**。如果在握手过程中任何一方没有收到确认，或者超时没有收到回复，就会触发重新发送握手报文的过程，直到建立连接成功或达到一定的重试次数。
+![TCP](network2.png)
 
-![TCP](/notes/images/programming/network2.png)
-![TCP](/notes/images/programming/network3.png)
+三次握手的过程是为了确保客户端和服务器都同意建立连接，并且双方都知道对方的序列号，以便在数据传输过程中通过序列号进行**可靠的顺序传送和数据确认**。如果在握手过程中任何一方没有收到确认，或者超时没有收到回复，就会触发重新发送握手报文的过程，直到建立连接成功或达到一定的重试次数。
+
+![TCP](network3.png)
 
 ## TIME_WAIT
 
-问题：time_wait 连接占用端口，上限65535，当大量的连接处于 time_wait 时，新建立 TCP 连接会出错，address already in use : connect
+问题：当大量的连接处于 time_wait 时，占用端口不释放，新建立 TCP 连接会出错，address already in use : connect
 
-原因：HTTP 请求中，如果 connection 头部被设置为 close 时，基本都由 服务端 发起主动关闭连接。主动发起关闭连接 的一端，会进入 time_wait 状态。TCP 四次挥手关闭连接机制中，为了保证 ACK 重发和丢弃延迟数据，设置 time_wait 为 2 倍的 MSL（报文最大存活时间，MSL 为 2 分钟）。
+原因：HTTP 请求中，如果 connection 头部被设置为 close 时，基本都由 服务端 发起主动关闭连接。发起主动关闭连接 的一端，会进入 time_wait 状态。TCP 四次挥手关闭连接机制中，为了保证 ACK 重发和丢弃延迟数据，设置 time_wait 为 2 倍的 MSL（报文最大存活时间，MSL 为 2 分钟）。
 
 解决：
 
-1. 客户端 HTTP 请求的头部，connection 设置为 keep-alive，保持存活一段时间：现在的浏览器，一般都这么进行了。 
-2. 服务器端 允许 time_wait 状态的 socket 被重用，缩减 time_wait 时间，设置为 1 MSL。
+1. 客户端 HTTP 请求的头部，connection 设置为 keep-alive，保持存活一段时间。现在的浏览器，一般默认这么设置。
+2. 服务器端 允许 time_wait 状态的 socket 被重用。
+3. 服务器端 缩减 time_wait 时间，设置为 1 MSL。
 
 ## 顺序传输、延迟ACK
 
@@ -63,7 +71,7 @@ TCP三次握手是建立TCP连接的过程，它确保了通信双方之间的�
 
 应用程序不能直接操作底层硬件，必须和系统内核交互，从缓冲区收发网络数据。
 
-![缓冲区](/notes/images/programming/network4.png)
+![缓冲区](network4.png)
 
 1. blockingIO - 阻塞IO
 2. nonblockingIO - 非阻塞IO
@@ -73,23 +81,23 @@ TCP三次握手是建立TCP连接的过程，它确保了通信双方之间的�
 
 ### 阻塞IO
 
-![阻塞IO](/notes/images/programming/network5.png)
+![阻塞IO](network5.png)
 
 ### 非阻塞IO
 
-![非阻塞IO](/notes/images/programming/network6.png)
+![非阻塞IO](network6.png)
 
 ### 信号驱动IO
 
-![信号驱动IO](/notes/images/programming/network7.png)
+![信号驱动IO](network7.png)
 
 ### 异步IO
 
-![异步IO](/notes/images/programming/network8.png)
+![异步IO](network8.png)
 
 ### IO多路复用
 
-![IO多路复用](/notes/images/programming/network9.png)
+![IO多路复用](network9.png)
 
 说明：
 
@@ -105,7 +113,7 @@ IO多路复用的系统调用有select、poll、epoll，最大优势是系统开
 
 <br>
 <video width="640" height="360" controls>
-  <source src="/notes/images/programming/select.mp4" type="video/mp4">
+  <source src="select.mp4" type="video/mp4">
   您的浏览器不支持视频播放。
 </video>
 
@@ -113,7 +121,7 @@ IO多路复用的系统调用有select、poll、epoll，最大优势是系统开
 
 <br>
 <video width="640" height="360" controls>
-  <source src="/notes/images/programming/epoll.mp4" type="video/mp4">
+  <source src="epoll.mp4" type="video/mp4">
   您的浏览器不支持视频播放。
 </video>
 
@@ -136,9 +144,9 @@ epoll的两种触发方式
 
 ## HTTP
 
-![请求结构](/notes/images/programming/network10.png)
+![请求结构](network10.png)
 
-![响应结构](/notes/images/programming/network11.png)
+![响应结构](network11.png)
 
 问：怎么知道http处理完了？  
 答：通过Content-Length包大小

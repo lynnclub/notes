@@ -1,6 +1,6 @@
 ---
-title: 数据库
-weight: 2
+title: 架构
+weight: 5
 ---
 
 {{< cards >}}

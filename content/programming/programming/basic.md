@@ -1,5 +1,6 @@
 ---
 title: "基础知识"
+type: "docs"
 weight: 1
 ---
 
