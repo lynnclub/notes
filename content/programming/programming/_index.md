@@ -1,8 +1,6 @@
 ---
 title: 编程
 weight: 1
-sidebar:
-  open: true
 ---
 
 {{< cards >}}

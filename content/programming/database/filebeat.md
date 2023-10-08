@@ -1,7 +1,7 @@
 ---
 title: "FileBeat"
-date: 2023-08-31T13:58:26+08:00
-draft: true
+type: "docs"
+weight: 3
 ---
 
 ES 索引

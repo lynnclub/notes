@@ -1,4 +1,8 @@
-php-fpm 和 composer
+---
+title: "php与composer"
+type: "docs"
+weight: 2
+---
 
 ```bash
 FROM alpine:3.15

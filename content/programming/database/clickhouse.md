@@ -1,7 +1,7 @@
 ---
 title: "ClickHouse"
 type: "docs"
-weight: 3
+weight: 2
 ---
 
 [https://clickhouse.com/docs/zh](https://clickhouse.com/docs/zh)
