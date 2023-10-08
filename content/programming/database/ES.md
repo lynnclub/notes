@@ -1,10 +1,10 @@
 ---
-title: "Elasticsearch"
-date: 2023-08-31T13:58:26+08:00
-draft: true
+title: "ElasticSearch"
+type: "docs"
+weight: 2
 ---
 
-Elasticsearch提供了多种API来执行不同类型的搜索操作，包括全文搜索、聚合、过滤等。以下是一些常用的Elasticsearch搜索API示例：
+Elasticsearch提供了多种API来执行不同类型的搜索操作，包括全文搜索、聚合、过滤等。以下是一些常用搜索API示例：
 
 1. **全文搜索**：使用`match`查询来执行全文搜索，搜索指定字段中包含特定关键字的文档。
 
