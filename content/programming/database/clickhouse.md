@@ -2,6 +2,7 @@
 title: "ClickHouse"
 type: "docs"
 weight: 2
+draft: true
 ---
 
 [https://clickhouse.com/docs/zh](https://clickhouse.com/docs/zh)
