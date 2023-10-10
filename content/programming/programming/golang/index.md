@@ -61,16 +61,24 @@ go 语言没有引用传递，都是值传递。
 8. init 函数：一个包中可以包含多个 init 函数，编译时先执行导入包的 init 函数，再执行本包内的 init 函数。
 9. 单例：可以使用 sync.Once、init 函数创建单例。
 
-## 常用命令
+## 命令
+
+### 模块
+
+Go modules 是现代化的依赖管理工具，用来替代 GOPATH。
 
 ```shell
-# 初始化模块
+# 初始化模块，新建项目
 go mod init xxx
 # 整理并下载依赖
 go mod tidy
-# 复制依赖到vendor目录，非必需
+# 复制依赖到vendor目录（非必需）
 go mod vendor
+# 替换依赖
+go mod edit -replace [old package]@[version]=[new package]@[version]
 ```
+
+### 环境
 
 ```shell
 # 查看环境配置
@@ -83,7 +91,11 @@ go env -w GOPROXY="https://mirrors.aliyun.com/goproxy/,direct"
 go env -w GOPRIVATE="code.xxx.com,git.xxx.com"
 # 支持http
 go env -w GOINSECURE="code.xxx.com/*,git.xxx.com/*"
+# 还可以设置Linux环境变量
+export GO111MODULE=on
 ```
+
+### 执行
 
 ```shell
 # 运行
@@ -97,6 +109,8 @@ go build main.go
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod=vendor -o ./$out/main -tags v1 -v main.go
 ```
 
+### 工作区
+
 ```shell
 # 新建工作区
 go work init ./one
@@ -106,7 +120,7 @@ go work use ./two
 
 ## 运行时
 
-runtime 由以下部分组成：
+由以下部分组成：
 
 1. 编译器：将源代码编译成机器码。
 2. 链接器：将编译后的目标文件链接成可执行文件。
@@ -116,6 +130,15 @@ runtime 由以下部分组成：
 6. 协程调度器：用于调度协程的执行。
 7. 通道机制：提供了一种方便的线程间通信的方式。
 
+```go
+// 使用协程数量
+runtime.NumGoroutine()
+// 使用CPU数量
+runtime.NumCPU()
+// CGO调用数
+runtime.NumCgoCall()
+```
+
 ## 内存分配
 
 ### 堆栈
@@ -124,7 +147,7 @@ runtime 由以下部分组成：
 
 堆（Heap）是用于动态分配内存的区域，存储引用类型的数据，可以通过  make  函数或  new  关键字分配，适合不可预知大小的内存分配。
 
-变量的存储位置是由内存分配器自动决定。一般来说，大变量会分配到堆上，而小变量、特别是局部变量，会分配到栈上。栈有大小限制，通常在几 MB 到几十 MB 之间。栈的大小限制主要是为了保护系统不受无限递归或者大量局部变量消耗过多内存的影响。如果需要更大的栈空间，可以使用 `runtime.GOMAXPROCS` 参数来设置。
+变量的存储位置是由内存分配器自动决定。一般来说，大变量会分配到堆上，而小变量、特别是局部变量，会分配到栈上。栈有大小限制，通常在几 MB 到几十 MB 之间。栈的大小限制主要是为了保护系统不受无限递归或者大量局部变量消耗过多内存的影响。如果需要更大的栈空间，可以使用 `runtime.GOMAXPROCS` 函数来设置。
 
 ### make、new
 
