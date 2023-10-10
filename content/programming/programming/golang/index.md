@@ -85,6 +85,18 @@ go env -w GOPRIVATE="code.xxx.com,git.xxx.com"
 go env -w GOINSECURE="code.xxx.com/*,git.xxx.com/*"
 ```
 
+```shell
+# 运行
+go run main.go
+# 执行测试
+go test
+# 编译
+go build main.go
+# 编译到目标系统，darwin(mac), linux, windows
+# 使用vendor依赖
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod=vendor -o ./$out/main -tags v1 -v main.go
+```
+
 ## 运行时
 
 runtime 由以下部分组成：
