@@ -97,6 +97,13 @@ go build main.go
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod=vendor -o ./$out/main -tags v1 -v main.go
 ```
 
+```shell
+# 新建工作区
+go work init ./one
+# 切换工作区
+go work use ./two
+```
+
 ## 运行时
 
 runtime 由以下部分组成：
