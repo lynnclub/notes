@@ -12,6 +12,15 @@ ClickHouse 是一个用于联机分析(OLAP)的列式数据库管理系统(DBMS)
 
 ClickHouse 支持一种 SQL 方言，它在许多情况下与 ANSI SQL 标准相同，具体请查看 [兼容性差异](https://clickhouse.com/docs/zh/sql-reference/ansi)。
 
+## Docker启动
+
+[https://hub.docker.com/r/clickhouse/clickhouse-server](https://hub.docker.com/r/clickhouse/clickhouse-server)
+
+```bash
+# http端口8123，tcp端口9000，请注意区分客户端使用的是http还是tcp
+docker run -d -p8123:8123 -p9000:9000 --name clickhouse-server --ulimit nofile=262144:262144 clickhouse/clickhouse-server
+```
+
 ## 表引擎
 
 ### MergeTree 系列
