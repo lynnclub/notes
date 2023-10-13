@@ -8,11 +8,11 @@ weight: 2
 
 ClickHouse 是一个用于联机分析(OLAP)的列式数据库管理系统(DBMS)，由俄罗斯 Yandex 于 2016 年开源，具有高性能、高可靠性、高压缩率、高扩展性等特点。
 
-由于列式存储的特性，ClickHouse 适合聚合，单行插入更新查询性能差，建议批量操作(> 1000行)。
+由于列式存储的特性，ClickHouse 擅长聚合，适合读多更新少的场景，能在毫秒级内查询十几亿行，但是单行插入、更新和查询性能差，建议批量操作(> 1000 行)。
 
 ClickHouse 支持一种 SQL 方言，它在许多情况下与 ANSI SQL 标准相同，具体请查看 [兼容性差异](https://clickhouse.com/docs/zh/sql-reference/ansi)。
 
-## Docker启动
+## Docker 启动
 
 [https://hub.docker.com/r/clickhouse/clickhouse-server](https://hub.docker.com/r/clickhouse/clickhouse-server)
 
@@ -78,3 +78,11 @@ Array(T)，其中 T 是数组元素的数据类型，例如 Array(Int32)，表�
 ### 字典类型
 
 Dictionary(T)，其中 T 是字典键和值的数据类型，例如 Dictionary(String, Int32)，表示一个以 String 为键，Int32 为值的字典。
+
+## 更新
+
+ClickHouse 对 Update 语句支持不好，但是对于 Insert 语句，尤其是批量插入支持的很好。所以更新操作用 Insert 替代会很快。
+
+[https://zhuanlan.zhihu.com/p/485645089](https://zhuanlan.zhihu.com/p/485645089)
+
+[https://clickhouse.com/blog/handling-updates-and-deletes-in-clickhouse](https://clickhouse.com/blog/handling-updates-and-deletes-in-clickhouse)
