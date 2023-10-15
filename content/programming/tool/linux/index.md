@@ -4,6 +4,12 @@ type: "docs"
 weight: 1
 ---
 
+## 发行版本
+
+![relation](relation.png)
+
+![package](package.png)
+
 ## 系统信息
 
 ```shell
@@ -27,6 +33,33 @@ timedatectl
 # 查看所有环境变量
 printenv
 ```
+
+## 设置限制
+
+```shell
+# 显示资源限制
+ulimit -a
+# 关闭core文件上限
+ulimit -c 0
+# 设置打开文件数
+ulimit -n 1024000
+# 修改文件，永久生效
+vi /etc/security/limits.conf
+```
+
+参数：
+
+-a 　显示目前资源限制的设定。
+-c <core 文件上限>　设定 core 文件的最大值，单位为区块。
+-d <数据节区大小>　程序数据节区的最大值，单位为 KB。
+-f <文件大小>　 shell 所能建立的最大文件，单位为区块。
+-m <内存大小>　指定可使用内存的上限，单位为 KB。
+-n <文件数目>　指定同一时间最多可开启的文件数。
+-p <缓冲区大小>　指定管道缓冲区的大小，单位 512 字节。
+-s <堆叠大小>　指定堆叠的上限，单位为 KB。
+-t <CPU 时间>　指定 CPU 使用时间的上限，单位为秒。
+-u <程序数目>　用户最多可开启的程序数目。
+-v <虚拟内存大小>　指定可使用的虚拟内存上限，单位为 KB。
 
 ## 资源情况
 
@@ -78,3 +111,26 @@ iftop
 ```
 
 这些命令将显示有关网络连接和流量的信息。
+
+## 交换内存 swap
+
+```shell
+# 查看内存
+free -h
+
+# 创建文件
+dd if=/dev/zero of=/swap bs=1M count=2048
+# 格式化交换文件
+mkswap /swap
+chmod 0600 /swap
+
+# 开机自启
+vi /etc/fstab
+# 内容
+/swap swap swap defaults 0 0
+
+# 激活
+swapon -a
+# 关闭
+swapoff -a
+```
