@@ -6,7 +6,7 @@ weight: 1
 
 ## 系统信息
 
-```bash
+```shell
 # 显示包括发行版名称、版本号、描述和发行日期在内的系统信息。
 lsb_release -a
 
@@ -17,7 +17,7 @@ cat /etc/os-release
 uname -a
 ```
 
-```bash
+```shell
 # 显示当前时间，包括时区信息。
 date
 
@@ -34,7 +34,7 @@ printenv
 
 查看进程
 
-```bash
+```shell
 # BSD风格的展示方式
 ps aux
 # 过滤
@@ -47,7 +47,7 @@ ps -p <进程ID> -o lstart
 
 查看 CPU 使用情况
 
-```bash
+```shell
 top
 ```
 
@@ -55,7 +55,7 @@ top
 
 查看内存使用情况
 
-```bash
+```shell
 free -h
 ```
 
@@ -63,7 +63,7 @@ free -h
 
 查看磁盘使用情况
 
-```bash
+```shell
 df -h
 ```
 
@@ -71,7 +71,7 @@ df -h
 
 查看网络使用情况
 
-```bash
+```shell
 netstat -tuln
 
 iftop

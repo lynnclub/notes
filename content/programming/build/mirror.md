@@ -17,7 +17,8 @@ weight: 1
 中国科学技术大学镜像，南方推荐，教育网  
 [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
 
-注意：阿里云ECS用户，需要将 https://mirrors.aliyun.com/ 替换成 http://mirrors.cloud.aliyuncs.com/。
+注意：阿里云ECS用户，可以将 `https://mirrors.aliyun.com/`
+ 替换成 `http://mirrors.cloud.aliyuncs.com/`。
 
 ### Docker
 
@@ -38,7 +39,7 @@ Linux 系统通用的应用格式包，Ubuntu 背后的公司 Canonical 主导�
 
 ### Scoop
 
-Linux 风格的 Windows 包管理工具
+Linux 风格的第三方开源 Windows 包管理工具。
 
 [https://scoop.sh/](https://scoop.sh/)
 
@@ -46,7 +47,7 @@ Linux 风格的 Windows 包管理工具
 
 [https://www.alpinelinux.org](https://www.alpinelinux.org/)
 
-```bash
+```shell
 # 阿里云
 sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
@@ -61,7 +62,7 @@ sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/reposi
 
 稳定、性能好，缺点是包版本旧。
 
-```bash
+```shell
 sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
 sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
 sed -i 's/ftp.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
@@ -69,7 +70,7 @@ sed -i 's/ftp.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
 
 ### Ubuntu
 
-```bash
+```shell
 sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.aliyuncs.com/g' /etc/apt/sources.list
 ```
 
@@ -79,7 +80,7 @@ sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.aliyuncs.com/g' /etc/apt/
 
 阿里云镜像限速 200k，不推荐
 
-```bash
+```shell
 # 安装brew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -106,7 +107,7 @@ export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
 
 中科大、清华未提供
 
-```bash
+```shell
 # 安装gvm
 bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
 
@@ -118,7 +119,7 @@ export GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
 
 私有仓库
 
-```bash
+```shell
 go env -w GOPRIVATE="codeup.aliyun.com"
 go env -w GONOPROXY="codeup.aliyun.com"
 
@@ -134,7 +135,7 @@ machine codeup.aliyun.com login xxx password xxx
 
 阿里巴巴广泛应用 nodejs，镜像稳定可靠，推荐优先使用。清华未提供。
 
-```bash
+```shell
 # nodejs nvm
 brew install nvm
 export NVM_DIR="$HOME/.nvm"
@@ -158,7 +159,7 @@ registry=https://npmreg.proxy.ustclug.org/
 
 [https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew)
 
-```bash
+```shell
 # 安装PHP
 brew install php
 apt install php
@@ -184,7 +185,7 @@ brew install phpbrew
 
 中科大、清华未提供
 
-```bash
+```shell
 # 下载composer命令
 curl -L -O https://mirrors.aliyun.com/composer/composer.phar
 chmod +x composer.phar
@@ -204,7 +205,7 @@ composer config -g --unset repos.packagist
 
 阿里云非增量更新，推荐使用。
 
-```bash
+```shell
 #阿里云
 pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
@@ -228,7 +229,7 @@ trusted-host=mirrors.aliyun.com
 
 中科大、清华未提供
 
-```bash
+```shell
 vi ~/.m2/settings.xml
 
 <mirror>
@@ -241,7 +242,7 @@ vi ~/.m2/settings.xml
 
 ### Ruby rubygems (rvm)
 
-```bash
+```shell
 # 查找默认源
 gem sources -l
 
@@ -261,7 +262,7 @@ gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https:
 
 阿里云未提供
 
-```bash
+```shell
 vi ~/.cargo/config
 
 # 中国科学技术大学
