@@ -4,7 +4,7 @@ type: "docs"
 weight: 2
 ---
 
-```bash
+```shell
 FROM alpine:3.15
 
 # 阿里云镜像（全国推荐）

@@ -101,7 +101,7 @@ processors:
 
 docker 启动
 
-```bash
+```shell
 docker run -d \
   --name=filebeat \
   --user=root \

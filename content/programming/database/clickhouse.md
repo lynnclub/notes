@@ -16,7 +16,7 @@ ClickHouse 支持一种 SQL 方言，它在许多情况下与 ANSI SQL 标准相
 
 [https://hub.docker.com/r/clickhouse/clickhouse-server](https://hub.docker.com/r/clickhouse/clickhouse-server)
 
-```bash
+```shell
 # http端口8123，tcp端口9000，请注意区分客户端使用的是http还是tcp
 docker run -d -p8123:8123 -p9000:9000 --name clickhouse-server --ulimit nofile=262144:262144 clickhouse/clickhouse-server
 ```
