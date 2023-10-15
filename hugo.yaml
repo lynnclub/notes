@@ -51,7 +51,7 @@ menu:
       pageRef: /science
       weight: 2
     - identifier: philosophy
-      name: 哲学
+      name: 哲思
       pageRef: /philosophy
       weight: 3
     - identifier: live
