@@ -4,6 +4,42 @@ type: "docs"
 weight: 2
 ---
 
+官方文档  
+[Quick start | Elasticsearch Guide [7.17] | Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/getting-started.html)
+
+ElasticSearch 是一个开源的实时分布式搜索引擎，面向文档（document oriented），存储了完整内容，可以对文档（而非成行成列的数据）做索引、搜索、排序、过滤，适用于全文检索、结构化搜索、分析以及这三个功能的组合。
+
+可视化界面 kibana  
+浏览器插件 elasticvue
+
+## 概念
+
+1. index 索引，类似数据库
+2. type 类型，类似表
+3. document 文档，类似行
+4. field 字段
+5. mapping 映射，相当于主键外键
+
+Relational DB ‐> Database ‐> Table ‐> Row ‐> Column  
+Elasticsearch ‐> Index ‐> Type ‐> Document ‐> Field
+
+### RESTful API
+
+创建索引 PUT /{index}  
+创建映射 PUT /{index}/{type}/\_mapping  
+删除索引 DELETE /{index}  
+创建修改文档 POST /{index}/{type}/{id}  
+删除文档 DELETE /{index}/{type}/{id}  
+查询文档 GET /{index}/{type}/{id}  
+条件查询 POST /{index}/{type}/\_search  
+
+## 安装
+
+```bash
+docker network create somenetwork
+docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:tag
+```
+
 ## 数据类型
 
 ElasticSearch 支持多种不同的数据类型，这些数据类型用于定义索引中字段的性质和行为。
