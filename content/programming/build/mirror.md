@@ -8,14 +8,11 @@ weight: 2
 
 南科大，北清华，遇事不决阿里云。
 
-阿里云镜像，全国可用  
-[https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
+阿里云镜像，全国可用  [https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
 
-清华大学镜像，北方推荐，教育网  
-[https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/)
+清华大学镜像，北方推荐，教育网  [https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/)
 
-中国科学技术大学镜像，南方推荐，教育网  
-[https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
+中国科学技术大学镜像，南方推荐，教育网  [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
 
 注意：阿里云ECS用户，可以将 `https://mirrors.aliyun.com/`
  替换成 `http://mirrors.cloud.aliyuncs.com/`。

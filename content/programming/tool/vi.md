@@ -1,7 +1,7 @@
 ---
 title: "vi/vim"
 type: "docs"
-weight: 2
+weight: 3
 ---
 
 vi编辑器是所有Unix及Linux系统下标准的编辑器，相当于windows系统中的记事本，它的强大不逊色于任何最新的文本编辑器。

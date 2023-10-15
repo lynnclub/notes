@@ -1,7 +1,7 @@
 ---
 title: "Git"
 type: "docs"
-weight: 1
+weight: 2
 ---
 
 Git 是分布式版本控制系统，每个用户端都会拥有本地仓库（.git 目录），可以在没有网络的情况下 commit、等网络恢复再 push 到服务端。

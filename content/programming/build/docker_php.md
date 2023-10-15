@@ -1,5 +1,5 @@
 ---
-title: "Docker：php与composer"
+title: "Docker php"
 type: "docs"
 weight: 3
 ---
