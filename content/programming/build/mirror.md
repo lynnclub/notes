@@ -6,13 +6,18 @@ weight: 1
 
 ### 镜像源
 
-南科大，北清华。
+南科大，北清华，遇事不决阿里云。
 
-阿里云镜像，全国可用  [https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
+阿里云镜像，全国可用  
+[https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
 
-清华大学镜像，北方推荐，教育网  [https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/)
+清华大学镜像，北方推荐，教育网  
+[https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/)
 
-中国科学技术大学镜像，南方推荐，教育网  [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
+中国科学技术大学镜像，南方推荐，教育网  
+[https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
+
+注意：阿里云ECS用户，需要将 https://mirrors.aliyun.com/ 替换成 http://mirrors.cloud.aliyuncs.com/。
 
 ### Docker
 
@@ -27,11 +32,13 @@ weight: 1
 
 ### Snap
 
-支持多种Linux系统
+Linux 系统通用的应用格式包，Ubuntu 背后的公司 Canonical 主导，支持 Debian、Arch Linux、Fedora、Kaili Linux、openSUSE、Red Hat 等。
+
+[https://snapcraft.io/](https://snapcraft.io/)
 
 ### Scoop
 
-Linux风格的Windows包管理工具
+Linux 风格的 Windows 包管理工具
 
 [https://scoop.sh/](https://scoop.sh/)
 
@@ -63,14 +70,14 @@ sed -i 's/ftp.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
 ### Ubuntu
 
 ```bash
-sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.cloud.aliyuncs.com/g' /etc/apt/sources.list
+sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.aliyuncs.com/g' /etc/apt/sources.list
 ```
 
 ### HomeBrew
 
-[https://brew.sh/index_zh-cn](https://brew.sh/index_zh-cn)
+[https://brew.sh/zh-cn/](https://brew.sh/zh-cn/)
 
-阿里云镜像限速200k，不推荐
+阿里云镜像限速 200k，不推荐
 
 ```bash
 # 安装brew
@@ -125,10 +132,11 @@ machine codeup.aliyun.com login xxx password xxx
 
 [https://github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
 
-阿里巴巴广泛应用nodejs，镜像稳定可靠，推荐优先使用。
+阿里巴巴广泛应用 nodejs，镜像稳定可靠，推荐优先使用。清华未提供。
 
 ```bash
 # nodejs nvm
+brew install nvm
 export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
@@ -136,7 +144,7 @@ export NVM_DIR="$HOME/.nvm"
 # 阿里云
 npm set registry http://registry.npmmirror.com/
 
-# 或手动编辑
+# 或者手动编辑
 vi ~/.npmrc
 # 阿里云
 registry=http://registry.npmmirror.com/
@@ -144,11 +152,14 @@ registry=http://registry.npmmirror.com/
 registry=https://npmreg.proxy.ustclug.org/
 ```
 
-### PHP
+### PHP（phpbrew）
 
 [https://www.php.net](https://www.php.net/)
 
+[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew)
+
 ```bash
+# 安装PHP
 brew install php
 apt install php
 
@@ -157,6 +168,14 @@ brew tap shivammathur/php
 brew install shivammathur/php/php@7.4
 brew tap shivammathur/extensions
 brew install shivammathur/extensions/redis@7.4
+
+# 安装php版本管理工具
+# 通用方式
+curl -L -O https://github.com/phpbrew/phpbrew/releases/latest/download/phpbrew.phar
+chmod +x phpbrew.phar
+sudo mv phpbrew.phar /usr/local/bin/phpbrew
+# MacOS
+brew install phpbrew
 ```
 
 ### PHP Composer
@@ -181,19 +200,19 @@ composer config -g --unset repos.packagist
 
 [https://www.python.org](https://www.python.org/)
 
-> Python库的官方仓库pypi允许开发者自由上传软件包，这会导致某些攻击者利用这点构造恶意包进行供应链攻击，在用户安装包或者引入包时触发恶意行为。目前国内镜像源与官方镜像源往往并不是完全一致，国内源普遍采用的是增量更新机制，也就是官方删除的恶意包国内不会同步删除。而这一部分恶意包可能会在很长一段时间内对国内用户造成影响。
-> 
+> Python 库的官方仓库 pypi 允许开发者自由上传软件包，这会导致某些攻击者利用这点构造恶意包进行供应链攻击，在用户安装包或者引入包时触发恶意行为。目前国内镜像源与官方镜像源往往并不是完全一致，国内源普遍采用的是增量更新机制，也就是官方删除的恶意包国内不会同步删除。而这一部分恶意包可能会在很长一段时间内对国内用户造成影响。
 
 阿里云非增量更新，推荐使用。
 
 ```bash
-# 临时使用
-pip install -i https://mirrors.ustc.edu.cn/pypi/web/simple package
+#阿里云
+pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
+# 临时使用
 # 中国科学技术大学
-pip config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
+pip install -i https://mirrors.ustc.edu.cn/pypi/web/simple package
 # 清华大学
-pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple package
 
 # 或者手动编辑
 vi ~/.pip/pip.conf
@@ -203,7 +222,6 @@ index-url = https://mirrors.aliyun.com/pypi/simple/
 
 [install]
 trusted-host=mirrors.aliyun.com
-
 ```
 
 ### Java maven
@@ -230,6 +248,9 @@ gem sources -l
 # 阿里云
 gem sources -a https://mirrors.aliyun.com/rubygems/ --remove https://rubygems.org/
 
+# 中国科学技术大学
+gem sources --add https://mirrors.ustc.edu.cn/rubygems/ --remove https://rubygems.org/
+
 # 清华大学
 gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https://rubygems.org/
 ```
@@ -237,6 +258,8 @@ gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https:
 ### Rust
 
 [https://www.rust-lang.org/zh-CN/](https://www.rust-lang.org/zh-CN/)
+
+阿里云未提供
 
 ```bash
 vi ~/.cargo/config
