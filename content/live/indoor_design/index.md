@@ -1,7 +1,7 @@
 ---
 title: "自学室内设计"
 type: "docs"
-weight: 1
+weight: 5
 ---
 
 # 第一章：平面构成
