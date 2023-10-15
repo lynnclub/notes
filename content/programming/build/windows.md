@@ -16,7 +16,7 @@ windows 默认没有无线网卡驱动，需要安装驱动。华硕 B650M-PLUS 
 
 如果没有有线网络，可以使用鸿蒙手机通过 USB 数据线共享网络，打开开发者模式，打开 USB 共享网络。
 
-使用 hellowindows 的“一键激活脚本”激活系统，选择 KMS38方式。
+使用 hellowindows 的“一键激活脚本”激活系统，选择 KMS38 方式。
 
 ## 开发环境
 
@@ -62,10 +62,26 @@ irm get.scoop.sh | iex
 
 参考 [https://post.smzdm.com/p/akxwkxqk/](https://post.smzdm.com/p/akxwkxqk/)
 
+SMB 使用 139 或 445 端口
+
 ```shell
 # 启用大型MTU以提升大文件的传输速度，并关闭带宽限制
 Set-SmbClientConfiguration -EnableBandwidthThrottling 0 -EnableLargeMtu 1
 
 netsh int tcp set global autotuninglevel=restricted
 netsh interface tcp set heuristics disabled
+```
+
+## SSH
+
+参考 [https://www.jianshu.com/p/04e64bfcc79b](https://www.jianshu.com/p/04e64bfcc79b)
+
+默认 22 端口，编辑 C:\ProgramData\ssh\sshd_config 可修改端口
+
+```shell
+# 开机自启与启动
+Get-Service -Name sshd | Set-Service -StartupType Automatic
+Get-Service -Name ssh-agent | Set-Service -StartupType Automatic
+Start-Service sshd
+Start-Service ssh-agent
 ```
