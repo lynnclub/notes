@@ -35,7 +35,7 @@ Elasticsearch ‐> Index ‐> Type ‐> Document ‐> Field
 
 ## 安装
 
-```bash
+```shell
 docker network create somenetwork
 docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:tag
 ```

@@ -6,7 +6,7 @@ weight: 1
 
 ## 开发环境
 
-安装 homebrew 请参考 [镜像 HomeBrew 章节](./mirror/#homebrew) 。
+安装 homebrew 请参考 [镜像 HomeBrew 章节](../mirror/#homebrew) 。
 
 ```shell
 # 基础软件
