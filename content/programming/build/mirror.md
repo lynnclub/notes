@@ -1,7 +1,7 @@
 ---
 title: "镜像"
 type: "docs"
-weight: 1
+weight: 2
 ---
 
 ### 镜像源

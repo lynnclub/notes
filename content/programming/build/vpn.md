@@ -1,7 +1,7 @@
 ---
 title: "VPN"
 type: "docs"
-weight: 10
+weight: 3
 draft: true
 ---
 

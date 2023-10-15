@@ -1,7 +1,7 @@
 ---
 title: "DDNS"
 type: "docs"
-weight: 4
+weight: 3
 ---
 
 [https://github.com/jeessy2/ddns-go](https://github.com/jeessy2/ddns-go)

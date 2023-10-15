@@ -1,7 +1,7 @@
 ---
 title: "LetsEncrypt"
 type: "docs"
-weight: 4
+weight: 3
 ---
 
 [https://letsencrypt.org/](https://letsencrypt.org/)

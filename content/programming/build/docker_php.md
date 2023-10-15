@@ -1,7 +1,7 @@
 ---
-title: "php与composer"
+title: "Docker：php与composer"
 type: "docs"
-weight: 2
+weight: 3
 ---
 
 ```shell
