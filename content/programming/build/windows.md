@@ -1,7 +1,7 @@
 ---
 title: "Windows"
 type: "docs"
-weight: 1
+weight: 3
 ---
 
 ## 系统安装
@@ -24,10 +24,24 @@ win10 企业 LSTC 版本等大多数 windows，默认没有无线网卡驱动，
 
 ## 环境
 
-安装 [Windows Terminal](https://github.com/microsoft/terminal)，下载 release 包。
+安装 [Windows Terminal](https://github.com/microsoft/terminal)，下载最新 release 包。
 
 通过 [WSL(Windows Subsystem for Linux)](https://learn.microsoft.com/zh-cn/windows/wsl/install) 安装 Debian。
 
 ```bash
 wsl --install -d Debian
+```
+
+安装 [scoop](https://scoop.sh/)
+
+## SMB共享
+
+[https://post.smzdm.com/p/akxwkxqk/](https://post.smzdm.com/p/akxwkxqk/)
+
+```bash
+#启用大型MTU以提升大文件的传输速度，并关闭带宽限制
+Set-SmbClientConfiguration -EnableBandwidthThrottling 0 -EnableLargeMtu 1
+
+netsh int tcp set global autotuninglevel=restricted
+netsh interface tcp set heuristics disabled
 ```
