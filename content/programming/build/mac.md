@@ -18,8 +18,8 @@ brew install golang php python@3 nvm rust
 # Java8+tomcat9
 brew install openjdk@8 maven tomcat@9
 
-# Github Desktop、fig命令行补全、sequel-ace数据库工具、notion笔记
-brew install --cask docker github fig sequel-ace another-redis-desktop-manager pgadmin4 notion
+# Docker、Github Desktop、fig命令行补全、dbeaver-community数据库工具、notion笔记
+brew install --cask docker github fig dbeaver-community sequel-ace another-redis-desktop-manager pgadmin4 notion
 ```
 
 ## 刻录 Windows 系统盘
