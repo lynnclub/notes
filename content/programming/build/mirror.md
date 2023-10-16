@@ -106,6 +106,7 @@ export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
 
 ```shell
 # 安装gvm
+sudo apt install bison
 bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
 
 # golang-阿里云
