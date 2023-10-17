@@ -139,6 +139,30 @@ runtime.NumCPU()
 runtime.NumCgoCall()
 ```
 
+### 获取文件路径
+
+```go
+// 通用方法
+_, file, _, _ := runtime.Caller(0)
+path := path.Dir(file)
+println(file, path)
+
+// 工作目录，必须进入工作目录执行才正确
+path, _ = os.Getwd()
+println(path)
+
+// 会获取到编译时的目录
+ex, err := os.Executable()
+if err != nil {
+	panic(err)
+}
+path, err = filepath.EvalSymlinks(ex)
+if err != nil {
+	panic(err)
+}
+println(path)
+```
+
 ## 内存分配
 
 ### 堆栈
