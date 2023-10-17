@@ -37,6 +37,9 @@ git config --global user.name "name"
 # 设置全局git用户邮箱
 git config --global user.email "test@test.com"`
 
+# 强制使用ssh
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+
 # 修改远程仓库地址
 git remote set-url origin https://git.test/username/project2.git
 
@@ -50,7 +53,7 @@ git remote set-url origin https://username:password@git.test/username/project2.g
 ### 多仓库配置 ssh
 
 ```shell
-# 配置ssh，内容在下方
+# 配置ssh，文件内容在下方
 vi ~/.ssh/config
 
 # 克隆github仓库到本地

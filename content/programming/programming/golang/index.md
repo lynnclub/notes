@@ -91,8 +91,13 @@ go env -w GOPROXY="https://mirrors.aliyun.com/goproxy/,direct"
 go env -w GOPRIVATE="code.xxx.com,git.xxx.com"
 # 支持http
 go env -w GOINSECURE="code.xxx.com/*,git.xxx.com/*"
-# 还可以设置Linux环境变量
+
+# 还可以通过环境变量文件设置
+# Linux vi ~/.bashrc
+# Mac vi ~/.zshrc
 export GO111MODULE=on
+export GOPRIVATE="git.xxx.com"
+export GOINSECURE="git.xxx.com/*"
 ```
 
 ### 执行
@@ -137,6 +142,32 @@ runtime.NumGoroutine()
 runtime.NumCPU()
 // CGO调用数
 runtime.NumCgoCall()
+```
+
+注意：runtime.NumGoroutine() 函数返回当前程序的 goroutine 数量。这个数量包括了所有的 goroutine，不仅仅是你的程序直接创建的，还包括运行时系统创建的，例如垃圾回收、调度等系统级别的 goroutine。这些系统 goroutine 是在后台运行的，你的程序无法直接控制它们。如果你想要检查你的程序中的所有 goroutine 是否都已经退出，你需要使用其他方法，例如使用 sync.WaitGroup 来等待所有的 goroutine 完成。
+
+### 获取文件路径
+
+```go
+// 通用方法
+_, file, _, _ := runtime.Caller(0)
+path := path.Dir(file)
+println(file, path)
+
+// 工作目录，必须进入工作目录执行才正确
+path, _ = os.Getwd()
+println(path)
+
+// 会获取到编译时的目录
+ex, err := os.Executable()
+if err != nil {
+	panic(err)
+}
+path, err = filepath.EvalSymlinks(ex)
+if err != nil {
+	panic(err)
+}
+println(path)
 ```
 
 ## 内存分配
