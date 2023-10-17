@@ -91,8 +91,13 @@ go env -w GOPROXY="https://mirrors.aliyun.com/goproxy/,direct"
 go env -w GOPRIVATE="code.xxx.com,git.xxx.com"
 # 支持http
 go env -w GOINSECURE="code.xxx.com/*,git.xxx.com/*"
-# 还可以设置Linux环境变量
+
+# 还可以通过环境变量文件设置
+# Linux vi ~/.bashrc
+# Mac vi ~/.zshrc
 export GO111MODULE=on
+export GOPRIVATE="git.xxx.com"
+export GOINSECURE="git.xxx.com/*"
 ```
 
 ### 执行
