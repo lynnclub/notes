@@ -144,6 +144,8 @@ runtime.NumCPU()
 runtime.NumCgoCall()
 ```
 
+注意：runtime.NumGoroutine() 函数返回当前程序的 goroutine 数量。这个数量包括了所有的 goroutine，不仅仅是你的程序直接创建的，还包括运行时系统创建的，例如垃圾回收、调度等系统级别的 goroutine。这些系统 goroutine 是在后台运行的，你的程序无法直接控制它们。如果你想要检查你的程序中的所有 goroutine 是否都已经退出，你需要使用其他方法，例如使用 sync.WaitGroup 来等待所有的 goroutine 完成。
+
 ### 获取文件路径
 
 ```go
