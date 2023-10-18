@@ -87,6 +87,8 @@ ClickHouse 对 Update 语句支持不好，但是对于 Insert 语句，尤其�
 
 [https://clickhouse.com/blog/handling-updates-and-deletes-in-clickhouse](https://clickhouse.com/blog/handling-updates-and-deletes-in-clickhouse)
 
+如果设置了分区，删除分区+插入数据 是比较好的选择。
+
 ## 内存
 
 内存使用量会随着更多的 GROUP BY 键而爆炸式增长。
