@@ -187,10 +187,12 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 ## 常用容器
 
 ```shell
-docker run --restart=always --name=postgres --env=POSTGRES_PASSWORD=19950821 --volume=D:\run\postgresql:/var/lib/postgresql/data -p 5432:5432 -d postgres:latest
+docker run --restart=always --name mysql -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 -d mysql:latest
 
-docker run --restart=always --name=redis --volume=D:\run\redis:/data -p 6379:6379 -d redis:latest
+docker run --restart=always --name postgres -e POSTGRES_PASSWORD= -e POSTGRES_HOST_AUTH_METHOD=trust -v ./postgresql:/var/lib/postgresql/data -p 5432:5432 -d postgres:latest
 
-docker network create somenetwork
-docker run --restart=always --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -d elasticsearch:tag
+docker run --restart=always --name=redis -v ./redis:/data -p 6379:6379 -d redis:latest
+
+docker network create elasticsearch
+docker run --restart=always --name elasticsearch --net elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -d elasticsearch:tag
 ```
