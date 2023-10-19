@@ -133,7 +133,140 @@ Threads fairness:
     execution time (avg/stddev):   9.5763/0.00
 ```
 
+## AMD7900 台式机
+
+AMD 7900 12 核
+宏基掠夺者 16GB\*2 DDR5 6000MHz EXPO C30
+梵想 S790 1TB PCIe4 TLC 7450MB/s
+Windows 10 企业版 LTSC 21H2
+
+```text
+sysbench cpu --threads=24 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 24
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second: 79302.59
+
+General statistics:
+    total time:                          10.0003s
+    total number of events:              793080
+
+Latency (ms):
+         min:                                    0.16
+         avg:                                    0.30
+         max:                                    6.68
+         95th percentile:                        0.32
+         sum:                               239870.91
+
+Threads fairness:
+    events (avg/stddev):           33045.0000/187.14
+    execution time (avg/stddev):   9.9946/0.00
+```
+
+```text
+sysbench memory --threads=24 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 24
+Initializing random number generator from current time
+
+
+Running memory speed test with the following options:
+  block size: 1KiB
+  total size: 102400MiB
+  operation: write
+  scope: global
+
+Initializing worker threads...
+
+Threads started!
+
+Total operations: 104857584 (12493380.85 per second)
+
+102399.98 MiB transferred (12200.57 MiB/sec)
+
+
+General statistics:
+    total time:                          8.3927s
+    total number of events:              104857584
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    0.00
+         max:                                    6.82
+         95th percentile:                        0.00
+         sum:                               185249.97
+
+Threads fairness:
+    events (avg/stddev):           4369066.0000/0.00
+    execution time (avg/stddev):   7.7187/0.01
+```
+
+```text
+sysbench fileio --threads=24 --file-test-mode=seqrewr run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 24
+Initializing random number generator from current time
+
+
+Extra file open flags: (none)
+128 files, 16MiB each
+2GiB total file size
+Block size 16KiB
+Periodic FSYNC enabled, calling fsync() each 100 requests.
+Calling fsync() at the end of test, Enabled.
+Using synchronous I/O mode
+Doing sequential rewrite test
+Initializing worker threads...
+
+Threads started!
+
+
+File operations:
+    reads/s:                      0.00
+    writes/s:                     975.69
+    fsyncs/s:                     1501.56
+
+Throughput:
+    read, MiB/s:                  0.00
+    written, MiB/s:               15.25
+
+General statistics:
+    total time:                          11.8887s
+    total number of events:              26380
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    9.11
+         max:                                   48.32
+         95th percentile:                       24.83
+         sum:                               240198.45
+
+Threads fairness:
+    events (avg/stddev):           1099.1667/314.30
+    execution time (avg/stddev):   10.0083/0.01
+```
+
 ## 阿里云 ECS
+
+ecs.t5-lc1m2.small
+1 vCPU 2GB
+20GB 高效云盘
+Alibaba Cloud Linux 3.2104 LTS 等保 2.0 三级版
 
 ```text
 sysbench cpu --threads=1 run

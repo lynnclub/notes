@@ -72,6 +72,8 @@ docker start/stop/restart：启动、停止、重启。
 
 docker network：网络相关。
 
+docker volume：数据卷，存储在/var/lib/docker/volumes/。
+
 ### 守护进程与开机自启
 
 ```shell
@@ -187,12 +189,20 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 ## 常用容器
 
 ```shell
-docker run --restart=always --name mysql -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 -d mysql:latest
+docker run -d --restart=always --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -v D:/Data/mariadb:/var/lib/mysql -p 3306:3306 mariadb:latest
 
-docker run --restart=always --name postgres -e POSTGRES_PASSWORD= -e POSTGRES_HOST_AUTH_METHOD=trust -v ./postgresql:/var/lib/postgresql/data -p 5432:5432 -d postgres:latest
+docker run -d --restart=always --name postgres -e POSTGRES_PASSWORD= -e POSTGRES_HOST_AUTH_METHOD=trust -v  D:/Data/postgresql:/var/lib/postgresql/data -p 5432:5432 postgres:latest
 
-docker run --restart=always --name=redis -v ./redis:/data -p 6379:6379 -d redis:latest
+docker run -d --restart=always --name=redis -v D:/Data/redis:/data -p 6379:6379 redis:latest
 
 docker network create elasticsearch
-docker run --restart=always --name elasticsearch --net elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -d elasticsearch:tag
+docker run -d --restart=always --name elasticsearch --net elasticsearch -v D:/Data/elasticsearch:/usr/share/elasticsearch/data -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:latest
+
+docker run -d --restart=always --name clickhouse --ulimit nofile=262144:262144 -v D:/Data/clickhouse:/var/lib/clickhouse -v D:/Data/clickhouse:/var/log/clickhouse-server -p 8123:8123 -p 9000:9000 clickhouse/clickhouse-server:head-alpine
+
+docker run -d --restart=always --name ddns-go -p 9876:9876 -v D:/Data/ddns-go:/root jeessy/ddns-go
+
+docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana:latest
+
+docker run -d --restart=always --name rabbitmq -v D:/Data/rabbitmq:/var/lib/rabbitmq -p 15691:15691 -p 15692:15692 -p 25672:25672 -p 4369:4369 -p 5671:5671 -p 5672:5672 rabbitmq:latest
 ```
