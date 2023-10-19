@@ -12,9 +12,13 @@ weight: 3
 # Debian/Ubuntu
 apt install grafana
 apt install prometheus
+
 # Mac
 brew install grafana
 brew install prometheus
+
+# Docker
+docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana:latest
 ```
 
 ### Origin not allowed

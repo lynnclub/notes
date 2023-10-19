@@ -214,15 +214,18 @@ Scrcpy（推荐）
 开源软件，安卓显示到电脑，使用 adb 调试，支持无线连接，支持 Win、Mac、Linux 三大操作系统。
 
 ```bash
+# Mac
 brew install scrcpy
-
 brew install --cask android-platform-tools
 
-adb usb
-#restarting in USB mode
+# Windows
+scoop install scrcpy
+scoop install adb
 
-adb tcpip 5555
+#restarting in USB mode
+adb usb
 #restarting in TCP mode port: 5555
+adb tcpip 5555
 
 adb connect 172.20.100.207:5555
 adb connect 192.168.1.7:5555
