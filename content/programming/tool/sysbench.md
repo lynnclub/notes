@@ -26,7 +26,7 @@ sudo yum -y install sysbench
 
 Win10+推荐通过 WSL 安装。
 
-## 使用
+## 命令
 
 内置测试项目：
 
