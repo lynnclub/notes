@@ -133,11 +133,11 @@ Threads fairness:
     execution time (avg/stddev):   9.5763/0.00
 ```
 
-## AMD7900 台式机
+## AMD 7900 台式机
 
-AMD 7900 12 核
-宏基掠夺者 16GB\*2 DDR5 6000MHz EXPO C30
-梵想 S790 1TB PCIe4 TLC 7450MB/s
+AMD 7900 12 核  
+宏基掠夺者 16GB\*2 DDR5 6000MHz EXPO C30  
+梵想 S790 1TB PCIe4 TLC 7450MB/s  
 Windows 10 企业版 LTSC 21H2
 
 ```text
@@ -261,11 +261,58 @@ Threads fairness:
     execution time (avg/stddev):   10.0083/0.01
 ```
 
-## 阿里云 ECS
+```text
+sysbench fileio --threads=2 --file-test-mode=seqrewr run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
 
-ecs.t5-lc1m2.small
-1 vCPU 2GB
-20GB 高效云盘
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Extra file open flags: (none)
+128 files, 16MiB each
+2GiB total file size
+Block size 16KiB
+Periodic FSYNC enabled, calling fsync() each 100 requests.
+Calling fsync() at the end of test, Enabled.
+Using synchronous I/O mode
+Doing sequential rewrite test
+Initializing worker threads...
+
+Threads started!
+
+
+File operations:
+    reads/s:                      0.00
+    writes/s:                     1041.35
+    fsyncs/s:                     1349.63
+
+Throughput:
+    read, MiB/s:                  0.00
+    written, MiB/s:               16.27
+
+General statistics:
+    total time:                          10.1788s
+    total number of events:              24082
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    0.83
+         max:                                   18.81
+         95th percentile:                        1.39
+         sum:                                19996.38
+
+Threads fairness:
+    events (avg/stddev):           12041.0000/445.00
+    execution time (avg/stddev):   9.9982/0.00
+```
+
+## 阿里云 ECS t5.small
+
+ecs.t5-lc1m2.small  
+1 vCPU 2GB  
+20GB 高效云盘  
 Alibaba Cloud Linux 3.2104 LTS 等保 2.0 三级版
 
 ```text
@@ -422,3 +469,15 @@ Threads fairness:
     events (avg/stddev):           65286.5000/582.50
     execution time (avg/stddev):   9.9733/0.00
 ```
+
+## 总结
+
+对比测试数据可以看出，即使是老款 Mac 表现依然出色，苹果的产品稳定可靠耐用。
+
+入门级云服务器阿里云 ECS t5.small 性能羸弱不出所料，但是搭载 AMD 最新旗舰处理器 R9 7900，以及 PCIe4.0 7450MB/s 固态硬盘 的台式机，硬盘性能竟然远远不如入门级 ECS，怎么也说不过去吧？其各项数据可能都受到这块硬盘的拖累。
+
+![CrystalDiskMark](image.png)
+
+使用 CrystalDiskMark 对台式机测试，结果竟然非常优秀，与 sysbench 截然相反，但是日常使用经常卡顿，文件管理器都打不开，读写速度几百 KB，让人无法质疑 sysbench 的测试结果。
+
+这奇怪的差异到底是怎么造成的呢？无论如何，梵想的硬盘卡到不能做系统盘，只能等双十一看看有没有优惠，入手致态 TiPlus 7100 再测试一遍。
