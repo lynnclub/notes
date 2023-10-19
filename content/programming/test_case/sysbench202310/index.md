@@ -476,8 +476,8 @@ Threads fairness:
 
 入门级云服务器 阿里云 ECS t5.small 性能羸弱不出所料，但是搭载 AMD 最新旗舰处理器 R9 7900 与 PCIe4.0 7450MB/s 固态硬盘 的台式机，硬盘性能竟然远远不如入门级 ECS 的非固态硬盘，怎么也说不过去吧？其各项数据可能都受到这块硬盘的拖累。
 
-![CrystalDiskMark](image.png)
-
 使用 CrystalDiskMark 对台式机测试，结果竟然非常优秀，与 sysbench 截然相反，但是日常使用经常卡顿，文件管理器都打不开，读写速度几百 KB，让人无法质疑 sysbench 的测试结果。
+
+![CrystalDiskMark](image.png)
 
 这奇怪的差异到底是怎么造成的呢？无论如何，梵想的硬盘卡到不能做系统盘，只能等双十一看看有没有优惠，入手致态 TiPlus 7100 再测试一遍。
