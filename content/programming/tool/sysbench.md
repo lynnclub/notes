@@ -42,4 +42,5 @@ sysbench cpu --threads=8 run
 sysbench memory --threads=8 run
 sysbench fileio --threads=8 --file-test-mode=seqrewr prepare
 sysbench fileio --threads=8 --file-test-mode=seqrewr run
+sysbench fileio --threads=8 --file-test-mode=seqrewr cleanup
 ```

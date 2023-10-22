@@ -13,6 +13,9 @@ weight: 6
 参考书籍  
 [Go 语言设计与实现](https://draveness.me/golang/)
 
+PHP转golang手册
+[https://php2golang.com/](https://php2golang.com/)
+
 ## 数据类型
 
 1. 布尔型：bool
