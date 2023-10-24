@@ -12,6 +12,8 @@ weight: 1
 Intel Iris Plus Graphics 645 1536 MB  
 MacOS 14.0
 
+### CPU
+
 ```text
 sysbench cpu --threads=8 run
 sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
@@ -45,6 +47,8 @@ Threads fairness:
     events (avg/stddev):           28602647.3750/164786.01
     execution time (avg/stddev):   1.8086/0.08
 ```
+
+### 内存
 
 ```text
 sysbench memory --threads=8 run
@@ -85,6 +89,8 @@ Threads fairness:
     events (avg/stddev):           13107200.0000/0.00
     execution time (avg/stddev):   5.1334/0.01
 ```
+
+### 硬盘
 
 ```text
 sysbench fileio --threads=8 --file-test-mode=seqrewr run
@@ -140,6 +146,8 @@ AMD 7900 12 核
 梵想 S790 1TB PCIe4 TLC 7450MB/s  
 Windows 10 企业版 LTSC 21H2
 
+### CPU
+
 ```text
 sysbench cpu --threads=24 run
 sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
@@ -173,6 +181,8 @@ Threads fairness:
     events (avg/stddev):           33045.0000/187.14
     execution time (avg/stddev):   9.9946/0.00
 ```
+
+### 内存
 
 ```text
 sysbench memory --threads=24 run
@@ -213,6 +223,8 @@ Threads fairness:
     events (avg/stddev):           4369066.0000/0.00
     execution time (avg/stddev):   7.7187/0.01
 ```
+
+### 硬盘
 
 ```text
 sysbench fileio --threads=24 --file-test-mode=seqrewr run
@@ -315,6 +327,8 @@ ecs.t5-lc1m2.small
 20GB 高效云盘  
 Alibaba Cloud Linux 3.2104 LTS 等保 2.0 三级版
 
+### CPU
+
 ```text
 sysbench cpu --threads=1 run
 sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
@@ -383,6 +397,8 @@ Threads fairness:
     execution time (avg/stddev):   9.9898/0.01
 ```
 
+### 内存
+
 ```text
 sysbench memory --threads=2 run
 sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
@@ -422,6 +438,8 @@ Threads fairness:
     events (avg/stddev):           20066213.0000/39339.00
     execution time (avg/stddev):   4.4499/0.24
 ```
+
+### 硬盘
 
 ```text
 sysbench fileio --threads=2 --file-test-mode=seqrewr run
@@ -472,7 +490,7 @@ Threads fairness:
 
 ## 总结
 
-对比测试数据可以看出，即使是老款 Mac 表现依然出色，苹果的产品稳定、可靠、耐用。
+对比测试数据可以看出，即使是老款 Mac 表现依然出色，性能全面领先，DDR3 内存竟然不输给台式机的 DDR5，苹果的产品稳定、可靠、耐用。
 
 入门级云服务器 阿里云 ECS t5.small 性能羸弱不出所料，但是搭载 AMD 最新旗舰处理器 R9 7900 与 PCIe4.0 7450MB/s 固态硬盘 的台式机，硬盘性能竟然远远不如入门级 ECS 的非固态硬盘，怎么也说不过去吧？其各项数据可能都受到这块硬盘的拖累。
 
