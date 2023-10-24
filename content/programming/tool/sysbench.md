@@ -1,5 +1,5 @@
 ---
-title: "Sysbench"
+title: "sysbench"
 type: "docs"
 weight: 1
 ---
