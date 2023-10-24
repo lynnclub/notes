@@ -1,7 +1,7 @@
 ---
 title: "sysbench"
 type: "docs"
-weight: 1
+weight: 4
 ---
 
 [https://github.com/akopytov/sysbench](https://github.com/akopytov/sysbench)
