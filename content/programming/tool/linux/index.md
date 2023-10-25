@@ -87,6 +87,13 @@ ps -ef
 ps -p <进程ID> -o lstart
 ```
 
+杀死进程
+
+```shell
+# 按名称查找进程再杀死
+ps aux | grep "x" | grep -v grep | awk '{print $2}' | xargs --no-run-if-empty kill -9
+```
+
 查看 CPU 使用情况
 
 ```shell
