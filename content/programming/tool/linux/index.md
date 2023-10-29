@@ -81,7 +81,7 @@ vi /etc/security/limits.conf
 
 你可以使用以下命令来获取有关进程、CPU、内存、磁盘和网络等资源的信息：
 
-查看进程
+### 查看进程
 
 ```shell
 # BSD风格的展示方式
@@ -97,14 +97,14 @@ ps -ef
 ps -p <进程ID> -o lstart
 ```
 
-杀死进程
+### 杀死进程
 
 ```shell
 # 按名称查找进程再杀死
 ps aux | grep "x" | grep -v grep | awk '{print $2}' | xargs --no-run-if-empty kill -9
 ```
 
-查看 CPU、内存 使用情况
+### 查看 CPU、内存
 
 ```shell
 top
@@ -130,7 +130,7 @@ k 按 pid 杀死进程(-9)
 r 修改优先级
 q 退出（等于 ctrl+c）
 
-查看内存使用情况
+### 查看内存
 
 ```shell
 free -h
@@ -138,7 +138,7 @@ free -h
 
 这将显示总内存、已使用内存、可用内存等信息。
 
-查看磁盘使用情况
+### 查看磁盘
 
 ```shell
 df -h
@@ -146,7 +146,7 @@ df -h
 
 这将显示磁盘分区的使用情况，包括总容量、已用空间和可用空间等信息。
 
-查看网络使用情况
+### 查看网络
 
 ```shell
 netstat -tuln
