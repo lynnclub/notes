@@ -60,7 +60,7 @@ defer f.Close()
 pprof.WriteHeapProfile(f)
 ```
 
-WriteHeapProfile 函数用于将当前堆内存分配的剖析数据写入到指定的文件中。它并不会持续采样或更新分析结果。
+WriteHeapProfile 函数将当前堆内存分配的分析数据写入指定文件，不会持续采样或更新分析结果。
 
 ## 结果分析
 
