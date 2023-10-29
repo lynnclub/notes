@@ -11,9 +11,9 @@ weight: 4
 
 pprof 实现原理很简单，在内存分配释放的地方打点，并且把路径记录下来。go 会在 mallocgc 每次分配释放内存时，判断是否要采样。
 
-## web 服务
+## web
 
-gin 框架可以直接使用封装好的包，但是碰到问题还是需要了解 pprof 原理。
+gin 框架可以直接使用封装好的包。
 
 ```go
 import "github.com/gin-contrib/pprof"
@@ -24,7 +24,7 @@ pprof.Register(engine)
 
 访问 http://localhost:port/debug/pprof/ 查看画像信息。
 
-## 脚本服务
+## 脚本
 
 ### CPU
 
@@ -62,7 +62,7 @@ pprof.WriteHeapProfile(f)
 
 WriteHeapProfile 函数将当前堆内存分配的分析数据写入指定文件，不会持续采样或更新分析结果。
 
-## 结果分析
+## 查看结果
 
 ### 进入分析
 
@@ -101,9 +101,7 @@ cum% 函数以及子函数资源占比，大于等于 flat%
 
 ### 可视化分析（推荐）
 
-无需使用命令，直观展示分析结果。
-
-需要安装 [graphviz](https://graphviz.org/download/)
+无需使用命令，直观展示分析结果，需要安装 [graphviz](https://graphviz.org/download/)。
 
 ```shell
 # 安装
@@ -118,7 +116,7 @@ go tool pprof -http=:8000 cpu.pprof
 
 ## 内存总是偏小？
 
-原因可能有三种：
+统计内存总是偏小，原因可能有下述三种。
 
 ### 采样周期
 
