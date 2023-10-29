@@ -13,7 +13,7 @@ weight: 6
 参考书籍  
 [Go 语言设计与实现](https://draveness.me/golang/)
 
-PHP转golang手册
+PHP 转 golang 手册
 [https://php2golang.com/](https://php2golang.com/)
 
 ## 数据类型
@@ -145,6 +145,8 @@ runtime.NumGoroutine()
 runtime.NumCPU()
 // CGO调用数
 runtime.NumCgoCall()
+// 获取内存状态
+runtime.ReadMemStats()
 ```
 
 注意：runtime.NumGoroutine() 函数返回当前程序的 goroutine 数量。这个数量包括了所有的 goroutine，不仅仅是你的程序直接创建的，还包括运行时系统创建的，例如垃圾回收、调度等系统级别的 goroutine。这些系统 goroutine 是在后台运行的，你的程序无法直接控制它们。如果你想要检查你的程序中的所有 goroutine 是否都已经退出，你需要使用其他方法，例如使用 sync.WaitGroup 来等待所有的 goroutine 完成。
@@ -182,6 +184,8 @@ println(path)
 堆（Heap）是用于动态分配内存的区域，存储引用类型的数据，可以通过  make  函数或  new  关键字分配，适合不可预知大小的内存分配。
 
 变量的存储位置是由内存分配器自动决定。一般来说，大变量会分配到堆上，而小变量、特别是局部变量，会分配到栈上。栈有大小限制，通常在几 MB 到几十 MB 之间。栈的大小限制主要是为了保护系统不受无限递归或者大量局部变量消耗过多内存的影响。如果需要更大的栈空间，可以使用 `runtime.GOMAXPROCS` 函数来设置。
+
+Go 使用 tcmalloc 内存分配模型，把内存 page 按照固定大小划分成小块。这种方式解决了外部碎片，但是小块内部还是有碎片的，内部碎片率整体预期控制在 12.5% 左右。
 
 ### make、new
 
