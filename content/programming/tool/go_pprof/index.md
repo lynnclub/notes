@@ -4,6 +4,13 @@ type: "docs"
 weight: 4
 ---
 
+参考文档  
+[https://blog.csdn.net/EDDYCJY/article/details/124811555](https://blog.csdn.net/EDDYCJY/article/details/124811555)
+
+## 原理
+
+pprof 实现原理很简单，在内存分配释放的地方打点，并且把路径记录下来。go 会在 mallocgc 每次分配释放内存时，判断是否要采样。
+
 ## web 服务
 
 gin 框架可以直接使用封装好的包，但是碰到问题还是需要了解 pprof 原理。
