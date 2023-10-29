@@ -41,6 +41,13 @@ timedatectl
 
 # 查看所有环境变量
 printenv
+
+# 获取用户id与组id，不指定用户默认当前用户
+id root
+# 只取用户id
+id -u root
+# 只取组id
+id -g root
 ```
 
 ## 设置限制
@@ -81,6 +88,9 @@ vi /etc/security/limits.conf
 ps aux
 # 过滤
 ps aux | grep firefox
+# 查看内存排名前10的进程
+ps aux --sort=-%mem | head -n 10
+
 # 完整信息
 ps -ef
 # 查看进程启动时间
@@ -94,13 +104,31 @@ ps -p <进程ID> -o lstart
 ps aux | grep "x" | grep -v grep | awk '{print $2}' | xargs --no-run-if-empty kill -9
 ```
 
-查看 CPU 使用情况
+查看 CPU、内存 使用情况
 
 ```shell
 top
 ```
 
-这些命令会显示有关进程和 CPU 利用率的信息。
+显示进程维度的 CPU、内存利用率信息。
+
+参数：
+
+-c 显示进程详细名称
+-d 刷新间隔，秒，默认 5 秒  
+-n 刷新几次，与-b 配合使用  
+-p 观察指定 pid
+
+还可以类似 vi/vim，输入命令：
+
+? 显示支持的命令
+P 按 CPU 排序
+M 按内存排序
+N 按 pid 排序
+T 累计时间排序
+k 按 pid 杀死进程(-9)
+r 修改优先级
+q 退出（等于 ctrl+c）
 
 查看内存使用情况
 
