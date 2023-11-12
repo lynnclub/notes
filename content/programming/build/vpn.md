@@ -151,4 +151,62 @@ apk add -U wireguard-tools
 sudo apt install wireguard
 # Termux
 pkg install wireguard-tools
+
+# 开启端口转发
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+
+# 生成密钥对
+wg genkey | tee server_privatekey | wg pubkey > server_publickey
+wg genkey | tee client_privatekey | wg pubkey > client_publickey
+```
+
+```text
+[Interface]
+PrivateKey = server_privatekey
+Address =  10.0.8.1/24
+# UDP端口
+ListenPort = 50814
+PostUp   = iptables -A FORWARD -i %i -j ACCEPT
+PostUp   = iptables -A FORWARD -o %i -j ACCEPT
+PostUp   = iptables -t nat -A POSTROUTING -o %i -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT
+PostDown = iptables -D FORWARD -o %i -j ACCEPT
+PostDown = iptables -t nat -D POSTROUTING -o %i -j MASQUERADE
+
+[Peer]
+PublicKey = client_publickey
+AllowedIPs = 10.0.8.2/24
+```
+
+```text
+[Interface]
+PrivateKey = server_privatekey
+Address = 10.0.8.2/24
+
+[Peer]
+PublicKey = IjyUQIi25z7DD7uMN0NbpXaHwt0DoLoRkPlNU8Z5SzU=
+Endpoint = 公网IP:50814
+AllowedIPs = 10.0.8.0/24, 192.168.0.0/24
+PersistentKeepalive = 25
+```
+
+```shell
+# 服务器端
+wg set wg0 peer $(cat client_publickey) allowed-ips 10.8.0.2/32
+wg set wg0 peer $(cat client_publickey) endpoint 10.8.0.1:51820
+wg set wg0 peer $(cat client_publickey) persistent-keepalive 25
+
+# 客户端
+wg set wg0 peer $(cat server_publickey) allowed-ips 10.8.0.1/32
+wg set wg0 peer $(cat server_publickey) endpoint 10.8.0.2:51820
+wg set wg0 peer $(cat server_publickey) persistent-keepalive 25
+```
+
+```shell
+# 启动、关闭
+wg-quick up wg0
+wg-quick down wg0
+
+# 开机启动
+systemctl enable wg-quick@wg0
 ```
