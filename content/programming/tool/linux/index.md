@@ -178,3 +178,12 @@ swapon -a
 # 关闭
 swapoff -a
 ```
+
+## 端口扫描
+
+```shell
+nmap 192.168.0.1 80
+nmap -p 1-65535 10.0.0.1
+```
+
+nmap 图形界面软件 [https://nmap.org/download.html](https://nmap.org/download.html)
