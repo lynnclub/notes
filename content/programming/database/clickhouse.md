@@ -96,3 +96,13 @@ ALTER TABLE table_name DROP PARTITION 2023-10-18
 ## 内存
 
 内存使用量会随着更多的 GROUP BY 键而爆炸式增长。
+
+## 问题列表
+
+clickhouse: dateTime overflow. uninstall_time must be between 1970-01-01 00:00:00 and 2105-12-31 23:59:59
+
+uninstall_time 在 ClickHouse 预期之外的其他时区，被解释为超出了有效范围。ClickHouse 的 DateTime 类型在底层是以 Unix 时间戳（从 1970 年 1 月 1 日开始的秒数）存储的。这种存储方式使得日期和时间的比较和计算变得非常高效。ClickHouse 的 DateTime 类型不包含时区信息。如果需要处理时区，可以使用 DateTime64 类型，它可以存储具有时区的日期和时间。
+
+code: 252, message: Too many partitions for single INSERT block (more than 100).
+
+错误是由于在单个 INSERT 块中有太多的分区（超过 100 个）。这个限制由 'max_partitions_per_insert_block' 设置控制。大量的分区是一个常见的误解。它会导致严重的性能影响，包括服务器启动慢，INSERT 查询慢，以及 SELECT 查询慢。对于一个表，推荐的总分区数在 1000 到 10000 之间。请注意，在 ClickHouse 中分区并不是为了加速 SELECT 查询（ORDER BY key 足以使范围查询快速）。分区是为了数据操作（如 DROP PARTITION 等）。
