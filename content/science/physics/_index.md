@@ -1,4 +1,4 @@
 ---
-title: "物理"
+title: "物理学"
 weight: 1
 ---
