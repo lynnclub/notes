@@ -4,11 +4,11 @@ type: "docs"
 weight: 1
 ---
 
-serverless 是资源抽象的最高形式，屏蔽硬件、操作系统、运维，让开发者只需关注业务。AWS Lambda 使用 FireCracker，相对于容器跟贴近硬件，运行效率更高。
+serverless 是资源抽象的最高形式，屏蔽硬件、操作系统、运维，让开发者只需关注业务。AWS Lambda 使用 FireCracker，相对于容器更贴近硬件，运行效率更高。
 
 ## Serverless 和 FaaS
 
-serverless 是因为 FaaS（Function as a service）才流行起来的，但是 serverless 是比 FaaS 更大的概念，比如 腾讯云的 PostgreSQL for Serverless、阿里云的容器服务 Serverless。
+serverless 因 FaaS（Function as a service）才流行起来，但是 serverless 概念比 FaaS 更大，比如 腾讯云的 PostgreSQL for Serverless、阿里云的容器服务 Serverless。
 
 ## 冷启动
 
