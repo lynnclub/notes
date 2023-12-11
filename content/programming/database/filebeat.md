@@ -104,6 +104,7 @@ processors:
 
 ```shell
 docker run -d \
+  --restart=always
   --name=filebeat \
   --user=root \
   --volume="/Users/lynn/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro" \
