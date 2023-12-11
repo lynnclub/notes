@@ -4,9 +4,10 @@ type: "docs"
 weight: 3
 ---
 
-ES 索引
+## ES 索引
 
-PUT /_index_template/laravel-log
+PUT /\_index_template/laravel-log
+
 ```json
 {
   "index_patterns": ["laravel-log*"],
@@ -19,20 +20,20 @@ PUT /_index_template/laravel-log
     },
     "mappings": {
       "properties": {
-        "message": {"type": "text"},
-        "context": {"type": "text"},
-        "level": {"type": "integer"},
-        "level_name": {"type": "keyword"},
-        "channel": {"type": "keyword"},
-        "datetime": {"type": "date"},
-        "extra": {"type": "text"},
-        "env": {"type": "keyword"},
-        "trace": {"type": "keyword"},
-        "method": {"type": "keyword"},
-        "url": {"type": "text"},
-        "ua": {"type": "text"},
-        "referer": {"type": "text"},
-        "ip": {"type": "ip"}
+        "message": { "type": "text" },
+        "context": { "type": "text" },
+        "level": { "type": "integer" },
+        "level_name": { "type": "keyword" },
+        "channel": { "type": "keyword" },
+        "datetime": { "type": "date" },
+        "extra": { "type": "text" },
+        "env": { "type": "keyword" },
+        "trace": { "type": "keyword" },
+        "method": { "type": "keyword" },
+        "url": { "type": "text" },
+        "ua": { "type": "text" },
+        "referer": { "type": "text" },
+        "ip": { "type": "ip" }
       }
     }
   }
@@ -41,7 +42,7 @@ PUT /_index_template/laravel-log
 
 PUT /laravel-log-test
 
-filebeat 配置文件
+## filebeat 配置文件
 
 ```yaml
 filebeat.config:
@@ -99,13 +100,13 @@ processors:
         ]
 ```
 
-docker 启动
+## docker 启动
 
 ```shell
 docker run -d \
   --name=filebeat \
   --user=root \
-  --volume="/Users/lynn/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro" \
+  --volume="/Users/lynn/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro" \
   --volume="/Users/lynn/php/ccsbackend:/ccsbackend:ro" \
   elastic/filebeat:7.17.12 filebeat -e --strict.perms=false
 ```
