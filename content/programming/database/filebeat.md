@@ -105,7 +105,7 @@ processors:
 ```shell
 docker run -d \
   --restart=always
-  --name=filebeat \
+  --name=filebeat-test \
   --user=root \
   --volume="/Users/lynn/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro" \
   --volume="/Users/lynn/php/ccsbackend:/ccsbackend:ro" \
