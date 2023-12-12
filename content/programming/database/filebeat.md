@@ -33,7 +33,8 @@ PUT /\_index_template/laravel-log
         "url": { "type": "text" },
         "ua": { "type": "text" },
         "referer": { "type": "text" },
-        "ip": { "type": "ip" }
+        "ip": { "type": "ip" },
+        "command": { "type": "text" }
       }
     }
   }
