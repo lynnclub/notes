@@ -8,14 +8,14 @@ weight: 2
 
 南科大，北清华，遇事不决阿里云。
 
-阿里云镜像，全国可用  [https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
+阿里云镜像，全国可用 [https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
 
-清华大学镜像，北方推荐，教育网  [https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/)
+清华大学镜像，北方推荐，教育网 [https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/)
 
-中国科学技术大学镜像，南方推荐，教育网  [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
+中国科学技术大学镜像，南方推荐，教育网 [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)
 
-注意：阿里云ECS用户，可以将 `https://mirrors.aliyun.com/`
- 替换成 `http://mirrors.cloud.aliyuncs.com/`。
+注意：阿里云 ECS 用户，可以将 `https://mirrors.aliyun.com/`
+替换成 `http://mirrors.cloud.aliyuncs.com/`。
 
 ### Docker
 
@@ -155,7 +155,7 @@ registry=https://npmreg.proxy.ustclug.org/
 
 [https://www.php.net](https://www.php.net/)
 
-[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew)
+[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew) 不好用，不推荐，切换版本还是 docker 比较可靠
 
 ```shell
 # 安装PHP
