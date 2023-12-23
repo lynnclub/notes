@@ -6,8 +6,6 @@ weight: 2
 
 ## 架构
 
-Docker 并非通用的容器工具，它依赖于已存在并运行的 Linux 内核环境，实质上是在 Linux 下制造了一个隔离的文件环境，因此它的执行效率几乎等同于所部署的 Linux 主机。如果在其他系统部署 Docker 就必须安装一个虚拟 Linux 环境，比如 VMWare、VirtualBox、Hyper-V、WSL 等。
-
 Docker 使用客户端-服务器 (C/S) 架构模式，通过远程 API 来管理和创建 Docker 容器。
 
 ![架构](image.png)
@@ -22,6 +20,8 @@ Docker 使用客户端-服务器 (C/S) 架构模式，通过远程 API 来管理
 | \      | Docker Machine | 简化安装的命令行工具，在相应的平台上安装 Docker，比如 VirtualBox、 Digital Ocean、Microsoft Azure。                                                                 |
 | 引擎   | Docker Engine  | 核心部分，Linux 下无需虚拟机即可运行，包含客户端命令 docker 与守护进程命令 dockerd。                                                                                |
 | 桌面   | Docker Desktop | 图形界面+引擎，操作更方便，非 Linux 环境包含虚拟机。Mac、Windows、Linux 可以使用 Docker Desktop 启动和管理。Linux 下还可以直接使用 dockerd 命令，或者系统命令启动。 |
+
+Docker 并非通用的容器工具，它依赖于已存在并运行的 Linux 内核环境，实质上是在 Linux 下制造了一个隔离的文件环境，因此它的执行效率几乎等同于所部署的 Linux 主机。如果在其他系统部署 Docker 就必须安装一个虚拟 Linux 环境，比如 VMWare、VirtualBox、Hyper-V、WSL 等。
 
 ### k8s 架构
 
