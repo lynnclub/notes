@@ -155,7 +155,9 @@ registry=https://npmreg.proxy.ustclug.org/
 
 [https://www.php.net](https://www.php.net/)
 
-[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew) 不好用，不推荐，切换版本还是 docker 比较可靠
+[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew) 安装多版本报错，不推荐
+
+PHP 多版本，homebrew 等包管理器会升级到最新版本，phpbrew 报错，最大的问题还是装扩展很麻烦，建议使用 alpine 编写 Dockerfile 构建镜像，参考实例 [Docker php](./docker_php)。
 
 ```shell
 # 安装PHP
