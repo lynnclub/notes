@@ -188,8 +188,7 @@ brew install phpbrew
 ```shell
 # 下载composer命令
 curl -L -O https://mirrors.aliyun.com/composer/composer.phar
-chmod +x composer.phar
-sudo mv composer.phar /usr/local/bin/composer
+chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
 
 # 阿里云
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
