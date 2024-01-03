@@ -10,3 +10,9 @@ weight: 4
 
 安装命令的版本需要与项目依赖版本（github.com/swaggo/swag
 ）一致，不然可能报错。
+
+支持外部包
+
+```shell
+//go:generate swag init --parseDependency --parseInternal --parseDepth=1
+```
