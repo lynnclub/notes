@@ -111,6 +111,8 @@ ClickHouse 对 Update 语句支持不好，但是对于 Insert 语句，尤其�
 ALTER TABLE table_name DROP PARTITION 2023-10-18
 ```
 
+![update](update.jpg)
+
 ## 内存
 
 内存使用量会随着更多的 GROUP BY 键而爆炸式增长。
