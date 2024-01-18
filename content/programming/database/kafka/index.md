@@ -69,6 +69,8 @@ kafka 每次都是向 Leader 分区发送数据，并顺序写入到磁盘，然
 
 如果组内消费者数量大于分区数量，就会出现消费者闲置，如果分区数量大于组内消费者数量，就会出现一个消费者负责多个分区的情况、性能不均衡，建议消费者组 consumer 数量与 partition 数量保持一致！
 
+在消费时，不能同时指定消费者组 id 和分区 id，指定消费者组 Kafka 会自动将消息分配给组中的不同消费者，以实现负载均衡和高可用性，指定分区意味着放弃负载均衡。
+
 ## 确认机制
 
 Kafka 的确认机制主要针对消息发送，确保消息被正确地写入到 Kafka 集群中，提供了三种消息确认机制。
@@ -88,3 +90,26 @@ Kafka 还支持消息重试，当消费者处理消息失败时，可以通过�
 3. 使用死信队列：对于处理多次失败的消息，可以将其发送到死信队列，以便后续进行分析或者人工处理。
 
 另外，消费者可以使用事务来确保消息的原子性处理、提高消息的可靠性，还可以结合消息重试和错误记录来进行重试。对于无法通过重试解决的异常情况，可以考虑自动告警通知相关人员处理。综合利用这些方法可以提高消费者处理失败时的重试能力和容错性。
+
+## kafka ui
+
+[https://github.com/provectus/kafka-ui](https://github.com/provectus/kafka-ui)
+
+```shell
+docker run -it -p 8080:8080 -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui
+```
+
+```yaml
+services:
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    restart: always
+    network_mode: host
+    ports:
+      - 8080:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
+    volumes:
+      - ./config.yml:/etc/kafkaui/dynamic_config.yaml
+```
