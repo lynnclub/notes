@@ -79,6 +79,13 @@ go mod tidy
 go mod vendor
 # 替换依赖
 go mod edit -replace [old package]@[version]=[new package]@[version]
+
+# 清理缓存
+go clean -modcache
+# 查看依赖
+go list -m all
+# 升级所有依赖包到最新版本
+go get -u ./...
 ```
 
 ### 环境
