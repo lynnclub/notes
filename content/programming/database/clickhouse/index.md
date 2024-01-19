@@ -26,7 +26,7 @@ docker run -d -p8123:8123 -p9000:9000 --name clickhouse-server --ulimit nofile=2
 ### MergeTree 系列
 
 1. MergeTree：基本的表引擎，不支持复制。
-2. ReplicatedMergeTree：支持复制的表引擎，需要指定一个 zookeeper 集群来管理元数据和协调复制操作。
+2. ReplicatedMergeTree：支持复制的表引擎，需要指定一个 zookeeper 集群来管理元数据和协调复制操作，支持按照主键替换已有数据。
 3. SummingMergeTree：在合并数据时，可以对某些列进行求和操作，以减少存储空间和提高聚合查询效率。
 4. AggregatingMergeTree：在合并数据时，可以对某些列进行聚合函数操作（如 avg、min、max 等），以实现预计算功能。
 5. CollapsingMergeTree：在合并数据时，可以根据某些列的正负符号来抵消相同记录，以实现增量更新或删除功能。
