@@ -61,6 +61,47 @@ kafka 每次都是向 Leader 分区发送数据，并顺序写入到磁盘，然
 2. 如果没有指定分区，但是设置了数据的 key，则会根据 key 的值 hash 出一个分区；
 3. 如果既没指定分区，又没有设置 key，则会轮询选出一个分区；
 
+异步发送示例：
+
+```go
+import "github.com/segmentio/kafka-go"
+
+write := kafka.NewWriter(kafka.WriterConfig{
+		Brokers:          config.Viper.GetStringSlice("kafka"),
+		Topic:            topic,
+		Balancer:         &kafka.LeastBytes{},
+		MaxAttempts:      5,
+		Async:            true,
+		RequiredAcks:     1, //-1（等待所有分区的确认），0（不等待确认），1（等待至少一个分区的确认）
+		BatchSize:        200,
+		CompressionCodec: kafka.Lz4.Codec(),
+})
+write.AllowAutoTopicCreation = true
+write.Completion = func(messages []kafka.Message, err error) {
+		// 处理错误逻辑
+		if err != nil {
+			logger.Error("Failed to deliver messages:", err.Error())
+			return
+		}
+
+		// 处理成功逻辑
+		for _, msg := range messages {
+			fmt.Printf("Message delivered to topic: %s, partition: %d, offset: %d\n",
+				msg.Topic, msg.Partition, msg.Offset)
+		}
+}
+```
+
+异步发送其实是加入缓冲区，批量发送，放弃同步处理错误，需要在程序退出时调用 writer.Close() 以免丢失消息。
+
+## 确认机制
+
+Kafka 的确认机制主要针对消息发送，确保消息被正确地写入到 Kafka 集群中，提供了三种消息确认机制。
+
+1. 不等待确认（acks=0）：生产者发送消息后不会等待任何确认，直接将消息发送出去，这种方式可能会导致消息丢失。
+2. 等待 leader 确认（acks=1）：生产者发送消息后会等待 leader 分区确认，一旦 leader 确认接收到消息，生产者就会认为消息发送成功，这种方式可以提供一定程度的可靠性。
+3. 等待所有副本确认（acks=all）：生产者发送消息后会等待所有副本都确认接收到消息，只有在所有副本都确认后，生产者才会认为消息发送成功，这种方式提供最高的可靠性，但会增加延迟和开销。
+
 ## 消费数据
 
 消费者主动去 kafka 集群拉取消息时，也是从 Leader 分区拉取。
@@ -74,14 +115,6 @@ kafka 每次都是向 Leader 分区发送数据，并顺序写入到磁盘，然
 消费者消费消息后，消费的偏移量（offset）会随之移动到已消费的消息的下一个位置。这意味着消费者已经成功消费了这些消息，并且 Kafka 不会再向消费者发送这些已经被消费的消息。
 
 然而，即使消费者的偏移量移动了，这些已经被消费的消息仍然会在 Kafka 中保留一段时间，这个时间段由 Kafka 的配置参数 retention.ms 或 retention.bytes 决定。这个时间段内，消费者可以通过偏移量重新消费这些消息，或者进行偏移量提交（offset commit）。
-
-## 确认机制
-
-Kafka 的确认机制主要针对消息发送，确保消息被正确地写入到 Kafka 集群中，提供了三种消息确认机制。
-
-1. 不等待确认（acks=0）：生产者发送消息后不会等待任何确认，直接将消息发送出去，这种方式可能会导致消息丢失。
-2. 等待 leader 确认（acks=1）：生产者发送消息后会等待 leader 分区确认，一旦 leader 确认接收到消息，生产者就会认为消息发送成功，这种方式可以提供一定程度的可靠性。
-3. 等待所有副本确认（acks=all）：生产者发送消息后会等待所有副本都确认接收到消息，只有在所有副本都确认后，生产者才会认为消息发送成功，这种方式提供最高的可靠性，但会增加延迟和开销。
 
 ## 消费位移与重试
 
