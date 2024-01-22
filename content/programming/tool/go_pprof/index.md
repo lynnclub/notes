@@ -76,6 +76,9 @@ go tool pprof mem.pprof
 go tool pprof http://localhost:port/debug/pprof/profile
 # 从远程地址分析内存
 go tool pprof http://localhost:port/debug/pprof/heap
+# 自动刷新
+go tool pprof -seconds=5 http://localhost:port/debug/pprof/profile
+go tool pprof -seconds=5 http://localhost:port/debug/pprof/goroutine
 ```
 
 ### 分析命令
@@ -112,6 +115,7 @@ sudo yum install graphviz
 
 # 启动可视化分析
 go tool pprof -http=:8000 cpu.pprof
+go tool pprof -http=:8000 -seconds=5 http://localhost:port/debug/pprof/profile
 ```
 
 ## 内存总是偏小？
