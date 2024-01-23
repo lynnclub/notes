@@ -9,18 +9,17 @@ weight: 4
 ## 下载使用
 
 ```shell
-#Mac启动GUI模式
-./bin/jmeter
-./bin/jmeter.sh
+#Mac启动GUI模式，bin目录下
+./jmeter
 #分配资源，初始堆内存512MB，最大堆内存2GB
-JVM_ARGS="-Xms512m -Xmx2g"
+JVM_ARGS="-Xms512m -Xmx2g" ./jmeter.sh
 ```
 
-Don't use GUI mode for load testing !, only for Test creation and Test debugging.
+不要在负载测试中使用 GUI 模式！只用于测试创建和测试调试。
 
-## 命令行
+## 命令
 
-使用 JMeter 命令行方式发送 POST 请求并包含 JSON 数据，你需要通过 `-J` 参数指定请求参数，并使用 `-t` 参数指定测试计划文件。以下是一个示例命令：
+使用 JMeter 命令发送 POST 请求并包含 JSON 数据，你需要通过 `-J` 参数指定请求参数，并使用 `-t` 参数指定测试计划文件。以下是一个示例命令：
 
 ```bash
 jmeter -n -t /path/to/your/testplan.jmx -l /path/to/results.jtl -Jcontent_type=application/json
