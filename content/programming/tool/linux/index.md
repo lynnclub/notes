@@ -130,6 +130,12 @@ k 按 pid 杀死进程(-9)
 r 修改优先级
 q 退出（等于 ctrl+c）
 
+```shell
+lscpu
+
+cat /proc/cpuinfo
+```
+
 ### 查看内存
 
 ```shell
