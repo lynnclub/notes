@@ -6,15 +6,15 @@ weight: 3
 
 ## ES 索引
 
-PUT /\_index_template/laravel-log
+POST /\_index_template/standard-log
 
 ```json
 {
-  "index_patterns": ["laravel-log*"],
+  "index_patterns": ["standard-log-*"],
   "template": {
     "settings": {
       "index.lifecycle.name": "30-days-default",
-      "index.lifecycle.rollover_alias": "laravel-log",
+      "index.lifecycle.rollover_alias": "standard-log",
       "number_of_shards": 1,
       "number_of_replicas": 0
     },
@@ -34,14 +34,17 @@ PUT /\_index_template/laravel-log
         "ua": { "type": "text" },
         "referer": { "type": "text" },
         "ip": { "type": "ip" },
-        "command": { "type": "text" }
+        "command": { "type": "text" },
+        "memory": { "type": "integer" }
       }
     }
   }
 }
 ```
 
-PUT /laravel-log-test
+根据模板创建索引，filebeat 也可以自动创建
+
+POST /standard-log-test
 
 ## filebeat 配置文件
 
@@ -57,21 +60,21 @@ filebeat.inputs:
     json.keys_under_root: true
     json.overwrite_keys: true
     paths:
-      - /ccsbackend/storage/logs/laravel-*.log
-    tags: ["log-bc4"]
+      - /storage/logs/standard-laravel-*.log
+    tags: ["log-laravel"]
 
-setup.template.name: "laravel-log"
-setup.template.pattern: "laravel-log*"
+setup.template.name: "standard-log"
+setup.template.pattern: "standard-log-*"
 setup.template.overwrite: true
 setup.template.enabled: false
-setup.ilm.enabled: false
+setup.ilm.enabled: true
 
 output.elasticsearch:
   hosts: ["host.docker.internal:9200"]
   indices:
-    - index: "laravel-log-test"
+    - index: "standard-log-laravel"
       when.contains:
-        tags: "log-bc4"
+        tags: "log-laravel"
 
 processors:
   - add_host_metadata:
@@ -104,11 +107,10 @@ processors:
 ## docker 启动
 
 ```shell
-docker run -d \
-  --restart=always
-  --name=filebeat-test \
+docker run -d --restart=always \
+  --name=filebeat_test \
   --user=root \
   --volume="/Users/lynn/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro" \
-  --volume="/Users/lynn/php/ccsbackend:/ccsbackend:ro" \
+  --volume="/app:/app:ro" \
   elastic/filebeat:7.17.12 filebeat -e --strict.perms=false
 ```
