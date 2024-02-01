@@ -46,6 +46,34 @@ POST /\_index_template/standard-log
 
 POST /standard-log-test
 
+加入自动过期策略
+
+```text
+# 加入自动过期策略
+POST /_aliases
+{
+  "actions": [
+    {
+      "add": {
+        "index": "standard-log-20240201",
+        "alias": "standard-log"
+      }
+    },
+    {
+      "add": {
+        "index": "standard-log-20240202",
+        "alias": "standard-log"
+      }
+    }
+  ]
+}
+
+# 更新自动过期索引
+POST /standard-log/_rollover
+# 查看自动过期
+GET /standard-log/_ilm/explain
+```
+
 ## filebeat 配置文件
 
 ```yaml
