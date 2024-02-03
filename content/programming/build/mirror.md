@@ -149,6 +149,9 @@ vi ~/.npmrc
 registry=http://registry.npmmirror.com/
 # 中国科学技术大学（仅为https://registry.npmjs.org/的反向代理）
 registry=https://npmreg.proxy.ustclug.org/
+
+# 查看生效镜像
+npm get registry
 ```
 
 ### PHP（phpbrew）
