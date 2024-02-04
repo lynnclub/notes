@@ -134,11 +134,8 @@ machine codeup.aliyun.com login xxx password xxx
 阿里巴巴广泛应用 nodejs，镜像稳定可靠，推荐优先使用。清华未提供。
 
 ```shell
-# nodejs nvm
+# nodejs nvm，还需要配置 NVM_DIR
 brew install nvm
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # 阿里云
 npm set registry http://registry.npmmirror.com/
