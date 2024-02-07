@@ -34,6 +34,8 @@ Dart 三端合一职能
 
 ## serverless framework
 
+serverless framework 是第三方构建发布工具，支持本地构建并发布到 aws、阿里云、腾讯等各大函数计算服务商。
+
 ### aws lambda
 
 ```yaml
