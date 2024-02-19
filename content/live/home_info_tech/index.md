@@ -12,13 +12,9 @@ Win10 LTSC 2021
 
 [https://hellowindows.cn/](https://hellowindows.cn/)
 
-### ESXi
-
-裸机虚拟化操作系统，VMware 内核，性能损耗趋近于 0%，不支持 docker。商用气息浓重，界面清晰易用，但硬件兼容性较差，没什么扩展性。
-
 ### PVE
 
-Proxmox Virtual Environment，基于 Debian 的 Linux 开源系统，虚拟机内核为 KVM，硬件兼容性优秀，性能损失 10%左右。默认无图形界面，web 访问操作，连不上无线网络，更适合服务器。界面功能不强，很多操作要靠命令行，但扩展能力几乎是无限的。
+Proxmox Virtual Environment，基于 Debian 的开源裸金属虚拟化平台，虚拟机内核为 KVM，硬件兼容性优秀，性能损失 10%左右。默认无图形界面，web 访问操作，连不上无线网络，更适合服务器。界面功能不强，很多操作要靠命令行，但扩展能力几乎是无限的。
 
 [https://pve.proxmox.com/](https://pve.proxmox.com/)
 

@@ -4,7 +4,7 @@ type: "docs"
 weight: 1
 ---
 
-serverless 是资源抽象的最高形式，屏蔽硬件、操作系统、运维，让开发者只需关注业务。AWS Lambda 使用 FireCracker，相对于容器更贴近硬件，运行效率更高。
+serverless 是资源抽象的最高形式，屏蔽硬件、操作系统、运维，让开发者只需关注业务。AWS Lambda 使用 KVM + FireCracker 虚拟化，相对于容器更贴近硬件，运行效率更高。
 
 ## Serverless 和 FaaS
 
