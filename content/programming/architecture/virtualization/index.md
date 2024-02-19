@@ -47,7 +47,7 @@ weight: 1
 
 6. **Nutanix AHV:** Nutanix Acropolis Hypervisor（AHV）是 Nutanix 公司的裸金属虚拟化平台，通常与 Nutanix 超融合基础设施一起使用。
 
-AWS 早期使用 Xen，目前是自研的 Nitro。阿里云是自研的 飞天平台 ApsaraStack。
+AWS 早期使用 Xen，目前是自研的 Nitro。阿里云是自研的 飞天平台 ApsaraStack。Xen 基本被 KVM 取代。
 
 ## 硬件虚拟化
 
