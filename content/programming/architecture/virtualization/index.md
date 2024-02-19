@@ -47,6 +47,8 @@ weight: 1
 
 6. **Nutanix AHV:** Nutanix Acropolis Hypervisor（AHV）是 Nutanix 公司的裸金属虚拟化平台，通常与 Nutanix 超融合基础设施一起使用。
 
+AWS 早期使用 Xen，目前是自研的 Nitro。阿里云是自研的 飞天平台 ApsaraStack。
+
 ## 硬件虚拟化
 
 **KVM (Kernel-based Virtual Machine):** KVM 是一个基于 Linux 内核的虚拟化模块，它允许将 Linux 作为宿主机来创建和管理虚拟机。
