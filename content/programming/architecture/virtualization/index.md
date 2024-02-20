@@ -4,30 +4,15 @@ type: "docs"
 weight: 1
 ---
 
-## 云计算平台
+## 硬件虚拟化
 
-1. **OpenStack** 天坑填不完的坑，架构很乱，代码质量差，每一块都有厂商占坑拉屎又不埋，2017 年之后没有新版本，裸机安装很困难。
+硬件虚拟化需要硬件支持，以提供更高的性能和效率，比如 Intel VT-x 和 AMD-V。
 
-2. **OpenNebula:**
+**KVM (Kernel-based Virtual Machine):** KVM 是一个基于 Linux 内核的虚拟化模块，它允许将 Linux 作为宿主机来创建和管理虚拟机。
 
-   - 类似于 OpenStack 的开源云平台，提供虚拟化和管理工具。
-   - 它支持多种虚拟化技术，包括 KVM 和 VMware。
+**QEMU (Quick Emulator):** QEMU 是一个开源的虚拟化和模拟器工具，支持多种硬件平台，可以与 KVM 结合。它可以用于虚拟化，同时也可用于模拟不同的架构，如 ARM、MIPS 等。
 
-3. **Apache CloudStack:**
-
-   - 诞生时间较早，场景是企业内中小型虚拟化环境的管理平台，社区现在很冷清，但是还在持续更新。
-   - 由 Apache 软件基金会支持的开源云计算平台。
-   - 具有弹性伸缩、虚拟网络等功能。
-
-4. **Eucalyptus:**
-
-   - 开源的云计算平台，兼容 Amazon Web Services (AWS) API。
-   - 可以通过 Eucalyptus 创建 AWS 兼容的私有云。
-
-5. **kubernetes**
-   - 容器编排平台，跟云计算平台不一样，不支持裸机虚拟化。
-
-请注意，虽然这些平台是免费的，但在使用之前仍然需要仔细阅读其许可协议和了解其特定的功能和限制。此外，这些平台的用户界面、部署和管理方式可能会有所不同，因此选择适合您需求的平台时，请确保对其有足够的了解。
+**Firecracker:** 基于 KVM，aws 开源，启动速度快，主要用于 serverless。
 
 ## 裸金属虚拟化
 
@@ -49,13 +34,31 @@ weight: 1
 
 AWS 早期使用 Xen，目前是自研的 Nitro。阿里云是自研的 飞天平台 ApsaraStack。Xen 基本被 KVM 取代。
 
-## 硬件虚拟化
+## 云计算平台
 
-**KVM (Kernel-based Virtual Machine):** KVM 是一个基于 Linux 内核的虚拟化模块，它允许将 Linux 作为宿主机来创建和管理虚拟机。
+1. **OpenStack:**
 
-**QEMU (Quick Emulator):** QEMU 是一个开源的虚拟化和模拟器工具，支持多种硬件平台，可以与 KVM 结合。它可以用于虚拟化，同时也可用于模拟不同的架构，如 ARM、MIPS 等。
+   - 美国国家航空航天局(NASA)和 Rackspace 发起，腾讯云、华为云基于 OpenStack 二次开发。
+   - 天坑，架构乱、代码质量差，每一块都有厂商挖坑又不埋，裸机安装很困难。
 
-Firecracker 基于 KVM，aws 开源，启动速度快，主要用于 serverless。
+2. **OpenNebula:**
+
+   - 类似于 OpenStack 的开源云平台，提供虚拟化和管理工具。
+   - 它支持多种虚拟化技术，包括 KVM 和 VMware。
+
+3. **Apache CloudStack:**
+
+   - 诞生时间较早，场景是企业内中小型虚拟化环境的管理平台，社区现在很冷清，但是还在持续更新。
+   - 由 Apache 软件基金会支持的开源云计算平台。
+   - 具有弹性伸缩、虚拟网络等功能。
+
+4. **Eucalyptus:**
+
+   - 开源的云计算平台，兼容 Amazon Web Services (AWS) API。
+   - 可以通过 Eucalyptus 创建 AWS 兼容的私有云。
+
+5. **kubernetes**
+   - 容器编排平台，没有对硬件资源抽象，不支持裸机虚拟化，不属于云计算概念。
 
 ## 虚拟机
 
