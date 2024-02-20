@@ -38,7 +38,7 @@ AWS 早期使用 Xen，目前是自研的 Nitro。阿里云是自研的 飞天�
 
 1. **OpenStack:**
 
-   - 美国国家航空航天局(NASA)和 Rackspace 发起，腾讯云、华为云基于 OpenStack 二次开发。
+   - 美国国家航空航天局(NASA)和 Rackspace 发起，开源云计算系统的标杆性项目，腾讯云、华为云基于 OpenStack 二次开发。
    - 天坑，架构乱、代码质量差，每一块都有厂商挖坑又不埋，裸机安装很困难。
 
 2. **OpenNebula:**
