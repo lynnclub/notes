@@ -147,7 +147,7 @@ ZeroTier [https://www.zerotier.com](https://www.zerotier.com/)
 
 TeamViewer
 
-不仅支持 RDP，还支持自家协议以及其他多种远程控制协议，广泛应用于各种平台，包括 Windows、Mac、Linux、iOS 和 Android。
+不仅支持 RDP，还支持自家协议以及其他多种远程控制协议，广泛应用于各种平台，包括 Windows、Mac、Linux、iOS 和 Android。3 台以上机器收费。
 
 [https://www.teamviewer.com/en/download/](https://www.teamviewer.com/en/download/)
 
@@ -159,7 +159,7 @@ RustDesk
 
 Microsoft Remote Desktop
 
-只能连接 Windows，提供 Windows、Mac、Web 客户端。
+只能连接 Windows，免费，提供 Windows、Mac、Web 客户端。
 
 [https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients](https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients)
 
