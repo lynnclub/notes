@@ -145,11 +145,23 @@ ZeroTier [https://www.zerotier.com](https://www.zerotier.com/)
 
 通过网络远程控制设备，使用 RDP 远程桌面协议，需要终端具有操作系统，受网络条件限制较大，而且移动数据资费很贵。画质低，家庭局域网内也不是最优选择。
 
-RustDesk（推荐）
+TeamViewer
 
-覆盖设备很全面，轻度延迟，支持自建服务器。从移动端触屏操作桌面端兼容性不好，。
+不仅支持 RDP，还支持自家协议以及其他多种远程控制协议，广泛应用于各种平台，包括 Windows、Mac、Linux、iOS 和 Android。
+
+[https://www.teamviewer.com/en/download/](https://www.teamviewer.com/en/download/)
+
+RustDesk
+
+覆盖设备很全面，轻度延迟，支持自建服务器。基于录屏实现，主机未连接屏幕时分辨率很低且无法设置。从移动端触屏操作桌面端兼容性不好，Mac 连 Mac 键盘无法输入。
 
 [https://rustdesk.com](https://rustdesk.com/)
+
+Microsoft Remote Desktop
+
+只能连接 Windows，提供 Windows、Mac、Web 客户端。
+
+[https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients](https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients)
 
 VNC
 
