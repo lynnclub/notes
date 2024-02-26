@@ -145,11 +145,27 @@ ZeroTier [https://www.zerotier.com](https://www.zerotier.com/)
 
 通过网络远程控制设备，使用 RDP 远程桌面协议，需要终端具有操作系统，受网络条件限制较大，而且移动数据资费很贵。画质低，家庭局域网内也不是最优选择。
 
+FreeRDP
+
+开源免费，支持 Linux、Windows、Mac。
+
+[https://www.freerdp.com/](https://www.freerdp.com/)
+
+[https://github.com/FreeRDP/FreeRDP](https://github.com/FreeRDP/FreeRDP)
+
 TeamViewer
 
 不仅支持 RDP，还支持自家协议以及其他多种远程控制协议，广泛应用于各种平台，包括 Windows、Mac、Linux、iOS 和 Android。3 台以上机器收费。
 
 [https://www.teamviewer.com/en/download/](https://www.teamviewer.com/en/download/)
+
+Microsoft Remote Desktop
+
+只能连接 Windows，免费，提供 Windows、Mac、Web 客户端。Mac 中国区不允许安装，可以安装 beta 版本。
+
+[https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients](https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients)
+
+[https://install.appcenter.ms/orgs/rdmacios-k2vy/apps/microsoft-remote-desktop-for-mac/distribution_groups/all-users-of-microsoft-remote-desktop-for-mac](https://install.appcenter.ms/orgs/rdmacios-k2vy/apps/microsoft-remote-desktop-for-mac/distribution_groups/all-users-of-microsoft-remote-desktop-for-mac)
 
 RustDesk
 
@@ -157,15 +173,11 @@ RustDesk
 
 [https://rustdesk.com](https://rustdesk.com/)
 
-Microsoft Remote Desktop
-
-只能连接 Windows，免费，提供 Windows、Mac、Web 客户端。
-
-[https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients](https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients)
-
 VNC
 
-由著名的 AT&T 的欧洲研究实验室开发的远程控制工具软件。
+由著名的 AT&T 的欧洲研究实验室开发的远程控制工具软件，收费。
+
+[https://www.realvnc.com/en/connect/download/viewer/](https://www.realvnc.com/en/connect/download/viewer/)
 
 无线云终端（不推荐）
 
