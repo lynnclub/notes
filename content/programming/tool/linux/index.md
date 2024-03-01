@@ -108,6 +108,11 @@ ps aux | grep "x" | grep -v grep | awk '{print $2}' | xargs --no-run-if-empty ki
 
 ```shell
 top
+
+# 查看特定进程
+top -p pid
+# 匹配指定进程名
+top -p $(pgrep -d ',' -f 'process_name')
 ```
 
 显示进程维度的 CPU、内存利用率信息。
@@ -129,6 +134,7 @@ T 累计时间排序
 k 按 pid 杀死进程(-9)
 r 修改优先级
 q 退出（等于 ctrl+c）
+c 显示进程全名
 
 ```shell
 lscpu
@@ -148,6 +154,12 @@ free -h
 
 ```shell
 df -h
+
+# 查看当前目录中各个文件和子目录的大小
+du -ah
+
+# 显示当前目录及其直接子目录的大小
+du -h --max-depth=1 ./
 ```
 
 这将显示磁盘分区的使用情况，包括总容量、已用空间和可用空间等信息。
