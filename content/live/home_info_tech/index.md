@@ -12,12 +12,6 @@ Win10 LTSC 2021
 
 [https://hellowindows.cn/](https://hellowindows.cn/)
 
-### PVE
-
-Proxmox Virtual Environment，基于 Debian 的开源裸金属虚拟化平台，虚拟机内核为 KVM，硬件兼容性优秀，性能损失 10%左右。默认无图形界面，web 访问操作，连不上无线网络，更适合服务器。界面功能不强，很多操作要靠命令行，但扩展能力几乎是无限的。
-
-[https://pve.proxmox.com/](https://pve.proxmox.com/)
-
 ### UnRaid
 
 主要用于 NAS，基于 Slackware 的 Linux 系统，虚拟机内核也是 KVM。磁盘阵列管理非常有特色，灵活性很高。同时还有很不错的插件、Docker 和虚拟机支持。
