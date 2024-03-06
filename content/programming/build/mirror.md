@@ -40,6 +40,13 @@ Linux 风格的第三方开源 Windows 包管理工具。
 
 [https://scoop.sh/](https://scoop.sh/)
 
+```shell
+# advanced installation
+irm get.scoop.sh -outfile 'install.ps1'
+# custom directory
+.\install.ps1 -ScoopDir 'D:\Applications\Scoop' -ScoopGlobalDir 'F:\GlobalScoopApps' -NoProxy
+```
+
 ### Alpine
 
 [https://www.alpinelinux.org](https://www.alpinelinux.org/)
