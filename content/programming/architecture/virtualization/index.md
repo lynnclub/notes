@@ -24,7 +24,7 @@ weight: 1
 
 3. **XenServer:** 基于 Xen 虚拟化技术的裸金属虚拟化平台，由 Citrix 提供。它支持创建和管理虚拟机，并提供一些高级功能。
 
-4. **Proxmox Virtual Environment (Proxmox VE):** Proxmox VE 是一个基于 Debian 的开源裸金属虚拟化平台，集成了 KVM 虚拟化和容器虚拟化，硬件兼容性优秀，性能损失 10%左右。无图形界面，web 访问操作，初始连不上无线网络，更适合服务器，直接安装KDE可能存在兼容性问题，不能作为桌面系统。界面功能不强，很多操作要靠命令行，但扩展能力几乎是无限的。
+4. **Proxmox Virtual Environment (Proxmox VE):** Proxmox VE 是一个基于 Debian 的开源裸金属虚拟化平台，集成了 KVM 虚拟化和容器虚拟化，硬件兼容性优秀，性能损失 10%左右。无图形界面，web 访问操作，初始连不上无线网络，更适合服务器，直接安装 KDE 可能存在兼容性问题，不能作为桌面系统，但是可以在 Debian 发行版上安装 PVE。界面功能不强，很多操作要靠命令行，但扩展能力几乎是无限的。
 
 [https://pve.proxmox.com/](https://pve.proxmox.com/)
 
