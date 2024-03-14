@@ -150,7 +150,7 @@ free -h
 
 这将显示总内存、已使用内存、可用内存等信息。
 
-### 查看磁盘
+### 查看硬盘
 
 ```shell
 df -h
@@ -160,6 +160,16 @@ du -ah
 
 # 显示当前目录及其直接子目录的大小
 du -h --max-depth=1 ./
+
+# 查看io状态
+iostat -dx 1 5
+
+# 非常强大的Linux性能监控工具，由Nigel Griffiths开发，可以用来收集和显示Linux系统的性能数据，包括CPU、内存、磁盘I/O、网络、文件系统以及进程信息等
+apt install nmon
+yum install nmon
+
+# top命令的一个增强版
+brew install htop
 ```
 
 这将显示磁盘分区的使用情况，包括总容量、已用空间和可用空间等信息。
