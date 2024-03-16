@@ -40,19 +40,11 @@ DLNA 不是一个专门的文件传输协议，而是一个标准联盟，定义
 
 SMB 是微软开发的一种网络文件共享协议，也称为 CIFS（Common Internet File System），最初用于在 Windows 网络环境的局域网内共享文件、打印服务以及其他资源，现在跨平台支持良好，包括 Linux、Mac 等，但是因为遭受 永恒之蓝、WannaCry 等网络蠕虫攻击，其 139/445 端口在广域网被运营商封禁。SMB 缺点是传输效率稍低，速度不太稳定，大文件一定不要使用。
 
-WebDAV 是一种基于 HTTP/HTTPS 协议的扩展，允许用户编辑和管理存储在远程 Web 服务器上的文件，就像操作本地文件系统一样，Seafile。由于基于 Web 协议，容易穿越防火墙，但是受限于 HTTP/HTTPS 的性能开销，频繁操作小文件不是最优选择。
+WebDAV 是一种基于 HTTP/HTTPS 协议的扩展，允许用户编辑和管理存储在远程 Web 服务器上的文件，就像操作本地文件系统一样。Linux、Mac、Windows 原生支持 WebDAV 服务端。由于基于 Web 协议，容易穿越防火墙，但是受限于 HTTP/HTTPS 的性能开销，频繁操作小文件不是最优选择。
 
-NFS、SMB、WebDAV 都支持在 Linux、Mac、Windows 挂载为远程硬盘，SMB 端口在广域网被封禁，SSHFS 在 Windows 下需要通过第三方工具实现类似功能。NFS 在 Android 挂载需要 root 权限，在 IOS 没有应用可以实现挂载。
+NFS、SMB、WebDAV 都支持在 Linux、Mac、Windows 挂载为远程硬盘，SMB 端口在广域网被封禁、手机端需要 Wi-Fi 才能打开，SSHFS 在 Windows 下需要通过第三方工具实现类似功能。NFS 在 Android 挂载需要 root 权限，在 IOS 没有应用可以实现挂载。
 
 WebDAV 是目前（2024.03.16）的最佳选择。
-
-## WebDAV 服务
-
-NextCloud
-
-OwnCloud
-
-Seafile
 
 ## WebDAV 挂载硬盘
 
@@ -65,3 +57,19 @@ Windows：Windows 操作系统也原生支持 WebDAV，用户可以通过“映�
 Android：在 Android 系统中，虽然不直接支持挂载为文件系统，但有多种第三方应用（如 WebDAV Navigator、Solid Explorer 等）可以访问和管理 WebDAV 服务器上的文件，部分应用可通过插件或内建功能实现类似挂载的功能。
 
 iOS：iOS 系统同样可以通过一些第三方应用来访问 WebDAV 资源，例如 Documents by Readdle，用户可以在这个应用内访问和管理 WebDAV 服务器上的文件，但同样不具备直接挂载为文件系统的功能，而是通过应用内的文件管理器进行交互。
+
+## 私有云存储解决方案
+
+NextCloud
+
+[https://nextcloud.com/](https://nextcloud.com/)
+
+OwnCloud
+
+[https://owncloud.com/](https://owncloud.com/)
+
+Seafile
+
+[https://www.seafile.com/home/](https://www.seafile.com/home/)
+
+NextCloud、OwnCloud 基于 PHP 开发，Seafile 基于 Python 开发。Seafile 对大文件分块，社区版免费。
