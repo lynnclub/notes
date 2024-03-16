@@ -42,7 +42,7 @@ SMB 是微软开发的一种网络文件共享协议，也称为 CIFS（Common I
 
 WebDAV 是一种基于 HTTP/HTTPS 协议的扩展，允许用户编辑和管理存储在远程 Web 服务器上的文件，就像操作本地文件系统一样。Linux、Mac、Windows 原生支持 WebDAV 服务端。由于基于 Web 协议，容易穿越防火墙，但是受限于 HTTP/HTTPS 的性能开销，频繁操作小文件不是最优选择。
 
-NFS、SMB、WebDAV 都支持在 Linux、Mac、Windows 挂载为远程硬盘，SMB 端口在广域网被封禁、手机端需要 Wi-Fi 才能打开，SSHFS 在 Windows 下需要通过第三方工具实现类似功能。NFS 在 Android 挂载需要 root 权限，在 IOS 没有应用可以实现挂载。
+NFS、SMB、WebDAV 都支持在 Linux、Mac、Windows 挂载为远程硬盘，SMB 端口在广域网被封禁、手机端需要 Wi-Fi 才能使用，SSHFS 在 Windows 下需要通过第三方工具实现类似功能。NFS 在 Android 挂载需要 root 权限，在 IOS 没有应用可以实现挂载。
 
 WebDAV 是目前（2024.03.16）的最佳选择。
 
