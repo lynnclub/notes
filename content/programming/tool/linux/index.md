@@ -180,6 +180,11 @@ brew install htop
 netstat -tuln
 
 iftop
+
+# 端口
+nc -vz -w 2 192.168.0.107 8080
+telnet 192.168.0.107 8080
+nmap -p 8080 192.168.0.107
 ```
 
 这些命令将显示有关网络连接和流量的信息。
