@@ -85,6 +85,8 @@ Windows Registry Editor Version 5.00
 
 ## OpenVPN
 
+客户端应用比较完善，但是性能最差。
+
 [https://github.com/kylemanna/docker-openvpn](https://github.com/kylemanna/docker-openvpn)
 
 docker-compose.yml
