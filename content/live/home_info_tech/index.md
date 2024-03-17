@@ -4,13 +4,127 @@ type: "docs"
 weight: 3
 ---
 
+## 内存
+
+SDRAM 内存性能受频率、带宽、时序等因素影响。频率、带宽越高越好，但是频率需要 CPU 支持。较低的时序意味着更快的响应速度和更高的潜在性能。
+
+### 时序
+
+时序是描述同步动态随机存取存储器（SDRAM）性能的关键参数，具体指的是内存执行读写操作所需要的时间延迟，以时钟周期为单位。内存时序通常由以下四个主要参数组成：
+
+1. **CAS Latency（CL）**：Column Address Strobe（列地址选通脉冲）延迟，也叫 CL 值，表示内存从接收到一个读取命令到输出数据所必需的最小时钟周期数。
+
+2. **RAS to CAS Delay（tRCD）**：Row Address Strobe to Column Address Strobe Delay，行地址选通脉冲到列地址选通脉冲的延迟，表示内存行激活到可以读取或写入数据所需要的时钟周期数。
+
+3. **Row Precharge Time（tRP）**：Row Precharge Delay，行预充电时间，是从关闭当前活动行到打开新行之前需要的时钟周期数。
+
+4. **Row Active Time（tRAS）**：Row Active Time，行激活时间，表示一行数据从被激活到必须回到预充电状态之间所需的最短时钟周期数。
+
+有时还包括第五个参数：
+
+5. **Command Rate（CR）或 tCMD**：命令速率，表示连续发送命令之间所需的时钟周期数，通常为 1T（一个时钟周期）或 2T（两个时钟周期）。
+
+内存时序参数组合起来形成了一个类似 7-8-8-24 的格式，用来表示对应的 CL-tRCD-tRP-tRAS 值。
+
+### DRAM
+
+DRAM (Dynamic Random-Access Memory) 动态随机存取内存 是一种计算机内存类型，通过电容器存储每个比特的信息，但由于电容器的电荷会随时间自然泄漏，因此必须定期刷新（再生）电荷以保持数据的完整性。DRAM 每个存储单元的成本相对较低，这使得它可以实现大规模、高密度的存储，从而被广泛应用在个人计算机、服务器以及其他计算设备的主存储器（RAM）中。然而，由于其需要刷新机制，访问速度较慢。
+
+### SDRAM
+
+SDRAM (Synchronous Dynamic Random-Access Memory) 同步动态随机存取内存 是 DRAM 技术的一个进化版本，它最大的特点是加入了同步机制，使其能够与系统的时钟信号同步进行读写操作。这意味着 SDRAM 的操作是在时钟信号的上升沿或下降沿触发的，确保了数据传输与 CPU 的时序更加紧密地配合，提高了数据传输效率和整体性能。相较于传统的 DRAM，SDRAM 减少了等待时间，允许在一个时钟周期内完成多个内部操作，从而提升了内存带宽和系统的整体性能。随着技术的发展，SDRAM 演变为不同的变种，例如 DDR SDRAM（Double Data Rate SDRAM），它能够在每个时钟周期传输两次数据，进一步提高了数据传输速率。
+
+### DDR
+
+![ddr5.jpg](ddr5.jpg)
+
+DDR (Double Data Rate SDRAM) 双倍数据率同步动态随机存取内存，主要用于台式机、服务器、工作站等传统计算机系统，版本有 DDR、DDR2、DDR3、DDR4、DDR5。
+
+DDR，工作电压 2.5V 或 2.0V，提供双倍数据传输速率，即在时钟周期的上升沿和下降沿都传输数据，常见规格包括 DDR-200（对应 PC1600）和 DDR-266（对应 PC2100）。
+
+DDR2，工作电压 1.8V，并且通过增加预读取位数、更高的时钟频率等方式提升性能，常见规格包括 DDR2-400、DDR2-533、DDR2-667、DDR2-800 等。
+
+DDR3 发布于 2007 年，工作电压 1.5V，并且拥有更高的运行频率和带宽，支持异步重置、点对点连接等特性，常见规格包括 DDR3-800、DDR3-1066、DDR3-1333、DDR3-1600、DDR3-2133 等。
+
+DDR4 发布于 2014 年，工作电压 1.2V，引入了更高的 Bank 数量、更高的预读取深度、更高的频率范围和更高的带宽，常见规格包括 DDR4-2133、DDR4-2400、DDR4-2666、DDR4-3200、DDR4-4000 及以上。
+
+DDR5 发布于 2021 年，工作电压 1.1V，采用双 32 位子通道设计，相较于 DDR4 的单 64 位通道，有效提高了内存控制器的利用率。独立的 PMIC 电源管理芯片，DDR4 集成在主板。加入了简化版本的 ECC 纠错功能。起步频率 4800MHz，几乎是 DDR4 内存频率的极限。
+
+DDR5 相对于 DDR4 向前迈出了一大步，但是初期存在时序高，延迟高的缺点，CPU 才刚开始适应 DDR5 的高频率，实际表现上和 DDR4 内存区别不大。DDR5 在对 CPU 多线程的支持上有一定提升，如果经常用到多个核心，可以尝试 DDR5 内存。
+
+| 基准属性     | DDR3                 | DDR4                         | DDR5                         |
+| ------------ | -------------------- | ---------------------------- | ---------------------------- | ------------ |
+| 发布日期     | 2007 年              | 2014 年                      | 2021 年                      |
+| 时钟速率     | 800-2133MHz          | 1600-3200Mhz                 | 3200-6400Mhz                 |
+| 内存密度     | 最高 16GB            | 最高 128GB                   | 最高 512GB                   |
+| 最大 UDIMM   | 8GB                  | 32GB                         | 128GB                        |
+| 电压         | 1.5V                 | 1.2V                         | 1.1V                         |
+| 延迟         | CL9-CL13             | CL14-CL19                    | CL32-CL40                    |
+| 传输速率     | 6400MB/s             | 12800MB/s                    | 44800MB/s                    |
+| 最大数据速率 | 1.6Gbps              | 3.2Gbps                      | 6.4Gbps                      |
+| 电源管理     | 主板                 | 主板                         | DIMM                         | PMIC         |
+| DIMM         | 针脚 240 (R, LR, U); | 204 (SODIMM) 288 (R, LR, U); | 260 (SODIMM) 288 (R, LR, U); | 260 (SODIMM) |
+
+### LPDDR
+
+LPDDR (Low Power Double Data Rate SDRAM)，专为移动设备设计的低功耗 SDRAM，主要用于手机、平板，相对于 DDR 具有更低的功耗，但是却以带宽为代价，版本有 LPDDR4、LPDDR4X、LPDDR5、LPDDR5X。
+
+LPDDR4 具有两个 16 位通道，从而使每个 DIMM 的总线总长度为 32 位。相比之下，DDR4 每个 DIMM 具有 64 位通道。
+
+### GDDR
+
+GDDR (Graphics Double Data Rate SDRAM)，专门为图形处理设计的系列，版本有 GDDR3、GDDR4、GDDR5、GDDR5X、GDDR6。
+
+## 硬盘
+
 ## 操作系统
 
-Win10 LTSC 2021
+### Win10 LTSC 2021
 
-微软官方推出的精简企业版，非常稳定、长期支持 5 年，无应用市场，系统无需升级。
+微软官方推出的精简企业版，非常稳定、长期支持 5 年，无应用市场，系统无需升级。通过 WSL(Windows Subsystem for Linux) [适用于 Linux 的 Windows 子系统文档](https://learn.microsoft.com/zh-cn/windows/wsl/install) 将 Linux 作为子系统。
 
 [https://hellowindows.cn/](https://hellowindows.cn/)
+
+### Linux
+
+Linux 发行版排行榜  
+[https://distrowatch.com/dwres.php?resource=popularity](https://distrowatch.com/dwres.php?resource=popularity)
+
+#### Debian
+
+Debian 是一个完全自由的 Linux 操作系统！支持 KDE 等桌面，原生应用包括微信、QQ、飞书、钉钉、WPS、搜狗输入法、Edge 浏览器、VSCode、JetBrains 全家桶 等，可以满足日常使用。
+
+[https://www.debian.org/](https://www.debian.org/)
+
+微信优麒麟商店 deb 包  
+[https://www.ubuntukylin.com/applications/106-cn.html](https://www.ubuntukylin.com/applications/106-cn.html)
+
+QQ linux 版  
+[https://im.qq.com/linuxqq/index.shtml](https://im.qq.com/linuxqq/index.shtml)
+
+飞书  
+[https://www.feishu.cn/download](https://www.feishu.cn/download)
+
+搜狗输入法  
+[https://shurufa.sogou.com/](https://shurufa.sogou.com/)
+
+Edge 浏览器  
+[https://www.microsoft.com/zh-cn/edge/download](https://www.microsoft.com/zh-cn/edge/download)
+
+JetBrains Golang  
+[https://www.jetbrains.com/go/download/#section=linux](https://www.jetbrains.com/go/download/#section=linux)
+
+#### Ubuntu、优麒麟
+
+优麒麟是 Ubuntu 的官方中国版本，稳定可靠，基于 Debian，由麒麟软件有限公司主导开发的全球开源项目，专注于研发“友好易用，简单轻松”的桌面环境，致力为全球用户带来更智能的用户体验！
+
+[https://www.ubuntukylin.com/](https://www.ubuntukylin.com/)
+
+#### Deepin
+
+Deepin 由武汉深之度科技有限公司基于 Debian 开发，界面美观，通过 wine 支持 Windows 应用，部分软件有兼容性问题，比如 WPS。
+
+[https://www.deepin.org/index/zh](https://www.deepin.org/index/zh)
 
 ### UnRaid
 
