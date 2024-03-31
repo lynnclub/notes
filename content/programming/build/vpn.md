@@ -151,11 +151,14 @@ brew install wireguard-tools
 apk add -U wireguard-tools
 # Debian
 sudo apt install wireguard
+# CentOS
+sudo yum install wireguard-tools
 # Termux
 pkg install wireguard-tools
 
 # 开启端口转发
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+echo "net.ipv6.conf.all.forwarding = 1" >> /etc/sysctl.conf
 
 # 生成密钥对
 wg genkey | tee server_privatekey | wg pubkey > server_publickey
@@ -166,8 +169,7 @@ wg genkey | tee client_privatekey | wg pubkey > client_publickey
 [Interface]
 PrivateKey = server_privatekey
 Address =  10.0.8.1/24
-# UDP端口
-ListenPort = 50814
+ListenPort = 50814 #UDP端口
 PostUp   = iptables -A FORWARD -i %i -j ACCEPT
 PostUp   = iptables -A FORWARD -o %i -j ACCEPT
 PostUp   = iptables -t nat -A POSTROUTING -o %i -j MASQUERADE

@@ -10,7 +10,7 @@ weight: 1
 8 GB 2133 MHz LPDDR3  
 250.69 GB SSD  
 Intel Iris Plus Graphics 645 1536 MB  
-MacOS 14.0
+MacOS 14.3.1
 
 ### CPU
 
@@ -325,7 +325,7 @@ Threads fairness:
 ecs.t5-lc1m2.small  
 1 vCPU 2GB  
 20GB 高效云盘  
-Alibaba Cloud Linux 3.2104 LTS 等保 2.0 三级版
+aliyun_3_9_x64_20G_dengbao_alibase_20231219.vhd
 
 ### CPU
 
@@ -486,6 +486,414 @@ Latency (ms):
 Threads fairness:
     events (avg/stddev):           65286.5000/582.50
     execution time (avg/stddev):   9.9733/0.00
+```
+
+## 阿里云 ECS e-c1m1.large
+
+ecs.e-c1m1.large  
+2 vCPU 2GB  
+40GB(2120 IOPS) ESSD Entry 云盘  
+debian_12_2_x64_20G_alibase_20231012.vhd
+
+### CPU
+
+```text
+sysbench cpu --threads=1 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 1
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  1053.18
+
+General statistics:
+    total time:                          10.0003s
+    total number of events:              10534
+
+Latency (ms):
+         min:                                    0.94
+         avg:                                    0.95
+         max:                                    1.09
+         95th percentile:                        0.95
+         sum:                                 9996.89
+
+Threads fairness:
+    events (avg/stddev):           10534.0000/0.00
+    execution time (avg/stddev):   9.9969/0.00
+```
+
+```text
+sysbench cpu --threads=2 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  1762.56
+
+General statistics:
+    total time:                          10.0002s
+    total number of events:              17629
+
+Latency (ms):
+         min:                                    1.11
+         avg:                                    1.13
+         max:                                    3.95
+         95th percentile:                        1.14
+         sum:                                19994.46
+
+Threads fairness:
+    events (avg/stddev):           8814.5000/7.50
+    execution time (avg/stddev):   9.9972/0.00
+```
+
+```text
+sysbench cpu --threads=4 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 4
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  1763.65
+
+General statistics:
+    total time:                          10.0012s
+    total number of events:              17641
+
+Latency (ms):
+         min:                                    1.12
+         avg:                                    2.27
+         max:                                   17.16
+         95th percentile:                        7.98
+         sum:                                39993.13
+
+Threads fairness:
+    events (avg/stddev):           4410.2500/12.30
+    execution time (avg/stddev):   9.9983/0.00
+```
+
+可以看到 2 线程对 events 总数有提升，但是再增加就没有效果。
+
+### 内存
+
+```text
+sysbench memory --threads=2 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Running memory speed test with the following options:
+  block size: 1KiB
+  total size: 102400MiB
+  operation: write
+  scope: global
+
+Initializing worker threads...
+
+Threads started!
+
+Total operations: 83021696 (8300633.56 per second)
+
+81075.88 MiB transferred (8106.09 MiB/sec)
+
+
+General statistics:
+    total time:                          10.0001s
+    total number of events:              83021696
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    0.00
+         max:                                    0.80
+         95th percentile:                        0.00
+         sum:                                11029.87
+
+Threads fairness:
+    events (avg/stddev):           41510848.0000/7872.00
+    execution time (avg/stddev):   5.5149/0.00
+```
+
+### 硬盘
+
+```text
+sysbench fileio --threads=2 --file-test-mode=seqrewr run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Extra file open flags: (none)
+128 files, 16MiB each
+2GiB total file size
+Block size 16KiB
+Periodic FSYNC enabled, calling fsync() each 100 requests.
+Calling fsync() at the end of test, Enabled.
+Using synchronous I/O mode
+Doing sequential rewrite test
+Initializing worker threads...
+
+Threads started!
+
+
+File operations:
+    reads/s:                      0.00
+    writes/s:                     6573.49
+    fsyncs/s:                     8433.32
+
+Throughput:
+    read, MiB/s:                  0.00
+    written, MiB/s:               102.71
+
+General statistics:
+    total time:                          10.0237s
+    total number of events:              150189
+
+Latency (ms):
+         min:                                    0.01
+         avg:                                    0.13
+         max:                                   33.04
+         95th percentile:                        0.07
+         sum:                                19975.39
+
+Threads fairness:
+    events (avg/stddev):           75094.5000/205.50
+    execution time (avg/stddev):   9.9877/0.00
+```
+
+## 阿里云 ECS e-c1m1.large
+
+ecs.e-c1m1.large  
+2 vCPU 2GB  
+40GB(2120 IOPS) ESSD Entry 云盘  
+aliyun_3_9_x64_20G_dengbao_alibase_20231219.vhd
+
+### CPU
+
+```text
+sysbench cpu --threads=1 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 1
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  1086.43
+
+General statistics:
+    total time:                          10.0006s
+    total number of events:              10867
+
+Latency (ms):
+         min:                                    0.91
+         avg:                                    0.92
+         max:                                    1.16
+         95th percentile:                        0.94
+         sum:                                 9996.74
+
+Threads fairness:
+    events (avg/stddev):           10867.0000/0.00
+    execution time (avg/stddev):   9.9967/0.00
+```
+
+```text
+sysbench cpu --threads=2 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  1826.13
+
+General statistics:
+    total time:                          10.0003s
+    total number of events:              18265
+
+Latency (ms):
+         min:                                    1.08
+         avg:                                    1.09
+         max:                                    1.97
+         95th percentile:                        1.10
+         sum:                                19993.89
+
+Threads fairness:
+    events (avg/stddev):           9132.5000/4.50
+    execution time (avg/stddev):   9.9969/0.00
+```
+
+```text
+sysbench cpu --threads=4 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 4
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  1825.26
+
+General statistics:
+    total time:                          10.0009s
+    total number of events:              18257
+
+Latency (ms):
+         min:                                    1.08
+         avg:                                    2.19
+         max:                                  314.25
+         95th percentile:                        1.12
+         sum:                                39953.39
+
+Threads fairness:
+    events (avg/stddev):           4564.2500/134.11
+    execution time (avg/stddev):   9.9883/0.01
+```
+
+可以看到 2 线程对 events 总数有提升，但是再增加就没有效果。
+
+### 内存
+
+```text
+sysbench memory --threads=2 run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Running memory speed test with the following options:
+  block size: 1KiB
+  total size: 102400MiB
+  operation: write
+  scope: global
+
+Initializing worker threads...
+
+Threads started!
+
+Total operations: 76222984 (7620841.73 per second)
+
+74436.51 MiB transferred (7442.23 MiB/sec)
+
+
+General statistics:
+    total time:                          10.0001s
+    total number of events:              76222984
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    0.00
+         max:                                    0.34
+         95th percentile:                        0.00
+         sum:                                11625.03
+
+Threads fairness:
+    events (avg/stddev):           38111492.0000/14938.00
+    execution time (avg/stddev):   5.8125/0.00
+```
+
+### 硬盘
+
+```text
+sysbench fileio --threads=2 --file-test-mode=seqrewr run
+sysbench 1.0.20 (using system LuaJIT 2.1.0-beta3)
+
+Running the test with following options:
+Number of threads: 2
+Initializing random number generator from current time
+
+
+Extra file open flags: (none)
+128 files, 16MiB each
+2GiB total file size
+Block size 16KiB
+Periodic FSYNC enabled, calling fsync() each 100 requests.
+Calling fsync() at the end of test, Enabled.
+Using synchronous I/O mode
+Doing sequential rewrite test
+Initializing worker threads...
+
+Threads started!
+
+
+File operations:
+    reads/s:                      0.00
+    writes/s:                     6602.37
+    fsyncs/s:                     8470.32
+
+Throughput:
+    read, MiB/s:                  0.00
+    written, MiB/s:               103.16
+
+General statistics:
+    total time:                          10.0101s
+    total number of events:              150645
+
+Latency (ms):
+         min:                                    0.01
+         avg:                                    0.13
+         max:                                   38.04
+         95th percentile:                        0.07
+         sum:                                19943.57
+
+Threads fairness:
+    events (avg/stddev):           75322.5000/2302.50
+    execution time (avg/stddev):   9.9718/0.00
 ```
 
 ## 总结
