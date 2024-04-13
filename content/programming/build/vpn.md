@@ -144,6 +144,8 @@ MESHBIRD_KEY="<key>" meshbird join
 
 ## WireGuard
 
+[https://www.wireguard.com/install/](https://www.wireguard.com/install/)
+
 ```shell
 # Mac
 brew install wireguard-tools
@@ -214,3 +216,9 @@ wg-quick down wg0
 # 开机启动
 systemctl enable wg-quick@wg0
 ```
+
+## TailScale
+
+[https://tailscale.com/](https://tailscale.com/)
+
+基于WireGuard搭建的mesh网络，无需配置，支持p2p直连。
