@@ -4,5 +4,7 @@ weight: 5
 ---
 
 {{< cards >}}
-{{< card link="basic" title="基础知识" icon="document-duplicate" >}}
+{{< card link="oauth2" title="Oauth2" icon="document-duplicate" >}}
+{{< card link="serverless" title="Serverless" icon="document-duplicate" >}}
+{{< card link="virtualization" title="Virtualization" icon="document-duplicate" >}}
 {{< /cards >}}

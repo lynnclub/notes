@@ -1,5 +1,5 @@
 ---
-title: "swagger"
+title: "Swagger"
 type: "docs"
 weight: 4
 ---

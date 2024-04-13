@@ -1,7 +1,7 @@
 ---
 title: "Docker php"
 type: "docs"
-weight: 3
+weight: 2
 ---
 
 ```shell

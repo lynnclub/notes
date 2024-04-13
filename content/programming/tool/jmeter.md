@@ -1,5 +1,5 @@
 ---
-title: "jmeter"
+title: "Jmeter"
 type: "docs"
 weight: 4
 ---
