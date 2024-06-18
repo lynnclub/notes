@@ -25,7 +25,6 @@ weight: 2
 # 修改源
 sudo vi /etc/docker/daemon.json
 # 重启
-sudo systemctl daemon-reload
 sudo systemctl restart docker
 # 查看配置
 docker info
