@@ -21,11 +21,21 @@ weight: 2
 
 [https://www.docker.com](https://www.docker.com/)
 
+```shell
+# 修改源
+sudo vi /etc/docker/daemon.json
+# 重启
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+# 查看配置
+docker info
+```
+
+阿里云个人账户镜像
 ```json
-// 阿里云个人账户镜像
-"registry-mirrors": [
-    "https://2kqxkocb.mirror.aliyuncs.com"
-]
+{
+  "registry-mirrors": ["https://2kqxkocb.mirror.aliyuncs.com"]
+}
 ```
 
 ### Snap
