@@ -41,7 +41,7 @@ host 模式只能用在 Linux
 
 ## 命令
 
-docker info：查看 Docker 信息。  
+docker info：查看信息。  
 docker images：镜像列表。  
 docker pull：拉取镜像。  
 docker push：推送镜像。  
