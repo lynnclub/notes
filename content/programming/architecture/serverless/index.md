@@ -34,9 +34,13 @@ Dart 三端合一职能
 
 ## serverless framework
 
-serverless framework 是第三方构建发布工具，支持本地构建并发布到 aws、阿里云、腾讯等各大函数计算服务商。
+serverless framework 是第三方构建发布工具，支持本地构建并发布到 aws、阿里云、腾讯等服务商。
+
+_v4 版本只支持 aws lambda，并且商业盈利需要付费。_
 
 ### aws lambda
+
+`vi serverless.yml`
 
 ```yaml
 # Welcome to Serverless!
@@ -121,8 +125,11 @@ package:
 functions:
   env:
     handler: bootstrap
+    url: #函数URL
+      cors: true
+      invokeMode: RESPONSE_STREAM
     events:
-      - httpApi:
+      - httpApi: #api gateway v2
           path: /env
           method: get
 #    The following are a few example events you can configure
@@ -189,6 +196,34 @@ functions:
 #             - Id: DeleteContentAfter1Day
 #               Status: "Enabled"
 #               ExpirationInDays: 1
+```
+
+### 多项目编排
+
+`vi serverless-compose.yml`
+
+```yaml
+services:
+  test:
+    path: api/v1/test
+  auth:
+    path: api/v1/auth
+```
+
+### 命令
+
+```bash
+# 创建项目
+serverless
+# 缩写
+sls
+
+# 部署
+sls deploy
+# 部署prod环境
+sls deploy --stage prod
+# 部署auth服务
+sls auth deploy
 ```
 
 ### aws 最小权限
