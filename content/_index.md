@@ -4,7 +4,7 @@ title: "林恩笔记"
 
 林恩笔记 是林恩学习与思考的产物。
 
-林恩是一个爱做梦、也擅长做梦的人，他的梦境丰富多彩、天马行空，有自由飞翔、也有慌乱逃窜，有人间仙境、也有妖魔鬼怪，有故人依旧、也有恍如隔世。。。他就是这样一个富有想象力的人，喜欢标新立异、不喜欢循规蹈矩 [全文...](./about)
+林恩是一个爱做梦、也擅长做梦的人，他的梦境丰富多彩、天马行空，有自由飞翔、也有慌乱逃窜，有人间仙境、也有妖魔鬼怪，有故人依旧、也有恍如隔世。。。。。。[全文...](./about)
 
 ### 编程
 
@@ -36,7 +36,5 @@ title: "林恩笔记"
 ### 随笔
 
 {{< cards >}}
-{{< card link="essay/standard_waste" title="标准化浪费" icon="document-duplicate" >}}
-{{< card link="essay/microsoft_change" title="微软的改变" icon="document-duplicate" >}}
 {{< card link="essay/wuhan_analyze" title="武汉分析2020" icon="document-duplicate" >}}
 {{< /cards >}}
