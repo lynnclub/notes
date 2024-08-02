@@ -8,6 +8,7 @@ weight: 4
 {{< card link="windows" title="Windows" icon="document-duplicate" >}}
 {{< card link="docker" title="Docker" icon="document-duplicate" >}}
 {{< card link="docker_php" title="Docker php" icon="document-duplicate" >}}
+{{< card link="kubernetes" title="kubernetes" icon="document-duplicate" >}}
 {{< card link="mirror" title="镜像" icon="document-duplicate" >}}
 {{< card link="ddns" title="DDNS" icon="document-duplicate" >}}
 {{< card link="grafana" title="grafana" icon="document-duplicate" >}}

@@ -23,12 +23,6 @@ Docker 使用客户端-服务器 (C/S) 架构模式，通过远程 API 来管理
 
 Docker 并非通用的容器工具，它依赖于已存在并运行的 Linux 内核环境，实质上是在 Linux 下制造了一个隔离的文件环境，因此它的执行效率几乎等同于所部署的 Linux 主机。如果在其他系统部署 Docker 就必须安装一个虚拟 Linux 环境，比如 VMWare、VirtualBox、Hyper-V、WSL 等。
 
-### k8s 架构
-
-![k8s](k8s.png)
-
-ingress：入口
-
 ### 网络模式
 
 1. bridge：通过 Linux bridge 隔离
