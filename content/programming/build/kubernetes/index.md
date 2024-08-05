@@ -461,6 +461,70 @@ ctr run <options> <image> <container-id> <command>
 ctr run --tty --rm alpine:latest mycontainer /bin/sh
 ```
 
+### crictl常用命令
+
+crictl 是 Kubernetes CRI（容器运行时接口）的命令行工具。
+
+1. **列出正在运行的容器**：
+   ```bash
+   sudo crictl ps
+   ```
+
+2. **列出所有容器**（包括已停止的容器）：
+   ```bash
+   sudo crictl ps -a
+   ```
+
+3. **查看容器详细信息**：
+   ```bash
+   sudo crictl inspect <容器ID>
+   ```
+
+4. **列出所有镜像**：
+   ```bash
+   sudo crictl images
+   ```
+
+5. **查看镜像详细信息**：
+   ```bash
+   sudo crictl inspecti <镜像ID或名称>
+   ```
+
+6. **删除容器**：
+   ```bash
+   sudo crictl rm <容器ID>
+   ```
+
+7. **拉取镜像**：
+   ```bash
+   sudo crictl pull <镜像名称>
+   ```
+
+8. **删除镜像**：
+   ```bash
+   sudo crictl rmi <镜像ID或名称>
+   ```
+
+9. **查看容器日志**：
+   ```bash
+   sudo crictl logs <容器ID>
+   ```
+
+10. **启动容器**：
+    ```bash
+    sudo crictl start <容器ID>
+    ```
+
+11. **停止容器**：
+    ```bash
+    sudo crictl stop <容器ID>
+    ```
+
+12. **运行一个交互式 shell**：
+    ```bash
+    sudo crictl exec -it <容器ID> sh
+    ```
+
 ### k8s常用命令
 
 ```shell
