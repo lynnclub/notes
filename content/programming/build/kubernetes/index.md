@@ -541,24 +541,24 @@ kubectl create namespace my-namespace
 #查看集群的所有资源
 kubectl get all --all-namespaces
 
-kubectl get pods --all-namespaces
-kubectl get pods -n <namespace>
-
 #查看详细信息
 kubectl describe node
 kubectl describe service
 kubectl describe pod <pod-name> -n <namespace>
 
-#查看 pod 的日志
-kubectl logs <pod-name> -n <namespace>
-#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
-kubectl logs <pod-name> -n <namespace> --previous
+kubectl get pods --all-namespaces
+kubectl get pods -n <namespace>
 
 #创建、删除资源
+kubectl delete pod coupon-migrate-pd8r2 -n YOUR_NAMESPACE
 kubectl apply -f <file.yaml>
 kubectl delete -f <file.yaml>
 
 # 执行命令进入到某个 pod 的容器中
 kubectl exec -it <pod-name> -n <namespace> -- /bin/bash
 
+#查看 pod 的日志
+kubectl logs <pod-name> -n <namespace>
+#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
+kubectl logs <pod-name> -n <namespace> --previous
 ```
