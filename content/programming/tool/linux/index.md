@@ -162,7 +162,12 @@ du -ah
 du -h --max-depth=1 ./
 
 # 查看io状态
-iostat -dx 1 5
+iostat -d -m 1 10
+
+#-d 选项表示显示磁盘统计信息。
+#-m 选项表示以 MB 为单位显示。
+#1 表示每隔 1 秒更新一次。
+#10 表示显示 10 次更新。
 
 # 非常强大的Linux性能监控工具，由Nigel Griffiths开发，可以用来收集和显示Linux系统的性能数据，包括CPU、内存、磁盘I/O、网络、文件系统以及进程信息等
 apt install nmon
