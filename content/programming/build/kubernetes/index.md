@@ -175,173 +175,173 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 
 - **用途**：用于声明和管理一组 Pod 的副本。
 - **功能**：支持滚动更新、回滚、扩展和缩减副本数。
-- **示例**：
-  ```yaml
-  apiVersion: apps/v1
-  kind: Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: nginx-deployment
+spec:
+replicas: 3
+selector:
+  matchLabels:
+    app: nginx
+template:
   metadata:
-    name: nginx-deployment
+    labels:
+      app: nginx
   spec:
-    replicas: 3
-    selector:
-      matchLabels:
-        app: nginx
-    template:
-      metadata:
-        labels:
-          app: nginx
-      spec:
-        containers:
-        - name: nginx
-          image: nginx:1.14.2
-          ports:
+    containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
           - containerPort: 80
-  ```
+```
 
 ### 2. **ReplicaSet**
 
 - **用途**：确保指定数量的 Pod 副本始终在运行。
 - **功能**：主要用于 Deployment 内部，直接使用的场景较少。
-- **示例**：
-  ```yaml
-  apiVersion: apps/v1
-  kind: ReplicaSet
-  metadata:
-    name: nginx-replicaset
-  spec:
-    replicas: 3
-    selector:
-      matchLabels:
+
+```yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
         app: nginx
-    template:
-      metadata:
-        labels:
-          app: nginx
-      spec:
-        containers:
+    spec:
+      containers:
         - name: nginx
           image: nginx:1.14.2
           ports:
-          - containerPort: 80
-  ```
+            - containerPort: 80
+```
 
 ### 3. **StatefulSet**
 
 - **用途**：用于管理有状态应用程序，提供稳定的标识、持久存储和有序部署。
 - **功能**：保证 Pod 的顺序启动和停止，持久卷绑定到特定的 Pod。
-- **示例**：
-  ```yaml
-  apiVersion: apps/v1
-  kind: StatefulSet
-  metadata:
-    name: web
-  spec:
-    serviceName: "nginx"
-    replicas: 3
-    selector:
-      matchLabels:
+
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
         app: nginx
-    template:
-      metadata:
-        labels:
-          app: nginx
-      spec:
-        containers:
+    spec:
+      containers:
         - name: nginx
           image: nginx:1.14.2
           ports:
-          - containerPort: 80
-  ```
+            - containerPort: 80
+```
 
 ### 4. **DaemonSet**
 
 - **用途**：在集群的每个节点上运行一个 Pod 的副本。
 - **功能**：确保所有（或特定节点上的）节点都运行一个 Pod 实例，适用于日志、监控等系统服务。
-- **示例**：
-  ```yaml
-  apiVersion: apps/v1
-  kind: DaemonSet
-  metadata:
-    name: fluentd
-  spec:
-    selector:
-      matchLabels:
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+spec:
+  selector:
+    matchLabels:
+      name: fluentd
+  template:
+    metadata:
+      labels:
         name: fluentd
-    template:
-      metadata:
-        labels:
-          name: fluentd
-      spec:
-        containers:
+    spec:
+      containers:
         - name: fluentd
           image: fluentd:v1.2.0
-  ```
+```
 
 ### 5. **Job**
 
 - **用途**：用于一次性任务，即执行完成后终止的任务。
 - **功能**：保证任务的完成，支持并行任务。
-- **示例**：
-  ```yaml
-  apiVersion: batch/v1
-  kind: Job
-  metadata:
-    name: pi
-  spec:
-    template:
-      spec:
-        containers:
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+    spec:
+      containers:
         - name: pi
           image: perl
-          command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
-        restartPolicy: Never
-  ```
+          command: [ "perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)" ]
+      restartPolicy: Never
+```
 
 ### 6. **CronJob**
 
 - **用途**：用于定时任务，类似于 Linux 的 cron 任务。
 - **功能**：按照预定的时间表运行任务。
-- **示例**：
-  ```yaml
-  apiVersion: batch/v1
-  kind: CronJob
-  metadata:
-    name: hello
-  spec:
-    schedule: "*/1 * * * *"
-    jobTemplate:
-      spec:
-        template:
-          spec:
-            containers:
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
             - name: hello
               image: busybox
               args:
-              - /bin/sh
-              - -c
-              - date; echo Hello from the Kubernetes cluster
-            restartPolicy: OnFailure
-  ```
+                - /bin/sh
+                - -c
+                - date; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure
+```
 
 ### 7. **HorizontalPodAutoscaler (HPA)**
 
 - **用途**：根据 CPU 利用率或其他指标自动扩展或缩减 Pod 数量。
 - **功能**：动态调整 Pod 副本数以应对负载变化。
-- **示例**：
-  ```yaml
-  apiVersion: autoscaling/v1
-  kind: HorizontalPodAutoscaler
-  metadata:
-    name: nginx-hpa
-  spec:
-    scaleTargetRef:
-      apiVersion: apps/v1
-      kind: Deployment
-      name: nginx-deployment
-    minReplicas: 1
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 50
-  ```
+
+```yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+```
 
 这些控制器各有用途，选择合适的控制器可以更好地管理和部署你的应用程序。
 
