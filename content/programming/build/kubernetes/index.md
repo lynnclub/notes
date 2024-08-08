@@ -11,15 +11,15 @@ weight: 3
 Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载均衡、服务发现和管理容器化应用程序的开源系统。架构主要包括以下几个组件：
 
 1. **Master 节点（控制平面）**：
-   - **API Server**：处理所有的操作请求并更新etcd中的状态。它是 Kubernetes 集群的入口点。
-   - **Controller Manager**：管理集群中的各种控制器，包括节点控制器、复制控制器、端点控制器和服务账户控制器等，负责确保集群状态与预期状态的一致性。
-   - **Scheduler**：负责将 Pod 分配到合适的工作节点上。
-   - **etcd**：一个高可用的键值存储系统，存储 Kubernetes 集群的所有数据和状态。
+    - **API Server**：处理所有的操作请求并更新etcd中的状态。它是 Kubernetes 集群的入口点。
+    - **Controller Manager**：管理集群中的各种控制器，包括节点控制器、复制控制器、端点控制器和服务账户控制器等，负责确保集群状态与预期状态的一致性。
+    - **Scheduler**：负责将 Pod 分配到合适的工作节点上。
+    - **etcd**：一个高可用的键值存储系统，存储 Kubernetes 集群的所有数据和状态。
 
 2. **Worker 节点（计算节点）**：
-   - **Kubelet**：负责管理节点上的 Pod，确保容器在节点上按预期运行。
-   - **Kube-Proxy**：提供网络代理服务，处理服务的负载均衡和网络流量。
-   - **Container Runtime**：负责运行和管理容器，常见的有 Docker、containerd 等。默认使用containerd。
+    - **Kubelet**：负责管理节点上的 Pod，确保容器在节点上按预期运行。
+    - **Kube-Proxy**：提供网络代理服务，处理服务的负载均衡和网络流量。
+    - **Container Runtime**：负责运行和管理容器，常见的有 Docker、containerd 等。默认使用containerd。
 
 3. **Pod**：Kubernetes 中的基本调度单元，包含一个或多个容器（通常是 Docker 容器），这些容器共享网络和存储。
 
@@ -43,7 +43,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 
 3. **Kube-Proxy**：维护Service网络规则，允许Pod间的通信和与外部网络的通信。
 
-4.  **Cloud Controller Manager**（如果使用云提供商）：与云提供商集成，以管理负载均衡器、存储卷等云资源。
+4. **Cloud Controller Manager**（如果使用云提供商）：与云提供商集成，以管理负载均衡器、存储卷等云资源。
 
 这些核心组件共同工作，以确保Kubernetes集群能够有效地管理和调度容器化应用。
 
@@ -52,31 +52,31 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 除了核心组件之外，Kubernetes 中还有许多重要的组件和工具，它们在不同的场景和需求下发挥着重要作用：
 
 1. **Ingress Controller**：
-   - 用于管理 Ingress 资源，实现 HTTP 和 HTTPS 路由。常见的 Ingress Controller 有 NGINX、Traefik 和 HAProxy。
+    - 用于管理 Ingress 资源，实现 HTTP 和 HTTPS 路由。常见的 Ingress Controller 有 NGINX、Traefik 和 HAProxy。
 
 2. **CoreDNS**：
-   - Kubernetes 集群中的默认 DNS 服务器，负责为服务发现和 DNS 解析提供支持。
+    - Kubernetes 集群中的默认 DNS 服务器，负责为服务发现和 DNS 解析提供支持。
 
 3. **Helm**：
-   - Kubernetes 的包管理工具，用于简化应用程序的部署和管理。Helm 使用“charts”来定义、安装和升级 Kubernetes 应用程序。
+    - Kubernetes 的包管理工具，用于简化应用程序的部署和管理。Helm 使用“charts”来定义、安装和升级 Kubernetes 应用程序。
 
 4. **Prometheus**：
-   - 用于监控和告警的系统，可以与 Kubernetes 集成，以收集集群和应用程序的性能数据。
+    - 用于监控和告警的系统，可以与 Kubernetes 集成，以收集集群和应用程序的性能数据。
 
 5. **Grafana**：
-   - 开源的可视化工具，与 Prometheus 配合使用，提供丰富的监控和可视化能力。
+    - 开源的可视化工具，与 Prometheus 配合使用，提供丰富的监控和可视化能力。
 
 6. **kube-state-metrics**：
-   - 用于暴露 Kubernetes 集群状态指标，供 Prometheus 采集。
+    - 用于暴露 Kubernetes 集群状态指标，供 Prometheus 采集。
 
 7. **Fluentd**：
-   - 日志收集和聚合工具，可以将 Kubernetes 集群中的日志收集并发送到不同的存储后端。
+    - 日志收集和聚合工具，可以将 Kubernetes 集群中的日志收集并发送到不同的存储后端。
 
 8. **Jaeger 或 Zipkin**：
-   - 分布式追踪系统，用于监控和调试微服务架构中的延迟和性能问题。
+    - 分布式追踪系统，用于监控和调试微服务架构中的延迟和性能问题。
 
 9. **Cert-Manager**：
-   - 用于在 Kubernetes 集群中自动化管理 TLS 证书，常用于自动申请和续订 Let’s Encrypt 证书。
+    - 用于在 Kubernetes 集群中自动化管理 TLS 证书，常用于自动申请和续订 Let’s Encrypt 证书。
 
 10. **Kubeflow**：
     - 用于在 Kubernetes 上运行和部署机器学习工作负载的工具包。
@@ -100,31 +100,31 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 除了之前提到的组件和工具，还有一些其他的重要组件和工具，它们在特定的用例中也非常有用：
 
 1. **kubeadm**：
-   - Kubernetes 集群的安装和配置工具，提供简单的命令行接口来引导集群。
+    - Kubernetes 集群的安装和配置工具，提供简单的命令行接口来引导集群。
 
 2. **Minikube**：
-   - 本地运行 Kubernetes 的工具，适用于开发和测试环境。
+    - 本地运行 Kubernetes 的工具，适用于开发和测试环境。
 
 3. **Kind (Kubernetes IN Docker)**：
-   - 在 Docker 容器中运行本地 Kubernetes 集群的工具，常用于测试和 CI/CD 环境。
+    - 在 Docker 容器中运行本地 Kubernetes 集群的工具，常用于测试和 CI/CD 环境。
 
 4. **Calico**：
-   - 一种网络插件，用于提供网络策略和安全性，支持 BGP 等高级网络功能。
+    - 一种网络插件，用于提供网络策略和安全性，支持 BGP 等高级网络功能。
 
 5. **Weave Net**：
-   - 另一种网络插件，提供简单易用的网络配置和管理。
+    - 另一种网络插件，提供简单易用的网络配置和管理。
 
 6. **Cilium**：
-   - 基于 eBPF 的网络插件，提供高级网络安全和监控功能。
+    - 基于 eBPF 的网络插件，提供高级网络安全和监控功能。
 
 7. **Linkerd**：
-   - 轻量级服务网格，用于提供服务间通信的可观察性、安全性和可靠性。
+    - 轻量级服务网格，用于提供服务间通信的可观察性、安全性和可靠性。
 
 8. **Istio**：
-   - 功能丰富的服务网格，提供流量管理、安全性、策略控制和可观察性。
+    - 功能丰富的服务网格，提供流量管理、安全性、策略控制和可观察性。
 
 9. **Keda (Kubernetes Event-driven Autoscaling)**：
-   - 允许基于事件的自动扩展，为应用程序提供基于事件的自动缩放能力。
+    - 允许基于事件的自动扩展，为应用程序提供基于事件的自动缩放能力。
 
 10. **Argo CD**：
     - 声明式的 GitOps 继续交付工具，帮助管理 Kubernetes 应用程序的持续交付。
@@ -172,6 +172,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 在 Kubernetes 中，有几种常用的控制器用于管理和部署容器化应用程序。以下是主要的控制器及其用途：
 
 ### 1. **Deployment**
+
 - **用途**：用于声明和管理一组 Pod 的副本。
 - **功能**：支持滚动更新、回滚、扩展和缩减副本数。
 - **示例**：
@@ -198,6 +199,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
   ```
 
 ### 2. **ReplicaSet**
+
 - **用途**：确保指定数量的 Pod 副本始终在运行。
 - **功能**：主要用于 Deployment 内部，直接使用的场景较少。
 - **示例**：
@@ -224,6 +226,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
   ```
 
 ### 3. **StatefulSet**
+
 - **用途**：用于管理有状态应用程序，提供稳定的标识、持久存储和有序部署。
 - **功能**：保证 Pod 的顺序启动和停止，持久卷绑定到特定的 Pod。
 - **示例**：
@@ -251,6 +254,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
   ```
 
 ### 4. **DaemonSet**
+
 - **用途**：在集群的每个节点上运行一个 Pod 的副本。
 - **功能**：确保所有（或特定节点上的）节点都运行一个 Pod 实例，适用于日志、监控等系统服务。
 - **示例**：
@@ -274,6 +278,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
   ```
 
 ### 5. **Job**
+
 - **用途**：用于一次性任务，即执行完成后终止的任务。
 - **功能**：保证任务的完成，支持并行任务。
 - **示例**：
@@ -293,6 +298,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
   ```
 
 ### 6. **CronJob**
+
 - **用途**：用于定时任务，类似于 Linux 的 cron 任务。
 - **功能**：按照预定的时间表运行任务。
 - **示例**：
@@ -318,6 +324,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
   ```
 
 ### 7. **HorizontalPodAutoscaler (HPA)**
+
 - **用途**：根据 CPU 利用率或其他指标自动扩展或缩减 Pod 数量。
 - **功能**：动态调整 Pod 副本数以应对负载变化。
 - **示例**：
@@ -343,25 +350,26 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 在 Kubernetes 中处理流量的方式主要有以下几种：
 
 1. **Service**：
-   - **ClusterIP**：默认类型，只能在集群内部访问，提供内部服务的负载均衡。
-   - **NodePort**：在每个节点上开放一个端口，允许外部流量访问集群中的服务。
-   - **LoadBalancer**：创建一个外部负载均衡器，允许外部流量通过负载均衡器访问集群中的服务。
-   - **Headless Service**：不分配 ClusterIP，直接将流量发送到后端 Pod，适用于需要直接访问 Pod 的场景，如状态服务。
+    - **ClusterIP**：默认类型，只能在集群内部访问，提供内部服务的负载均衡。
+    - **NodePort**：在每个节点上开放一个端口，允许外部流量访问集群中的服务。
+    - **LoadBalancer**：创建一个外部负载均衡器，允许外部流量通过负载均衡器访问集群中的服务。
+    - **Headless Service**：不分配 ClusterIP，直接将流量发送到后端 Pod，适用于需要直接访问 Pod 的场景，如状态服务。
 
 2. **Ingress**：
-   - Ingress 是一种 API 对象，提供 HTTP 和 HTTPS 路由功能。通过配置 Ingress Controller，可以定义路由规则，将流量从外部路由到集群内部的服务。
+    - Ingress 是一种 API 对象，提供 HTTP 和 HTTPS 路由功能。通过配置 Ingress Controller，可以定义路由规则，将流量从外部路由到集群内部的服务。
 
 3. **NetworkPolicy**：
-   - 用于定义网络访问控制规则，以限制不同 Pod 之间的流量。可以实现细粒度的安全策略，控制哪些 Pod 可以访问其他 Pod。
+    - 用于定义网络访问控制规则，以限制不同 Pod 之间的流量。可以实现细粒度的安全策略，控制哪些 Pod 可以访问其他 Pod。
 
 4. **Service Mesh**：
-   - 通过 Service Mesh（如 Istio、Linkerd）提供更高级的流量管理功能，包括流量路由、负载均衡、故障恢复、监控和安全控制等。
+    - 通过 Service Mesh（如 Istio、Linkerd）提供更高级的流量管理功能，包括流量路由、负载均衡、故障恢复、监控和安全控制等。
 
 5. **Ingress Controller**：
-   - Ingress Controller 是实现 Ingress 资源的控制器。常用的 Ingress Controller 有 NGINX Ingress Controller、Traefik、HAProxy 等。
+    - Ingress Controller 是实现 Ingress 资源的控制器。常用的 Ingress Controller 有 NGINX Ingress
+      Controller、Traefik、HAProxy 等。
 
 6. **Custom Resource Definitions (CRDs)**：
-   - 通过自定义资源定义扩展 Kubernetes 的功能，可以定义自定义的流量管理策略，满足特定需求。
+    - 通过自定义资源定义扩展 Kubernetes 的功能，可以定义自定义的流量管理策略，满足特定需求。
 
 这些方式可以单独使用，也可以结合使用，根据实际需求和场景选择最合适的流量处理方式。
 
@@ -371,7 +379,7 @@ StorageClass、PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是用�
 
 StorageClass（存储类）
 
-StorageClass 用于定义存储的类型和质量，例如性能特征和存储类型（如 SSD、HDD）。它允许用户指定存储的要求和动态提供存储卷。通过不同的 StorageClass，你可以选择不同的存储提供商和配置。
+StorageClass 用于定义存储的类型和质量，例如性能特征和存储类型（如 SSD、HDD）。它允许用户指定存储的要求和动态提供存储卷。通过不同的存储类，你可以选择不同的存储提供商和配置。
 
 storageclass.yaml
 
@@ -390,7 +398,8 @@ volumeBindingMode: WaitForFirstConsumer
 
 PersistentVolume（持久卷）
 
-PersistentVolume 是一个集群范围的资源，表示存储资源的实际实现。它由管理员配置，提供了持久的存储卷。PersistentVolume 是存储的实际实例，可以是 NFS、iSCSI、云存储等。
+PersistentVolume 是一个集群范围的资源，表示存储资源的实际实现。它由管理员配置，提供了持久的存储卷。持久卷是存储的实际实例，可以是
+NFS、iSCSI、云存储等。
 
 pv.yaml
 
@@ -411,7 +420,8 @@ spec:
 
 PersistentVolumeClaim（持久卷声明）
 
-PersistentVolumeClaim 是用户用来请求存储资源的对象。它描述了应用所需的存储容量、访问模式等。Kubernetes 会根据 PersistentVolumeClaim 的要求选择适当的 PersistentVolume（如果有的话），或者根据 StorageClass 动态创建新的 PersistentVolume。
+PersistentVolumeClaim 是用户用来请求存储资源的对象。它描述了应用所需的存储容量、访问模式等。Kubernetes
+会根据持久卷声明的要求选择适当的持久卷，或者根据 StorageClass 动态创建新的 PersistentVolume。
 
 ```yaml
 apiVersion: v1
@@ -437,8 +447,8 @@ sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
 
 https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.29/rpm/aarch64/
 
-kubectl
-kubelet
+kubectl  
+kubelet  
 kubeadm
 
 arm平台最新的1.30版本依赖有问题装不上，只能安装1.29（20240801）。
@@ -528,7 +538,7 @@ http:
   addr: :5000
   secret: registry-auth-secret
   headers:
-    X-Content-Type-Options: [nosniff]
+    X-Content-Type-Options: [ nosniff ]
   auth:
     htpasswd:
       realm: basic-realm
@@ -554,26 +564,26 @@ spec:
         app: registry
     spec:
       containers:
-      - name: registry
-        image: registry:2
-        ports:
-        - containerPort: 5000
-        volumeMounts:
-        - name: registry-storage
-          mountPath: /var/lib/registry
-        - name: registry-auth
-          mountPath: /root/auth
-        - name: registry-config
-          mountPath: /etc/docker/registry
+        - name: registry
+          image: registry:2
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: registry-storage
+              mountPath: /var/lib/registry
+            - name: registry-auth
+              mountPath: /root/auth
+            - name: registry-config
+              mountPath: /etc/docker/registry
       volumes:
-      - name: registry-storage
-        emptyDir: {}
-      - name: registry-auth
-        secret:
-          secretName: registry-auth-secret
-      - name: registry-config
-        configMap:
-          name: registry-config
+        - name: registry-storage
+          emptyDir: { }
+        - name: registry-auth
+          secret:
+            secretName: registry-auth-secret
+        - name: registry-config
+          configMap:
+            name: registry-config
 ```
 
 registry-service.yaml
@@ -588,9 +598,9 @@ spec:
   selector:
     app: registry
   ports:
-  - protocol: TCP
-    port: 5000
-    targetPort: 5000
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
 ```
 
 registry-nodeport.yaml
@@ -606,15 +616,15 @@ spec:
   selector:
     app: registry
   ports:
-  - protocol: TCP
-    port: 5000
-    targetPort: 5000
-    nodePort: 32000
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 32000
 ```
 
 ### containerd常用命令
 
-containerd 是一个容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
+containerd 是一个类似 docker 的容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
 
 ```shell
 #启动和停止
@@ -649,67 +659,45 @@ ctr run --tty --rm alpine:latest mycontainer /bin/sh
 
 ### crictl常用命令
 
-crictl 是 Kubernetes CRI（容器运行时接口）的命令行工具。
+crictl 是 Kubernetes CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
 
-1. **列出正在运行的容器**：
-   ```bash
-   sudo crictl ps
-   ```
+```shell
+#列出正在运行的容器
+sudo crictl ps
 
-2. **列出所有容器**（包括已停止的容器）：
-   ```bash
-   sudo crictl ps -a
-   ```
+#列出所有容器（包括已停止的容器）
+sudo crictl ps -a
 
-3. **查看容器详细信息**：
-   ```bash
-   sudo crictl inspect <容器ID>
-   ```
+#查看容器详细信息
+sudo crictl inspect <容器ID>
 
-4. **列出所有镜像**：
-   ```bash
-   sudo crictl images
-   ```
+#列出所有镜像
+sudo crictl images
 
-5. **查看镜像详细信息**：
-   ```bash
-   sudo crictl inspecti <镜像ID或名称>
-   ```
+#查看镜像详细信息
+sudo crictl inspecti <镜像ID或名称>
 
-6. **删除容器**：
-   ```bash
-   sudo crictl rm <容器ID>
-   ```
+#删除容器
+sudo crictl rm <容器ID>
 
-7. **拉取镜像**：
-   ```bash
-   sudo crictl pull <镜像名称>
-   ```
+#拉取镜像
+sudo crictl pull <镜像名称>
 
-8. **删除镜像**：
-   ```bash
-   sudo crictl rmi <镜像ID或名称>
-   ```
+#删除镜像
+sudo crictl rmi <镜像ID或名称>
 
-9. **查看容器日志**：
-   ```bash
-   sudo crictl logs <容器ID>
-   ```
+#查看容器日志
+sudo crictl logs <容器ID>
 
-10. **启动容器**：
-    ```bash
-    sudo crictl start <容器ID>
-    ```
+#启动容器
+sudo crictl start <容器ID>
 
-11. **停止容器**：
-    ```bash
-    sudo crictl stop <容器ID>
-    ```
+#停止容器
+sudo crictl stop <容器ID>
 
-12. **运行一个交互式 shell**：
-    ```bash
-    sudo crictl exec -it <容器ID> sh
-    ```
+#运行一个交互式 shell
+sudo crictl exec -it <容器ID> sh
+```
 
 ### k8s常用命令
 
