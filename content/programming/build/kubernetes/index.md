@@ -445,7 +445,7 @@ spec:
 
 VERSION="v1.30.1"
 wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-arm64.tar.gz
-sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
+sudo tar zxvf crictl-$VERSION-linux-arm64.tar.gz -C /usr/local/bin
 
 https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.29/rpm/aarch64/
 
@@ -469,6 +469,9 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 #安装网络插件
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+#控制平面节点生成加入命令
+kubeadm token create --print-join-command
 
 #加入工作节点（分布式集群）
 kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-hash <hash>
