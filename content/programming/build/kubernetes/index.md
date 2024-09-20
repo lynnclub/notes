@@ -763,4 +763,7 @@ kubectl exec -it <pod-name> -n <namespace> -- /bin/bash
 kubectl logs <pod-name> -n <namespace>
 #查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
 kubectl logs <pod-name> -n <namespace> --previous
+
+#使用定时任务模版创建任务
+kubectl create job --from=cronjob/test test-1 -n namespace
 ```
