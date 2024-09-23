@@ -7,6 +7,8 @@
 [林恩笔记](https://lynnclub.github.io/notes/) 使用 [hugo](https://gohugo.io) 生成。
 
 ```shell
+brew install hugo
+
 # 创建文件
 hugo new programming/programming/language.md
 
