@@ -455,7 +455,7 @@ kubectl get pv
 kubectl delete pv aws-ebs
 # 查看持久卷声明
 kubectl get pvc
-kubectl delete pv aws-ebs  
+kubectl delete pvc aws-ebs  
 ```
 
 ### 安装k8s
