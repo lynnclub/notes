@@ -389,41 +389,45 @@ storageclass.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: gp3
+  name: aws-ebs
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
-provisioner: kubernetes.io/aws-ebs
+provisioner: ebs.csi.aws.com
 parameters:
-  type: gp3
+  type: aws-ebs
 volumeBindingMode: WaitForFirstConsumer
 ```
+
+ebs.csi.aws.com 是 AWS 提供的更现代的、基于 CSI 的存储解决方案，推荐在新项目中使用，支持更多的功能和未来发展。kubernetes.io/aws-ebs 是传统的 in-tree 驱动，功能有限且逐步被淘汰，建议尽早迁移到 CSI 驱动。
 
 PersistentVolume（持久卷）
 
 PersistentVolume 是一个集群范围的资源，表示存储资源的实际实现。它由管理员配置，提供了持久的存储卷。持久卷是存储的实际实例，可以是
 NFS、iSCSI、云存储等。
 
-pv.yaml
+persistentvolume.yaml
 
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: gp3-pv
+  name: aws-ebs
 spec:
   capacity:
-    storage: 50Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteOnce
-  storageClassName: gp3
+  storageClassName: aws-ebs
   hostPath:
-    path: /mnt/data
+    path: /app/k8s_pv
 ```
 
 PersistentVolumeClaim（持久卷声明）
 
 PersistentVolumeClaim 是用户用来请求存储资源的对象。它描述了应用所需的存储容量、访问模式等。Kubernetes
 会根据持久卷声明的要求选择适当的持久卷，或者根据 StorageClass 动态创建新的 PersistentVolume。
+
+persistentvolumeclaim.yaml
 
 ```yaml
 apiVersion: v1
@@ -436,10 +440,23 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: gp3
+  storageClassName: aws-ebs
 ```
 
 使用这些组件，Kubernetes 可以自动化存储的管理，并根据需求提供适当的存储资源。
+
+```shell
+# 查看存储类
+kubectl get sc
+# 删除存储类
+kubectl delete sc aws-ebs
+# 查看持久卷      
+kubectl get pv
+kubectl delete pv aws-ebs
+# 查看持久卷声明
+kubectl get pvc
+kubectl delete pv aws-ebs  
+```
 
 ### 安装k8s
 
@@ -766,4 +783,10 @@ kubectl logs <pod-name> -n <namespace> --previous
 
 #使用定时任务模版创建任务
 kubectl create job --from=cronjob/test test-1 -n namespace
+
+#flannel网络插件
+kubectl get pod -n kube-flannel -l app=flannel
+kubectl get daemonset -n kube-flannel kube-flannel-ds
+kubectl edit configmap kube-flannel-cfg -n kube-flannel
+kubectl delete pod -l app=flannel -n kube-flannel
 ```
