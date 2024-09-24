@@ -789,4 +789,18 @@ kubectl get pod -n kube-flannel -l app=flannel
 kubectl get daemonset -n kube-flannel kube-flannel-ds
 kubectl edit configmap kube-flannel-cfg -n kube-flannel
 kubectl delete pod -l app=flannel -n kube-flannel
+
+#服务
+kubectl get svc --all-namespaces
+kubectl describe service openldap -n kubesphere-system
+kubectl edit service openldap -n kubesphere-system
+kubectl delete service openldap -n kubesphere-system
+
+#工作负载
+kubectl get deployments --all-namespaces
+kubectl describe deployment nginx-deployment
+kubectl set image deployment/nginx-deployment nginx=nginx:1.19
+kubectl rollout undo deployment/nginx-deployment
+kubectl scale deployment/nginx-deployment --replicas=5
+kubectl delete deployment nginx-deployment
 ```
