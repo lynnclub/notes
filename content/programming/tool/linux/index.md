@@ -90,6 +90,8 @@ ps aux
 ps aux | grep firefox
 # 查看内存排名前10的进程
 ps aux --sort=-%mem | head -n 10
+# 查看CPU排名前10的进程
+ps aux --sort=-%cpu | head -n 10
 
 # 完整信息
 ps -ef
@@ -236,3 +238,135 @@ SIGFPE 在发生致命的算术运算错误时发出，如除零操作、数据�
 SIGKILL 立即结束程序的运行  
 SIGALRM 时钟定时信号  
 SIGBUS SIGSEGV 进程访问非法地址
+
+## time
+
+time 是一个用于测量命令执行时间的简单工具。它可以显示命令的总执行时间、用户 CPU 时间和系统 CPU 时间，帮助开发者优化性能。
+
+```shell
+# -o 选项输出到指定文件
+# -a 选项用于追加而不是覆盖
+time -a -o output.txt ls -l
+# 输出
+real    0m0.005s
+user    0m0.003s
+sys     0m0.002s
+```
+
+real：实际时间（墙钟时间），即命令执行的总耗时。  
+user：用户态 CPU 时间，即 CPU 在用户模式下为该命令消耗的时间。  
+sys：内核态 CPU 时间，即 CPU 在内核模式下为该命令消耗的时间。  
+
+## strace
+
+strace 是一个强大的 Linux 调试工具，用于跟踪用户空间程序与内核交互的系统调用和信号。
+
+```shell
+# 跟踪程序执行
+strace ./your_program
+# 跟踪已有进程
+strace -p <pid>
+# 统计系统调用
+strace -c ./your_program
+# 显示每个系统调用的时间花费
+strace -T ./your_program
+
+# 仅跟踪特定系统调用
+strace -e trace=all,open,read,write,network,file ./your_program
+# 排除特定系统调用
+strace -e '!open,read' ./your_program
+# 跟踪信号
+strace -e signal=all,SIGTERM ./your_program
+# 分析动态链接库
+strace -e trace=process ./your_program
+
+# 输出到文件
+strace -o strace.log ./your_program
+# 默认字符串输出长度为 32，可调整
+strace -s 512 ./your_program
+# 显示相对时间
+strace -r ./your_program
+# 显示详细信息
+strace -v ./your_program
+
+# 跟踪子进程
+strace -f ./your_program
+# 只跟踪主进程
+strace -ff -p <pid>
+# 跟踪特定线程
+strace -p <tid>
+# 仅显示与指定文件路径相关的调用
+strace -P /path/to/file ./your_program
+# 跟踪执行路径
+strace -y ./your_program
+```
+
+strace 只跟踪系统调用，不跟踪用户态任务。
+
+需要系统调用的任务
+
+1. 文件 I/O：如 open、read、write。
+2. 网络通信：如 socket、connect、send、recv。
+3. 内存分配：动态分配大块内存可能调用 mmap 或 brk。
+4. 进程管理：创建、销毁或同步进程时使用 fork、execve 或 waitpid。
+5. 设备访问：如磁盘、打印机、摄像头等外设的操作。
+
+不需要系统调用的任务
+
+1. 纯计算：如数学运算、逻辑判断、数据处理等。
+2. 内存操作：用户态程序直接访问分配的内存（如 malloc 返回的内存块）无需系统调用。
+3. 本地缓存：例如，大多数应用程序会缓存数据以减少对磁盘或网络的访问。
+4. 字符串处理：像 strcpy、strlen 这样的操作完全在用户态执行。
+
+## perf
+
+perf可以用于性能分析、性能调优、代码分析等方面。它可以用于查看 CPU 性能计数器，跟踪系统调用、内核函数执行、上下文切换等。
+
+```shell
+# 查看版本
+perf version
+# 列出所有支持事件
+perf list
+
+# 查看进程性能
+perf top -p <pid>
+# 查看线程性能
+perf top -t <tid>
+# 查看指定线程性能
+perf top -p <pid> -t <tid>
+
+# 分析CPU性能
+perf stat <command>
+# 分析多核性能
+perf stat -a <command>
+# 监控特定事件
+perf stat -e cycles,instructions,cache-misses <command>
+# 查看KVM虚拟化环境的性能
+perf kvm stat <command>
+
+# 跟踪系统调用
+perf trace
+# 跟踪特定的系统调用
+perf trace -e 'syscalls:sys_enter_read'
+# 通过BPF跟踪用户级应用
+perf trace -e 'bpf:perf_event' <command>
+
+# 记录性能数据，默认生成 perf.data 文件
+perf record <command>
+# 生成堆栈调用
+perf record -g <command>
+# 指定时间窗口分析，-F设置采样频率，-a表示全系统采样
+perf record -F 99 -a
+# 生成 Flame Graph
+perf record -g -p <pid>
+perf script > out.perf
+./flamegraph.pl out.perf > flamegraph.svg
+# 查看记录数据
+perf report
+# 查看调用图
+perf report --call-graph
+# 查看指定文件
+perf report -i perf.data
+# 查看文件堆栈信息
+perf script
+```
