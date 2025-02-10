@@ -30,10 +30,12 @@ sudo systemctl restart docker
 docker info
 ```
 
-阿里云个人账户镜像
+DaoCloud镜像源
 ```json
 {
-  "registry-mirrors": ["https://2kqxkocb.mirror.aliyuncs.com"]
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io"
+  ]
 }
 ```
 
