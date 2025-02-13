@@ -218,7 +218,7 @@ jeessy/ddns-go
 docker run -d --restart=always \
 --name grafana \
 -p 3000:3000 \
--v ～/data/grafana:/var/lib/grafana \
+-v ~/data/grafana:/var/lib/grafana \
 grafana/grafana:latest
 
 docker run -d --restart=always \
