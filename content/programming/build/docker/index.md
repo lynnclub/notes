@@ -210,15 +210,15 @@ clickhouse/clickhouse-server:head-alpine
 
 docker run -d --restart=always \
 --name ddns-go \
+--network host \
 -p 9876:9876 \
 -v ~/data/ddns-go:/root \
 jeessy/ddns-go
 
 docker run -d --restart=always \
 --name grafana \
---network host \
 -p 3000:3000 \
--v ~/data/grafana:/var/lib/grafana \
+-v ～/data/grafana:/var/lib/grafana \
 grafana/grafana:latest
 
 docker run -d --restart=always \
