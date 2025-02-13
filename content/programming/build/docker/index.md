@@ -171,18 +171,22 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 docker run -d --restart=always \
 --name mariadb \
 -e MYSQL_ROOT_PASSWORD=123456 \
--v ~/data/mariadb:/var/lib/mysql -p 3306:3306 \
+-v ~/data/mariadb:/var/lib/mysql \
+-p 3306:3306 \
 mariadb:latest
 
 docker run -d --restart=always \
 --name postgres \
--e POSTGRES_PASSWORD= -e POSTGRES_HOST_AUTH_METHOD=trust \
--v ~/data/postgresql:/var/lib/postgresql/data -p 5432:5432 \
+-e POSTGRES_PASSWORD= \
+-e POSTGRES_HOST_AUTH_METHOD=trust \
+-v ~/data/postgresql:/var/lib/postgresql/data \
+-p 5432:5432 \
 postgres:alpine
 
 docker run -d --restart=always \
 --name redis \
--v D:/Data/redis:/data -p 6379:6379 \
+-v D:/Data/redis:/data \
+-p 6379:6379 \
 redis:alpine
 
 docker network create elasticsearch
@@ -190,7 +194,9 @@ docker run -d --restart=always \
 --name elasticsearch \
 --net elasticsearch \
 -v ~/data/elasticsearch:/usr/share/elasticsearch/data \
--p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" \
+-p 9200:9200 \
+-p 9300:9300 \
+-e "discovery.type=single-node" \
 elasticsearch:alpine
 
 docker run -d --restart=always \
@@ -198,16 +204,19 @@ docker run -d --restart=always \
 --ulimit nofile=262144:262144 \
 -v ~/data/clickhouse:/var/lib/clickhouse \
 -v ~/data/clickhouse:/var/log/clickhouse-server \
--p 8123:8123 -p 9000:9000 \
+-p 8123:8123 \
+-p 9000:9000 \
 clickhouse/clickhouse-server:head-alpine
 
 docker run -d --restart=always \
 --name ddns-go \
--p 9876:9876 -v ~/data/ddns-go:/root \
+-p 9876:9876 \
+-v ~/data/ddns-go:/root \
 jeessy/ddns-go
 
 docker run -d --restart=always \
 --name grafana \
+-v ～/data/grafana:/var/lib/grafana \
 -p 3000:3000 \
 grafana/grafana:latest
 
