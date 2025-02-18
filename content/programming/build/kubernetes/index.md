@@ -500,7 +500,7 @@ kubectl apply -f storageclass.yaml
 kubectl patch storageclass gp3 -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
-### 通过helm安装kubesphere3.x（推荐）
+### 通过helm安装kubesphere3.x
 
 kubesphere是Kubernetes的开源平台，提供了完整的云原生应用管理、监控、日志、配置、服务发现、网关、身份认证、访问控制、策略管理、工作负载编排、Helm应用管理、多集群管理、多租户管理、多环境管理、多语言支持等功能。
 
