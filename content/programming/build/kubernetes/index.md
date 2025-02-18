@@ -500,7 +500,7 @@ kubectl apply -f storageclass.yaml
 kubectl patch storageclass gp3 -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
-### 通过helm安装kubesphere（推荐）
+### 通过helm安装kubesphere3.x（推荐）
 
 kubesphere是Kubernetes的开源平台，提供了完整的云原生应用管理、监控、日志、配置、服务发现、网关、身份认证、访问控制、策略管理、工作负载编排、Helm应用管理、多集群管理、多租户管理、多环境管理、多语言支持等功能。
 
@@ -518,6 +518,16 @@ helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --
 # 自定义安装 KubeSphere，修改 values.yaml 文件中的配置
 helm show values kubesphere/ks-installer > values.yaml
 helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --create-namespace -f values.yaml
+```
+
+### 通过helm安装kubesphere4.x（推荐）
+
+```shell
+# 如果没有helm，安装
+brew install helm
+
+# 如果无法访问 charts.kubesphere.io, 可将 charts.kubesphere.io 替换为 charts.kubesphere.com.cn
+helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.3.tgz
 ```
 
 KubeSphere默认端口与密码
