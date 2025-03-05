@@ -279,6 +279,8 @@ strace -e '!open,read' ./your_program
 strace -e signal=all,SIGTERM ./your_program
 # 分析动态链接库
 strace -e trace=process ./your_program
+# 单项记录
+strace -p 24878 -e connect -s 256 -o strace.log
 
 # 输出到文件
 strace -o strace.log ./your_program
