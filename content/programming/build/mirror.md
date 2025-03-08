@@ -34,9 +34,30 @@ DaoCloud镜像源
 ```json
 {
   "registry-mirrors": [
-    "https://docker.m.daocloud.io"
+    "https://docker.m.daocloud.io",
+    "https://doublezonline.cloud"
   ]
 }
+```
+
+### Containerd
+
+/etc/containerd/certs.d/registry.k8s.io/host.toml
+
+```toml
+server = "https://registry.k8s.io"
+
+[host."https://k8s.m.daocloud.io"]
+  capabilities = ["pull", "resolve"]
+```
+
+/etc/containerd/certs.d/docker.io/host.toml
+
+```toml
+server = "https://docker.io"
+
+[host."https://docker.m.daocloud.io"]
+  capabilities = ["pull", "resolve"]
 ```
 
 ### Snap
