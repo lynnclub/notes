@@ -527,7 +527,10 @@ helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --
 brew install helm
 
 # 如果无法访问 charts.kubesphere.io, 可将 charts.kubesphere.io 替换为 charts.kubesphere.com.cn
-helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.3.tgz
+helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.3.tgz --debug --wait
+# 如果访问 Docker Hub 受限，请在命令后添加如下配置，修改默认的镜像拉取地址。
+--set global.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
+--set extension.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
 ```
 
 KubeSphere默认端口与密码

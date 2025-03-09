@@ -17,6 +17,27 @@ weight: 2
 注意：阿里云 ECS 用户，可以将 `https://mirrors.aliyun.com/`
 替换成内网地址 `http://mirrors.cloud.aliyuncs.com/`。
 
+### GitHub
+
+[https://gitclone.com/](https://gitclone.com/)
+
+```shell
+#方法一（替换URL）
+git clone https://gitclone.com/github.com/containerd/containerd.git
+
+#方法二（设置git参数）
+git config --global url."https://gitclone.com/".insteadOf https://
+```
+
+获取全球IP绑定host  
+[https://www.itdog.cn/ping/github.com](https://www.itdog.cn/ping/github.com)  
+[https://www.itdog.cn/ping/raw.githubusercontent.com](https://www.itdog.cn/ping/raw.githubusercontent.com)
+
+```
+20.200.245.247 github.com
+185.199.109.133 raw.githubusercontent.com
+```
+
 ### Docker
 
 [https://www.docker.com](https://www.docker.com/)
@@ -42,6 +63,15 @@ DaoCloud镜像源
 
 ### Containerd
 
+k8s默认使用containerd作为容器。
+
+[https://containerd.io/downloads/](https://containerd.io/downloads/)
+
+```
+wget https://github.com/containerd/containerd/releases/download/v1.7.25/containerd-1.7.25-linux-amd64.tar.gz
+tar xvf containerd-1.7.25-linux-amd64.tar.gz
+```
+
 /etc/containerd/certs.d/registry.k8s.io/host.toml
 
 ```toml
@@ -60,6 +90,24 @@ server = "https://docker.io"
   capabilities = ["pull", "resolve"]
 ```
 
+### Kubernetes
+
+[https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
+
+Debian安装k8s，注意更换版本
+
+```
+apt update && apt install -y apt-transport-https
+
+curl -fsSL https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/deb/Release.key |
+    gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/deb/ /" |
+    tee /etc/apt/sources.list.d/kubernetes.list
+
+apt update
+apt install -y kubelet kubeadm kubectl
+```
+
 ### Snap
 
 Linux 系统通用的应用格式包，Ubuntu 背后的公司 Canonical 主导，支持 Debian、Arch Linux、Fedora、Kaili Linux、openSUSE、Red Hat 等。
@@ -72,11 +120,30 @@ Linux 风格的第三方开源 Windows 包管理工具。
 
 [https://scoop.sh/](https://scoop.sh/)
 
+标准安装（安装到当前用户目录）
+
+```shell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+# 安装系统级软件（需要管理员权限）
+sudo scoop install -g <app>
+```
+
+高级安装
+
 ```shell
 # advanced installation
 irm get.scoop.sh -outfile 'install.ps1'
 # custom directory
-.\install.ps1 -ScoopDir 'D:\Applications\Scoop' -ScoopGlobalDir 'F:\GlobalScoopApps' -NoProxy
+.\install.ps1 -ScoopDir 'D:\ProgramData\Scoop' -ScoopGlobalDir 'D:\GlobalScoopApps' -NoProxy
+```
+
+```shell
+# 更换scoop国内源
+scoop config SCOOP_REPO "https://gitee.com/scoop-installer/scoop"
+# 拉取新库地址
+scoop update
 ```
 
 ### Alpine
