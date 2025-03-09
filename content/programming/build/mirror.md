@@ -29,7 +29,7 @@ git clone https://gitclone.com/github.com/containerd/containerd.git
 git config --global url."https://gitclone.com/".insteadOf https://
 ```
 
-获取全球IP绑定host  
+或者获取全球IP绑定host，建议用日韩的IP  
 [https://www.itdog.cn/ping/github.com](https://www.itdog.cn/ping/github.com)  
 [https://www.itdog.cn/ping/raw.githubusercontent.com](https://www.itdog.cn/ping/raw.githubusercontent.com)
 
