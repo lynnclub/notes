@@ -19,7 +19,16 @@ weight: 2
 
 ### GitHub
 
-[https://gitclone.com/](https://gitclone.com/)
+获取全球IP绑定host，建议用日韩的IP  
+[https://www.itdog.cn/ping/github.com](https://www.itdog.cn/ping/github.com)  
+[https://www.itdog.cn/ping/raw.githubusercontent.com](https://www.itdog.cn/ping/raw.githubusercontent.com)
+
+```
+20.200.245.247 github.com
+185.199.109.133 raw.githubusercontent.com
+```
+
+或者使用 [https://gitclone.com/](https://gitclone.com/)
 
 ```shell
 #方法一（替换URL）
@@ -27,15 +36,6 @@ git clone https://gitclone.com/github.com/containerd/containerd.git
 
 #方法二（设置git参数）
 git config --global url."https://gitclone.com/".insteadOf https://
-```
-
-或者获取全球IP绑定host，建议用日韩的IP  
-[https://www.itdog.cn/ping/github.com](https://www.itdog.cn/ping/github.com)  
-[https://www.itdog.cn/ping/raw.githubusercontent.com](https://www.itdog.cn/ping/raw.githubusercontent.com)
-
-```
-20.200.245.247 github.com
-185.199.109.133 raw.githubusercontent.com
 ```
 
 ### Docker
