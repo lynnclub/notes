@@ -6,7 +6,7 @@ weight: 3
 
 [https://github.com/jeessy2/ddns-go](https://github.com/jeessy2/ddns-go)
 
-建议直接安装在主机上，通过docker安装可能获取不到公网网卡。
+建议直接安装在主机上，通过docker安装可能获取不到公网网卡。ddns只能实现dns动态解析，通常还需要NAT层端口转发，需要内网穿透建议使用cloudflared tunnel。
 
 安装到主机
 
