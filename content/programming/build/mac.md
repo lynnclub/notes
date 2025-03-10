@@ -4,13 +4,14 @@ type: "docs"
 weight: 1
 ---
 
-## 开发环境
+## Mac开发环境
 
-安装 homebrew 请参考 [镜像 HomeBrew 章节](../mirror/#homebrew) 。
+Mac 第三方包管理工具 homebrew 安装请参考文档 [镜像](../mirror/#homebrew)。
 
 ```shell
 # 基础软件
-brew install nginx mariadb redis sqlite frpc
+# 不推荐frpc，建议使用cloudflared tunnel
+brew install nginx mariadb redis sqlite
 
 # go、php、python、nodejs、rust
 brew install golang php python@3 nvm rust
@@ -18,8 +19,9 @@ brew install golang php python@3 nvm rust
 # Java8+tomcat9
 brew install openjdk@8 maven tomcat@9
 
-# Docker、Github Desktop、fig命令行补全、dbeaver-community数据库工具、notion笔记
-brew install --cask docker github fig dbeaver-community mongodb-compass sequel-ace another-redis-desktop-manager pgadmin4 notion
+# Docker、Github Desktop、dbeaver-community数据库工具
+# 不推荐使用fig、sequel-ace、notion
+brew install --cask docker github dbeaver-community mongodb-compass another-redis-desktop-manager pgadmin4
 ```
 
 ## 刻录 Windows 系统盘
@@ -36,3 +38,5 @@ diskutil eraseDisk MS-DOS "WINDOWS10" GPT disk#
 # 打开iso镜像，查看win10卷名，复制到U盘
 cp -rp /Volumes/CES_X64FREV_ZH-CN_DV9/* /Volumes/WINDOWS10/
 ```
+
+UI工具建议使用 [BalenaEtcher](https://etcher.balena.io/)

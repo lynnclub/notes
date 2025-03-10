@@ -110,13 +110,37 @@ apt install -y kubelet kubeadm kubectl
 
 ### Snap
 
-Linux 系统通用的应用格式包，Ubuntu 背后的公司 Canonical 主导，支持 Debian、Arch Linux、Fedora、Kaili Linux、openSUSE、Red Hat 等。
-
 [https://snapcraft.io/](https://snapcraft.io/)
+
+Snap 是由 Canonical（Ubuntu 母公司） 开发的 Linux 应用打包与分发格式，旨在提供跨发行版的应用安装方式，适用于桌面和服务器端应用。Snap 应用使用 Snapd 运行时管理，并从 Snap Store 获取软件，Ubuntu及其衍生版本默认使用。
+
+由于 Canonical 的强力推广，Snap Store 商业软件支持更广泛，尤其是服务器和 IoT 领域，但是较为封闭。开源社区推动的 Flatpak 越来越受欢迎，其去中心化模式（允许第三方存储库）更符合 Linux 的自由精神。
+
+### Flatpak
+
+[https://flatpak.org/](https://flatpak.org/)  
+[https://flathub.org/](https://flathub.org/)
+
+Flatpak 是一种用于 Linux 的软件包管理和应用沙盒化技术，旨在提供跨发行版的应用运行环境，使开发者可以一次打包应用，并在不同的 Linux 发行版上运行，而无需针对每个发行版单独打包。Fedora、EndeavourOS、Linux Mint、elementary OS默认预装。
+
+```shell
+# Debian/Ubuntu
+sudo apt install flatpak
+# Arch Linux
+sudo pacman -S flatpak
+# openSUSE
+sudo zypper install flatpak
+```
+
+### AppImage
+
+[https://appimage.org/](https://appimage.org/)
+
+AppImage 是一种便携式 Linux 应用打包格式，不依赖于特定的发行版或包管理器，类似于 Windows 的 .exe 或 macOS 的 .dmg，用户只需下载 AppImage 文件即可运行软件，无需安装，无官方应用商店。
 
 ### Scoop
 
-Linux 风格的第三方开源 Windows 包管理工具。
+Windows 第三方包管理工具。
 
 [https://scoop.sh/](https://scoop.sh/)
 

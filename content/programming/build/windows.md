@@ -26,9 +26,9 @@ windows 默认没有无线网卡驱动，需要安装驱动。华硕 B650M-PLUS 
 
 ### WSL
 
-通过 WSL(Windows Subsystem for Linux) [适用于 Linux 的 Windows 子系统文档](https://learn.microsoft.com/zh-cn/windows/wsl/install) 安装 Debian。
+通过 WSL(Windows Subsystem for Linux) [适用于 Linux 的 Windows 子系统文档](https://learn.microsoft.com/zh-cn/windows/wsl/install) 安装 Linux。
 
-Ubuntu 不稳定，推荐使用 Debian，稳定、轻量。
+Ubuntu 普通版本不稳定，建议使用LTS版本，或者使用 Debian，稳定、轻量。
 
 ```shell
 wsl --install -d Debian
@@ -42,17 +42,7 @@ Windows subsystem for Android
 
 ### Scoop
 
-Linux 风格的第三方开源 Windows 包管理工具。
-
-[https://scoop.sh/](https://scoop.sh/)
-
-[https://github.com/ScoopInstaller/Scoop](https://github.com/ScoopInstaller/Scoop)
-
-```shell
-# PowerShell(version 5.1 or later)
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
-irm get.scoop.sh | iex
-```
+Windows 第三方包管理工具 scoop 安装请参考 [镜像](../mirror/#scoop)。
 
 ### Winget
 
@@ -60,9 +50,8 @@ irm get.scoop.sh | iex
 
 ## SMB 共享
 
-参考 [https://post.smzdm.com/p/akxwkxqk/](https://post.smzdm.com/p/akxwkxqk/)
 
-SMB 使用 139 或 445 端口
+参考 [https://post.smzdm.com/p/akxwkxqk/](https://post.smzdm.com/p/akxwkxqk/)
 
 ```shell
 # 启用大型MTU以提升大文件的传输速度，并关闭带宽限制
@@ -71,6 +60,8 @@ Set-SmbClientConfiguration -EnableBandwidthThrottling 0 -EnableLargeMtu 1
 netsh int tcp set global autotuninglevel=restricted
 netsh interface tcp set heuristics disabled
 ```
+
+互联网文件共享建议使用webdav。
 
 ## SSH
 
