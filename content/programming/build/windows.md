@@ -50,6 +50,7 @@ Windows 第三方包管理工具 scoop 安装请参考 [镜像](../mirror/#scoop
 
 ## SMB 共享
 
+SMB（Server Message Block）协议主要用于局域网文件共享，它依赖于 TCP 139或445 端口，而大多数 ISP 和防火墙默认会阻止 445 端口的外部访问，以防止安全风险（如 勒索软件、蠕虫攻击）。
 
 参考 [https://post.smzdm.com/p/akxwkxqk/](https://post.smzdm.com/p/akxwkxqk/)
 
