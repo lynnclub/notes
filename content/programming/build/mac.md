@@ -6,7 +6,7 @@ weight: 1
 
 ## Mac开发环境
 
-Mac 第三方包管理工具 homebrew 安装请参考文档 [镜像](../mirror/#homebrew)。
+第三方包管理工具 HomeBrew 安装请参考文档 [镜像](../mirror/#homebrew)。
 
 ```shell
 # 基础软件
