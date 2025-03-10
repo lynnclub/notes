@@ -12,16 +12,27 @@ weight: 3
 
 ```text
 # server
-Host zjk
+Host myserver
 HostName www.server.com
-User root
+User lynn
 IdentityFile ~/.ssh/id_rsa_xxx
+
+# by proxy
+Host server02
+HostName 172.16.12.12
+User lynn
+ProxyJump myjump
 
 # github
 Host github.com
 HostName github.com
 User git
 IdentityFile ~/.ssh/id_rsa_xxx
+```
+
+```shell
+# Mac添加密钥到ssh-agent并存入钥匙串（避免重复输入密码）
+ssh-add --apple-use-keychain ~/.ssh/id_rsa_xxx
 ```
 
 ## 问题
@@ -35,11 +46,14 @@ IdentityFile ~/.ssh/id_rsa_xxx
 ~/.ssh/config
 
 ```text
-Host jumpserver.com
-PubkeyAcceptedKeyTypes +ssh-rsa
+Host myjump
+Port 2022
+HostName jumpserver.com
 HostKeyAlgorithms +ssh-rsa
+PubkeyAcceptedKeyTypes +ssh-rsa
+User test
 ```
 
 临时方案
 
-sftp -P 22 -oHostKeyAlgorithms=+ssh-rsa xxx@jumpserver.com
+sftp -P 2022 -oHostKeyAlgorithms=+ssh-rsa xxx@jumpserver.com

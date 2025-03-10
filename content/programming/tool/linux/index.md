@@ -268,6 +268,7 @@ strace ./your_program
 strace -p <pid>
 # 统计系统调用
 strace -c ./your_program
+strace -c -p <pid>
 # 显示每个系统调用的时间花费
 strace -T ./your_program
 
