@@ -27,6 +27,8 @@ ProxyJump myjump
 Host github.com
 HostName github.com
 User git
+UseKeychain yes
+AddKeysToAgent yes
 IdentityFile ~/.ssh/id_rsa_xxx
 ```
 
