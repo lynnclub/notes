@@ -543,17 +543,9 @@ kubectl delete pvc aws-ebs
 
 ### 安装k8s
 
-VERSION="v1.30.1"
-wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-arm64.tar.gz
-sudo tar zxvf crictl-$VERSION-linux-arm64.tar.gz -C /usr/local/bin
+安装请参考文档 [镜像](../mirror/#kubernetes)。
 
-https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.29/rpm/aarch64/
-
-kubectl  
-kubelet  
-kubeadm
-
-arm平台最新的1.30版本依赖有问题装不上，只能安装1.29（20240801）。
+### 控制节点与工作节点
 
 ```shell
 #初始化控制节点

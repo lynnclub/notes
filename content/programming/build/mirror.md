@@ -98,9 +98,10 @@ Debian安装k8s，注意更换版本
 ```
 apt update && apt install -y apt-transport-https
 
-curl -fsSL https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/deb/Release.key |
+VERSION="v1.31"
+curl -fsSL https://mirrors.aliyun.com/kubernetes-new/core/stable/$VERSION/deb/Release.key |
     gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/deb/ /" |
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirrors.aliyun.com/kubernetes-new/core/stable/$VERSION/deb/ /" |
     tee /etc/apt/sources.list.d/kubernetes.list
 
 apt update
