@@ -76,11 +76,11 @@ USER nonroot
 # 工作目录
 WORKDIR /code/
 
-# PHP-FPM
-EXPOSE 9000
-
 #composer install
 #supervisord -c /etc/supervisord.conf -n
+
+# PHP-FPM
+EXPOSE 9000
 
 ENTRYPOINT php-fpm7 --nodaemonize
 ```
