@@ -288,29 +288,34 @@ npm get registry
 
 [https://www.php.net](https://www.php.net/)
 
-[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew) 安装多版本报错，不推荐
-
-PHP 多版本，homebrew 等包管理器会升级到最新版本，phpbrew 报错，最大的问题还是装扩展很麻烦，建议使用 alpine 编写 Dockerfile 构建镜像，参考实例 [Docker php](./docker_php)。
+homebrew 等包管理器会升级到最新版本，建议使用 alpine 编写 Dockerfile 构建镜像，参考实例 [Docker php](./docker_php)。
 
 ```shell
 # 安装PHP
 brew install php
 apt install php
 
-# 第三方库
+# brew第三方库
 brew tap shivammathur/php
 brew install shivammathur/php/php@7.4
 brew tap shivammathur/extensions
 brew install shivammathur/extensions/redis@7.4
 
+# debian/ubuntu第三方库
+sudo add-apt-repository ppa:ondrej/php
+sudo apt update
+sudo apt install php7.4
+sudo apt install php7.4-redis
+
 # 安装php版本管理工具
 # 通用方式
-curl -L -O https://github.com/phpbrew/phpbrew/releases/latest/download/phpbrew.phar
-chmod +x phpbrew.phar
-sudo mv phpbrew.phar /usr/local/bin/phpbrew
+# curl -L https://github.com/phpbrew/phpbrew/releases/latest/download/phpbrew.phar -O phpbrew.phar && chmod +x phpbrew.phar
+# sudo mv phpbrew.phar /usr/local/bin/phpbrew
 # MacOS
-brew install phpbrew
+# brew install phpbrew
 ```
+
+[https://github.com/phpbrew/phpbrew](https://github.com/phpbrew/phpbrew) 安装多版本容易报错，不推荐使用。
 
 ### PHP Composer
 
@@ -320,8 +325,9 @@ brew install phpbrew
 
 ```shell
 # 下载composer命令
-curl -L -O https://mirrors.aliyun.com/composer/composer.phar
-chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
+sudo wget https://getcomposer.org/composer-stable.phar -O /usr/local/bin/composer && sudo chmod +x /usr/local/bin/composer
+# 或者
+sudo curl -sS https://mirrors.aliyun.com/composer/composer.phar -o /usr/local/bin/composer && sudo chmod +x /usr/local/bin/composer
 
 # 阿里云
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
