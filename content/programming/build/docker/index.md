@@ -85,7 +85,7 @@ docker update --restart=no redis
 
 scratch：空镜像。  
 busybox：最小 linux，只有 1M，支持几百个常用命令，没有包管理器。  
-alpine：基于 busybox，只有 5M，有包管理器 apk。alpine 没有/bin/bash，是/bin/sh。
+alpine：基于 busybox，只有 5M，有包管理器 apk，shell是/bin/sh。
 
 ### 私有仓库
 
@@ -168,6 +168,8 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 ## 常用容器
 
 ```shell
+docker run -d --name alpine3.15 alpine:3.15 tail -f /dev/null
+
 docker run -d --restart=always \
 --name mariadb \
 -e MYSQL_ROOT_PASSWORD=123456 \
