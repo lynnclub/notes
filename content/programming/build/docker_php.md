@@ -30,8 +30,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 # timezone、crontab、supervisor、php
 RUN apk add --no-cache \
     tzdata \
-    dcron \
-    supervisor \
+#    dcron \
+#    supervisor \
     php7 \
     php7-fpm \
     php7-imap \
@@ -53,11 +53,11 @@ RUN apk add --no-cache \
     php7-bcmath \
     php7-pdo_mysql \
     php7-mongodb \
+    php7-pecl-redis \
+    php7-pecl-rdkafka \
     php7-curl \
     php7-iconv \
-    php7-gd \
-    php7-pecl-redis \
-    php7-pecl-rdkafka
+    php7-gd
 
 # composer
 #RUN wget https://getcomposer.org/composer-stable.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
