@@ -14,7 +14,7 @@ weight: 2
 
 阿里云镜像，全国可用 [https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
 
-注意：阿里云 ECS 用户，可以使用内网地址 `http://mirrors.cloud.aliyuncs.com/`。
+注意：阿里云 ECS 用户，可以使用内网地址 `http://mirrors.cloud.aliyuncs.com/`。阿里云国内构建节点位于北京。
 
 ### GitHub
 
