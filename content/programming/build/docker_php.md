@@ -74,14 +74,14 @@ RUN curl -L -O https://mirrors.aliyun.com/composer/composer.phar
 RUN chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
-#composer install
-#supervisord -c /etc/supervisord.conf -n
-
 # PHP-FPM
 EXPOSE 9000
 
 # 工作目录
 WORKDIR /code/
+
+#composer install
+#supervisord -c /etc/supervisord.conf -n
 
 ENTRYPOINT php-fpm7 --nodaemonize
 ```
