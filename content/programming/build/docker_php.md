@@ -7,7 +7,8 @@ weight: 2
 ```shell
 # docker build -t register.xxx.com/my/alpine:php7.2 -f ./Dockerfile .
 # docker build -t register.xxx.com/my/alpine:php7.4 -f ./Dockerfile .
-# docker push register.xxx.com/my/alpine:php7.4
+# docker buildx build --platform linux/amd64,linux/arm64 -t register.xxx.com/my/alpine:php7.4 .
+# docker push register.xxx.com/cp/alpine:php7.4
 
 # php:7.x-fpm-alpine安装扩展不方便不建议使用
 # alpine:3.9 php7(7.2.33)
