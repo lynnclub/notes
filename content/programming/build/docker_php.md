@@ -65,8 +65,8 @@ RUN apk add --no-cache \
     php7-soap
 
 # composer
-#RUN wget https://getcomposer.org/composer-stable.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
-RUN wget https://mirrors.aliyun.com/composer/composer.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
+#RUN wget --secure-protocol=TLSv1_2 --max-redirect=0 https://getcomposer.org/composer-stable.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
+RUN wget --secure-protocol=TLSv1_2 --max-redirect=0 https://mirrors.aliyun.com/composer/composer.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # 创建用户
