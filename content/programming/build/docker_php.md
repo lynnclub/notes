@@ -59,7 +59,10 @@ RUN apk add --no-cache \
     php7-pecl-rdkafka \
     php7-curl \
     php7-iconv \
-    php7-gd
+    php7-gd \
+    php7-gmp \
+    php7-intl \
+    php7-soap
 
 # composer
 #RUN wget https://getcomposer.org/composer-stable.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
