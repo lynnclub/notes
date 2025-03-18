@@ -64,10 +64,10 @@ RUN apk add --no-cache \
 RUN wget https://mirrors.aliyun.com/composer/composer.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
-# 用户
-USER nonroot
 # 创建用户
-#RUN addgroup git && adduser -G git -D git
+#RUN addgroup nonroot && adduser -G nonroot -D nonroot
+# 切换用户
+#USER nobody
 # 或者使用宿主机用户
 #ARG uid=1000
 #ARG gid=1000
