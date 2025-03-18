@@ -284,7 +284,7 @@ registry=https://npmreg.proxy.ustclug.org/
 npm get registry
 ```
 
-### PHP（phpbrew）
+### PHP
 
 [https://www.php.net](https://www.php.net/)
 
