@@ -7,6 +7,7 @@ weight: 2
 ```shell
 # docker build -t register.xxx.com/my/alpine:php7.2 -f ./Dockerfile .
 # docker build -t register.xxx.com/my/alpine:php7.4 -f ./Dockerfile .
+# docker push register.xxx.com/my/alpine:php7.4
 
 # php:7.x-fpm-alpine安装扩展不方便不建议使用
 # alpine:3.9 php7(7.2.33)
@@ -16,15 +17,6 @@ FROM alpine:3.15
 
 # 时区
 ENV TZ=Asia/Shanghai
-
-# 用户
-USER nonroot
-# 创建用户
-#RUN addgroup git && adduser -G git -D git
-# 或者使用宿主机用户
-#ARG uid=1000
-#ARG gid=1000
-#RUN addgroup -g ${gid} test && adduser -u ${uid} -G test -D test
 
 # 阿里云镜像（全国推荐）
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -68,17 +60,24 @@ RUN apk add --no-cache \
     php7-pecl-rdkafka
 
 # composer
-#RUN curl -L -O https://getcomposer.org/composer-stable.phar
-#RUN chmod +x composer-stable.phar && mv composer-stable.phar /usr/local/bin/composer
-RUN curl -L -O https://mirrors.aliyun.com/composer/composer.phar
-RUN chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
+#RUN wget https://getcomposer.org/composer-stable.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
+RUN wget https://mirrors.aliyun.com/composer/composer.phar -O /usr/local/bin/composer && chmod +x /usr/local/bin/composer
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
-# PHP-FPM
-EXPOSE 9000
+# 用户
+USER nonroot
+# 创建用户
+#RUN addgroup git && adduser -G git -D git
+# 或者使用宿主机用户
+#ARG uid=1000
+#ARG gid=1000
+#RUN addgroup -g ${gid} test && adduser -u ${uid} -G test -D test
 
 # 工作目录
 WORKDIR /code/
+
+# PHP-FPM
+EXPOSE 9000
 
 #composer install
 #supervisord -c /etc/supervisord.conf -n
