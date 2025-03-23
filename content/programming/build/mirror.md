@@ -4,7 +4,7 @@ type: "docs"
 weight: 2
 ---
 
-### 主要镜像源
+### 国内镜像源
 
 南科大，北清华，遇事不决阿里云。
 
@@ -15,6 +15,11 @@ weight: 2
 阿里云镜像，全国可用 [https://developer.aliyun.com/mirror/](https://developer.aliyun.com/mirror/)
 
 注意：阿里云 ECS 用户，可以使用内网地址 `http://mirrors.cloud.aliyuncs.com/`。阿里云国内构建节点位于北京。
+
+此外还有：  
+[https://mirrors.163.com/](https://mirrors.163.com/)  
+[https://mirrors.tencent.com/](https://mirrors.tencent.com/)  
+[https://mirrors.huaweicloud.com/](https://mirrors.huaweicloud.com/)  
 
 ### GitHub
 
