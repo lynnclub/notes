@@ -98,7 +98,7 @@ server = "https://docker.io"
 
 [https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
 
-Debian安装k8s，注意更换版本
+Debian/Ubuntu安装k8s，注意更换版本
 
 ```
 apt update && apt install -y apt-transport-https
@@ -111,6 +111,23 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirro
 
 apt update
 apt install -y kubelet kubeadm kubectl
+```
+
+CentOS/RHEL/Fedora
+
+```
+cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.28/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.28/rpm/repodata/repomd.xml.key
+EOF
+
+setenforce 0
+yum install -y kubelet kubeadm kubectl
+systemctl enable kubelet && systemctl start kubelet
 ```
 
 ### Snap
