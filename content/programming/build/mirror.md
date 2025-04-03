@@ -96,6 +96,8 @@ server = "https://docker.io"
 
 ### Kubernetes
 
+[https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+
 [https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
 
 Debian/Ubuntu安装k8s，注意更换版本
