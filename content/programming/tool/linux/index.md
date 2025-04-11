@@ -302,6 +302,9 @@ strace -p <tid>
 strace -P /path/to/file ./your_program
 # 跟踪执行路径
 strace -y ./your_program
+
+# 输出进程明细到文件
+sudo strace -f -T -o output.txt -p 15527
 ```
 
 strace 只跟踪系统调用，不跟踪用户态任务。
