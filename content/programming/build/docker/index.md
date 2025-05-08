@@ -102,6 +102,12 @@ docker tag [ImageId] registry.cn-shanghai.aliyuncs.com/lynnclub/box:latest
 docker build -t registry.cn-shanghai.aliyuncs.com/lynnclub/box:latest .
 # 推送
 docker push registry.cn-shanghai.aliyuncs.com/lynnclub/box:latest
+
+# 构建多平台镜像
+docker buildx create --use
+docker buildx build --platform linux/amd64,linux/arm64 -t registry.cn-shanghai.aliyuncs.com/lynnclub/box:latest --push .
+# 绕过push强制https限制
+docker buildx build --platform linux/amd64,linux/arm64 -t 10.0.1.100:29091/lynnclub/box:latest --output type=registry,registry.insecure=true .
 ```
 
 ## Docker Desktop
