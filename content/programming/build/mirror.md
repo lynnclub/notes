@@ -359,16 +359,29 @@ composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 composer config -g --unset repos.packagist
 ```
 
-### Python pip
+### Python
 
 [https://www.python.org](https://www.python.org/)
+
+推荐使用pyenv控制版本。
+
+```shell
+# Linux/Unix
+curl -fsSL https://pyenv.run | bash
+# Mac
+brew install pyenv
+```
+
+### Python pip
+
+[https://pypi.org/](https://pypi.org/)
 
 > Python 库的官方仓库 pypi 允许开发者自由上传软件包，这会导致某些攻击者利用这点构造恶意包进行供应链攻击，在用户安装包或者引入包时触发恶意行为。目前国内镜像源与官方镜像源往往并不是完全一致，国内源普遍采用的是增量更新机制，也就是官方删除的恶意包国内不会同步删除。而这一部分恶意包可能会在很长一段时间内对国内用户造成影响。
 
 阿里云非增量更新，推荐使用。
 
 ```shell
-#阿里云
+# 阿里云
 pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
 # 临时使用
