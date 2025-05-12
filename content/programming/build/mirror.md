@@ -370,6 +370,17 @@ composer config -g --unset repos.packagist
 curl -fsSL https://pyenv.run | bash
 # Mac
 brew install pyenv
+
+# 安装、卸载
+pyenv install --list
+pyenv install 3.12
+pyenv uninstall 3.10.13
+# 全局默认版本
+pyenv global 3.7.17
+# 当前会话版本
+pyenv shell 3.12.10
+# 设置项目目录局部版本（在目录下创建 .python-version）
+pyenv local 3.12.10
 ```
 
 ### Python pip
