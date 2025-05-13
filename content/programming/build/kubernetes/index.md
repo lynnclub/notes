@@ -4,7 +4,7 @@ type: "docs"
 weight: 3
 ---
 
-### 架构
+## 架构
 
 ![k8s](k8s.png)
 
@@ -37,7 +37,7 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 
 9. **Ingress**：管理外部访问 Kubernetes 集群中服务的策略，通常与负载均衡器结合使用。
 
-#### 系統 Pod
+## 系統 Pod
 
 Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**工作节点（Worker Node）**上会自动运行一些关键的系统容器（通常称为 **系统 Pod**，而非独立容器），这些容器支撑着 Kubernetes 的核心功能。以下是典型的初始容器及其作用：
 
@@ -121,7 +121,7 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 ---
 
-#### 其它核心组件
+### 其它核心组件
 
 1. **Kubelet**：运行在每个节点上的代理，确保容器按Pod的定义运行。
 
@@ -135,7 +135,7 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 这些核心组件共同工作，以确保Kubernetes集群能够有效地管理和调度容器化应用。
 
-#### 重要组件
+### 重要组件
 
 除了核心组件之外，Kubernetes 中还有许多重要的组件和工具，它们在不同的场景和需求下发挥着重要作用：
 
@@ -183,7 +183,7 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 这些组件和工具在不同的应用场景下发挥着重要作用，可以极大地增强 Kubernetes 的功能和用户体验。
 
-#### 其它组件
+### 其它组件
 
 除了之前提到的组件和工具，还有一些其他的重要组件和工具，它们在特定的用例中也非常有用：
 
@@ -237,7 +237,7 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 这些组件和工具可以根据具体需求选择和使用，进一步增强 Kubernetes 的功能和管理能力。
 
-#### 推荐容量
+### 推荐容量
 
 根据 Kubernetes 官方文档，集群的推荐容量上限：
 
@@ -252,7 +252,7 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 这些限制是为了确保集群的稳定性和可扩展性，同时这些数字是经过严格测试和验证的，适用于大多数生产环境。
 
-### 控制器
+## 控制器
 
 在 Kubernetes 中，有几种常用的控制器用于管理和部署容器化应用程序。以下是主要的控制器及其用途：
 
@@ -430,7 +430,7 @@ spec:
 
 这些控制器各有用途，选择合适的控制器可以更好地管理和部署你的应用程序。
 
-### 流量
+## 流量
 
 在 Kubernetes 中处理流量的方式主要有以下几种：
 
@@ -458,7 +458,28 @@ spec:
 
 这些方式可以单独使用，也可以结合使用，根据实际需求和场景选择最合适的流量处理方式。
 
-### 存储
+### API入口
+
+1. Ingress Controller：最常用的解决方案
+   - Nginx Ingress Controller
+   - Traefik
+   - HAProxy
+   - Kong
+
+2. Service Mesh：
+   - Istio
+   - Linkerd
+
+3. API Gateway：
+   - Kong
+   - Ambassador
+   - Gloo
+
+4. Gateway API：Kubernetes新一代的入口资源，比Ingress更强大
+
+Ingress Controller是最推荐的方案，它通过主机名和路径规则将流量转发到不同的服务，支持多域名配置，还能集成SSL/TLS证书自动管理。
+
+## 存储
 
 StorageClass、PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是用于管理存储资源的关键概念。
 
@@ -554,7 +575,7 @@ kubectl get pvc
 kubectl delete pvc aws-ebs  
 ```
 
-### 安装kubernetes
+## 安装kubernetes
 
 安装请参考文档 [镜像](../mirror/#kubernetes)。
 
@@ -633,18 +654,6 @@ helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --
 # 自定义安装 KubeSphere，修改 values.yaml 文件中的配置
 helm show values kubesphere/ks-installer > values.yaml
 helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --create-namespace -f values.yaml
-```
-
-### 安装kubesphere3.x
-
-```shell
-#安装KubeSphere
-kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/kubesphere-installer.yaml
-kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/cluster-configuration.yaml
-
-#删除KubeSphere
-kubectl delete -f https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/kubesphere-installer.yaml
-kubectl delete -f https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/cluster-configuration.yaml
 ```
 
 ### 安装镜像仓库
@@ -773,7 +782,7 @@ spec:
       nodePort: 32000
 ```
 
-### containerd常用命令
+## containerd常用命令
 
 containerd 是一个类似 docker 的容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
 
@@ -808,7 +817,7 @@ ctr run <options> <image> <container-id> <command>
 ctr run --tty --rm alpine:latest mycontainer /bin/sh
 ```
 
-### crictl常用命令
+## crictl常用命令
 
 crictl 是 Kubernetes CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
 
@@ -850,7 +859,7 @@ sudo crictl stop <容器ID>
 sudo crictl exec -it <容器ID> sh
 ```
 
-### k8s常用命令
+## k8s常用命令
 
 ```shell
 #列出所有支持的 API 资源
