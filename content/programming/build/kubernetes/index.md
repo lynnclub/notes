@@ -479,6 +479,17 @@ spec:
 
 Ingress Controller是最推荐的方案，它通过主机名和路径规则将流量转发到不同的服务，支持多域名配置，还能集成SSL/TLS证书自动管理。
 
+```
+# 安装ingress-nginx
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --create-namespace \
+  --version 4.2.5
+# 监听宿主机端口，ingress默认运行在隔离环境内，需要手动绑定
+# 在spec.template.spec下添加hostNetwork: true
+kubectl edit deployment ingress-nginx-controller -n ingress-nginx
+```
+
 ## 存储
 
 StorageClass、PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是用于管理存储资源的关键概念。
