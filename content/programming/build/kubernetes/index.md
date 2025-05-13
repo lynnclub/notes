@@ -589,27 +589,9 @@ kubectl apply -f storageclass.yaml
 kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
-### 通过helm安装kubesphere3.x
+### 通过helm安装kubesphere4.x（推荐）
 
 kubesphere是Kubernetes的开源平台，提供了完整的云原生应用管理、监控、日志、配置、服务发现、网关、身份认证、访问控制、策略管理、工作负载编排、Helm应用管理、多集群管理、多租户管理、多环境管理、多语言支持等功能。
-
-```shell
-# 如果没有helm，安装
-brew install helm
-
-# 添加 KubeSphere 的 Helm 仓库
-helm repo add kubesphere https://charts.kubesphere.io/main
-helm repo update
-
-# 安装 KubeSphere
-helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --create-namespace
-
-# 自定义安装 KubeSphere，修改 values.yaml 文件中的配置
-helm show values kubesphere/ks-installer > values.yaml
-helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --create-namespace -f values.yaml
-```
-
-### 通过helm安装kubesphere4.x（推荐）
 
 [https://helm.sh/zh/docs/intro/install/](https://helm.sh/zh/docs/intro/install/)
 
@@ -629,7 +611,25 @@ KubeSphere默认端口与密码
 http://ip:30880  
 admin/P@88w0rd
 
-### 安装kubesphere
+### 通过helm安装kubesphere3.x
+
+```shell
+# 如果没有helm，安装
+brew install helm
+
+# 添加 KubeSphere 的 Helm 仓库
+helm repo add kubesphere https://charts.kubesphere.io/main
+helm repo update
+
+# 安装 KubeSphere
+helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --create-namespace
+
+# 自定义安装 KubeSphere，修改 values.yaml 文件中的配置
+helm show values kubesphere/ks-installer > values.yaml
+helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --create-namespace -f values.yaml
+```
+
+### 安装kubesphere3.x
 
 ```shell
 #安装KubeSphere
@@ -640,11 +640,6 @@ kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3
 kubectl delete -f https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/kubesphere-installer.yaml
 kubectl delete -f https://github.com/kubesphere/ks-installer/releases/download/v3.4.0/cluster-configuration.yaml
 ```
-
-KubeSphere默认端口与密码
-
-http://ip:30880  
-admin/P@88w0rd
 
 ### 安装镜像仓库
 
