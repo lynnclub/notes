@@ -503,9 +503,12 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: hostpath
+  labels:
+    storage.kubesphere.io/storagetype: FileStorage
   annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
+    storageclass.kubernetes.io/is-default-class: 'true'
 provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
 ```
 
