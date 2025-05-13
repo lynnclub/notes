@@ -540,6 +540,28 @@ persistentvolume.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  name: host
+  finalizers:
+    - kubernetes.io/pv-protection
+spec:
+  capacity:
+    storage: 50Gi
+  hostPath:
+    path: /app/k8s
+    type: ''
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath
+  volumeMode: Filesystem
+```
+
+aws的ebs磁盘
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
   name: aws-ebs
 spec:
   capacity:
