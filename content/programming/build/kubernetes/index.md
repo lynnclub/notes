@@ -586,7 +586,7 @@ kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-
 #设置存储（配置文件见 存储 章节）
 kubectl apply -f storageclass.yaml
 #设置默认存储
-kubectl patch storageclass gp3 -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
 ### 通过helm安装kubesphere3.x
@@ -611,12 +611,14 @@ helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --
 
 ### 通过helm安装kubesphere4.x（推荐）
 
+[https://helm.sh/zh/docs/intro/install/](https://helm.sh/zh/docs/intro/install/)
+
 ```shell
 # 如果没有helm，安装
 brew install helm
 
 # 如果无法访问 charts.kubesphere.io, 可将 charts.kubesphere.io 替换为 charts.kubesphere.com.cn
-helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.3.tgz --debug --wait
+helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.4.tgz --debug --wait
 # 如果访问 Docker Hub 受限，请在命令后添加如下配置，修改默认的镜像拉取地址。
 --set global.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
 --set extension.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
