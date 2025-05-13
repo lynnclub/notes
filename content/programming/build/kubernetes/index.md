@@ -472,6 +472,19 @@ storageclass.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
+  name: hostpath
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+```
+
+aws的ebs磁盘
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
   name: aws-ebs
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
@@ -551,13 +564,13 @@ kubectl delete pvc aws-ebs
 #初始化控制节点
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
-#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
-
 #配置文件
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 #安装网络插件calico
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml

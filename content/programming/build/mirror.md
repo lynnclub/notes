@@ -74,6 +74,14 @@ k8s默认使用containerd作为容器。
 ```
 wget https://github.com/containerd/containerd/releases/download/v1.7.25/containerd-1.7.25-linux-amd64.tar.gz
 tar xvf containerd-1.7.25-linux-amd64.tar.gz
+
+# 开机自启与启动
+sudo systemctl enable containerd && systemctl start containerd
+```
+
+用于k8s需要开启cri，/etc/containerd/config.toml 
+```yaml
+#disabled_plugins = ["cri"]
 ```
 
 /etc/containerd/certs.d/registry.k8s.io/host.toml
@@ -121,10 +129,10 @@ CentOS/RHEL/Fedora
 cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.28/rpm/
+baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/rpm/
 enabled=1
 gpgcheck=1
-gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.28/rpm/repodata/repomd.xml.key
+gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/rpm/repodata/repomd.xml.key
 EOF
 
 setenforce 0
