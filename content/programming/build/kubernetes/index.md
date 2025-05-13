@@ -554,7 +554,7 @@ kubectl get pvc
 kubectl delete pvc aws-ebs  
 ```
 
-### 安装k8s
+### 安装kubernetes
 
 安装请参考文档 [镜像](../mirror/#kubernetes)。
 
@@ -587,6 +587,9 @@ kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-
 kubectl apply -f storageclass.yaml
 #设置默认存储
 kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+
+# 重置，危险！
+sudo kubeadm reset -f
 ```
 
 ### 通过helm安装kubesphere4.x（推荐）
@@ -604,6 +607,9 @@ helm upgrade --install -n kubesphere-system --create-namespace ks-core https://c
 # 如果访问 Docker Hub 受限，请在命令后添加如下配置，修改默认的镜像拉取地址。
 --set global.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
 --set extension.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
+
+# 卸载，危险！
+helm -n kubesphere-system uninstall ks-core
 ```
 
 KubeSphere默认端口与密码
