@@ -12,101 +12,101 @@ Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载�
 
 架构主要包括以下几个组件：
 
-1. **Master 节点（控制平面）**：
-    - **API Server**：处理所有的操作请求并更新etcd中的状态。它是 Kubernetes 集群的入口点。
-    - **Controller Manager**：管理集群中的各种控制器，包括节点控制器、复制控制器、端点控制器和服务账户控制器等，负责确保集群状态与预期状态的一致性。
-    - **Scheduler**：负责将 Pod 分配到合适的工作节点上。
-    - **etcd**：一个高可用的键值存储系统，存储 Kubernetes 集群的所有数据和状态。
+1. Control Plane（控制平面）：
+    - API Server：处理所有的操作请求并更新etcd中的状态。它是 k8s 集群的入口点。
+    - Controller Manager：管理集群中的各种控制器，包括节点控制器、复制控制器、端点控制器和服务账户控制器等，负责确保集群状态与预期状态的一致性。
+    - Scheduler：负责将 Pod 分配到合适的工作节点上。
+    - etcd：一个高可用的键值存储系统，存储 k8s 集群的所有数据和状态。
 
-2. **Worker 节点（计算节点）**：
-    - **Kubelet**：负责管理节点上的 Pod，确保容器在节点上按预期运行。
-    - **Kube-Proxy**：提供网络代理服务，处理服务的负载均衡和网络流量。
-    - **Container Runtime**：负责运行和管理容器，常见的有 Docker、containerd 等。默认使用containerd。
+2. Worker Node（计算节点）：
+    - Kubelet：负责管理节点上的 Pod，确保容器在节点上按预期运行。
+    - Kube-Proxy：提供网络代理服务，处理服务的负载均衡和网络流量。
+    - Container Runtime：负责运行和管理容器，常见的有 Docker、containerd 等。默认使用containerd。
 
-3. **Pod**：Kubernetes 中的基本调度单元，包含一个或多个容器（通常是 Docker 容器），这些容器共享网络和存储。
+3. Pod：k8s 中的基本调度单元，包含一个或多个容器（通常是 Docker 容器），这些容器共享网络和存储。
 
-4. **Service**：定义了一组 Pod 的访问策略，提供负载均衡和服务发现。
+4. Service：定义了一组 Pod 的访问策略，提供负载均衡和服务发现。
 
-5. **Deployment**：用于管理 Pod 的副本和更新策略，确保应用程序的高可用性和可扩展性。
+5. Deployment：用于管理 Pod 的副本和更新策略，确保应用程序的高可用性和可扩展性。
 
-6. **Namespace**：用于将集群中的资源划分为多个虚拟集群，实现资源的隔离。
+6. Namespace：用于将集群中的资源划分为多个虚拟集群，实现资源的隔离。
 
-7. **ConfigMap 和 Secret**：用于存储和管理应用程序配置和敏感数据。
+7. ConfigMap 和 Secret：用于存储和管理应用程序配置和敏感数据。
 
-8. **Volume**：提供持久化存储解决方案，确保数据在容器重启或迁移时不丢失。
+8. Volume：提供持久化存储解决方案，确保数据在容器重启或迁移时不丢失。
 
-9. **Ingress**：管理外部访问 Kubernetes 集群中服务的策略，通常与负载均衡器结合使用。
+9. Ingress：管理外部访问 k8s 集群中服务的策略，通常与负载均衡器结合使用。
 
 ## 系統 Pod
 
-Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**工作节点（Worker Node）**上会自动运行一些关键的系统容器（通常称为 **系统 Pod**，而非独立容器），这些容器支撑着 Kubernetes 的核心功能。以下是典型的初始容器及其作用：
+k8s 集群初始化后，控制平面（Control Plane）和工作节点（Worker Node）上会自动运行一些关键的系统容器（通常称为 系统 Pod，而非独立容器），这些容器支撑着 k8s 的核心功能。以下是典型的初始容器及其作用：
 
-### **1. 控制平面（Control Plane）的组件**
+### 1. 控制平面（Control Plane）的组件
 控制平面的组件通常以 Pod 形式运行在 `kube-system` 命名空间下（如果是通过 `kubeadm` 部署的集群）。
 
-#### **(1) `etcd`**
-- **作用**：分布式键值存储数据库，保存整个集群的状态（如 Pod、Service、ConfigMap 等资源对象的元数据）。
-- **关键性**：集群的“大脑”，所有组件通过它获取和更新状态。
-- **运行方式**：通常以单 Pod 运行（生产环境建议多副本实现高可用）。
+#### (1) `etcd`
+- 作用：分布式键值存储数据库，保存整个集群的状态（如 Pod、Service、ConfigMap 等资源对象的元数据）。
+- 关键性：集群的“大脑”，所有组件通过它获取和更新状态。
+- 运行方式：通常以单 Pod 运行（生产环境建议多副本实现高可用）。
 
-#### **(2) `kube-apiserver`**
-- **作用**：Kubernetes 的 API 入口，接收并验证所有 REST 请求（如 `kubectl` 命令），处理集群的增删改查操作。
-- **关键性**：唯一直接与 `etcd` 通信的组件，是集群控制平面的核心。
+#### (2) `kube-apiserver`
+- 作用：k8s 的 API 入口，接收并验证所有 REST 请求（如 `kubectl` 命令），处理集群的增删改查操作。
+- 关键性：唯一直接与 `etcd` 通信的组件，是集群控制平面的核心。
 
-#### **(3) `kube-controller-manager`**
-- **作用**：运行一系列控制器（Controller），确保集群状态与预期一致。例如：
+#### (3) `kube-controller-manager`
+- 作用：运行一系列控制器（Controller），确保集群状态与预期一致。例如：
   - Node Controller（监控节点状态）
   - Replication Controller（维护 Pod 副本数）
   - Endpoints Controller（维护 Service 的 Endpoints）
-- **关键性**：自动化修复集群状态的核心组件。
+- 关键性：自动化修复集群状态的核心组件。
 
-#### **(4) `kube-scheduler`**
-- **作用**：负责将新创建的 Pod 调度到合适的节点上（基于资源需求、节点负载、亲和性等策略）。
-- **关键性**：决定 Pod 在哪个节点运行。
+#### (4) `kube-scheduler`
+- 作用：负责将新创建的 Pod 调度到合适的节点上（基于资源需求、节点负载、亲和性等策略）。
+- 关键性：决定 Pod 在哪个节点运行。
 
-#### **(5) `cloud-controller-manager`**（仅限云环境）
-- **作用**：与云服务商（如 AWS、GCP、Azure）交互，管理负载均衡、存储卷、节点实例等云资源。
-- **关键性**：解耦 Kubernetes 与底层云平台的依赖。
+#### (5) `cloud-controller-manager`（仅限云环境）
+- 作用：与云服务商（如 AWS、GCP、Azure）交互，管理负载均衡、存储卷、节点实例等云资源。
+- 关键性：解耦 k8s 与底层云平台的依赖。
 
 ---
 
-### **2. 工作节点（Worker Node）的组件**
+### 2. 工作节点（Worker Node）的组件
 工作节点上运行的组件负责与控制平面通信，并管理容器生命周期。
 
-#### **(1) `kubelet`**
-- **作用**：
+#### (1) `kubelet`
+- 作用：
   - 管理节点上的 Pod 生命周期（启动、停止、监控容器）。
   - 向控制平面报告节点和 Pod 的状态。
-- **关键性**：节点上最重要的进程，直接与容器运行时（如 Docker、containerd）交互。
-- **注意**：`kubelet` 通常以系统服务（非容器）形式运行，但会被视为节点的核心组件。
+- 关键性：节点上最重要的进程，直接与容器运行时（如 Docker、containerd）交互。
+- 注意：`kubelet` 通常以系统服务（非容器）形式运行，但会被视为节点的核心组件。
 
-#### **(2) `kube-proxy`**
-- **作用**：
+#### (2) `kube-proxy`
+- 作用：
   - 维护节点上的网络规则（如 iptables/IPVS），实现 Service 的负载均衡和流量转发。
   - 确保 Pod 可以通过 Service 的虚拟 IP 或 DNS 名称相互通信。
-- **关键性**：实现 Kubernetes 服务发现和负载均衡的核心。
+- 关键性：实现 k8s 服务发现和负载均衡的核心。
 
-#### **(3) 容器运行时（Container Runtime）**
-- **常见实现**：Docker Engine、containerd、CRI-O。
-- **作用**：负责拉取镜像、启动/停止容器、管理容器生命周期。
-- **关键性**：Kubernetes 依赖容器运行时执行底层容器操作。
+#### (3) 容器运行时（Container Runtime）
+- 常见实现：Docker Engine、containerd、CRI-O。
+- 作用：负责拉取镜像、启动/停止容器、管理容器生命周期。
+- 关键性：k8s 依赖容器运行时执行底层容器操作。
 
 ---
 
-### **3. 其他可能的附加组件**
+### 3. 其他可能的附加组件
 以下组件可能在集群初始化时自动部署（取决于部署工具，如 `kubeadm`、托管集群等）：
 
-#### **(1) `CoreDNS`**
-- **作用**：为集群提供 DNS 服务，解析 Service 和 Pod 的域名。
-- **部署方式**：通常以 Pod 形式运行在 `kube-system` 命名空间。
+#### (1) `CoreDNS`
+- 作用：为集群提供 DNS 服务，解析 Service 和 Pod 的域名。
+- 部署方式：通常以 Pod 形式运行在 `kube-system` 命名空间。
 
-#### **(2) `metrics-server`**
-- **作用**：收集集群资源使用指标（如 CPU、内存），供 `kubectl top` 和 HPA（自动扩缩容）使用。
-- **部署方式**：可能需要手动部署（部分工具会默认安装）。
+#### (2) `metrics-server`
+- 作用：收集集群资源使用指标（如 CPU、内存），供 `kubectl top` 和 HPA（自动扩缩容）使用。
+- 部署方式：可能需要手动部署（部分工具会默认安装）。
 
 ---
 
-### **总结表格**
+### 总结表格
 | 组件                 | 运行位置       | 作用简述                                                                 |
 |----------------------|---------------|--------------------------------------------------------------------------|
 | `etcd`               | 控制平面      | 存储集群状态                                                             |
@@ -121,123 +121,123 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 ### 其它核心组件
 
-1. **Kubelet**：运行在每个节点上的代理，确保容器按Pod的定义运行。
+1. Kubelet：运行在每个节点上的代理，确保容器按Pod的定义运行。
 
-2. **Flannel**：简单的网络插件，负责Pod网络的创建和管理。
+2. Flannel：简单的网络插件，负责Pod网络的创建和管理。
 
-3. **Calico**：高级的网络插件，用于提供网络策略和安全性，支持 BGP 等高级网络功能。
+3. Calico：高级的网络插件，用于提供网络策略和安全性，支持 BGP 等高级网络功能。
 
-4. **Kube-Proxy**：维护Service网络规则，允许Pod间的通信和与外部网络的通信。
+4. Kube-Proxy：维护Service网络规则，允许Pod间的通信和与外部网络的通信。
 
-5. **Cloud Controller Manager**（如果使用云提供商）：与云提供商集成，以管理负载均衡器、存储卷等云资源。
+5. Cloud Controller Manager（如果使用云提供商）：与云提供商集成，以管理负载均衡器、存储卷等云资源。
 
-这些核心组件共同工作，以确保Kubernetes集群能够有效地管理和调度容器化应用。
+这些核心组件共同工作，以确保k8s集群能够有效地管理和调度容器化应用。
 
 ### 重要组件
 
-除了核心组件之外，Kubernetes 中还有许多重要的组件和工具，它们在不同的场景和需求下发挥着重要作用：
+除了核心组件之外，k8s 中还有许多重要的组件和工具，它们在不同的场景和需求下发挥着重要作用：
 
-1. **Ingress Controller**：
+1. Ingress Controller：
     - 用于管理 Ingress 资源，实现 HTTP 和 HTTPS 路由。常见的 Ingress Controller 有 NGINX、Traefik 和 HAProxy。
 
-2. **CoreDNS**：
-    - Kubernetes 集群中的默认 DNS 服务器，负责为服务发现和 DNS 解析提供支持。
+2. CoreDNS：
+    - k8s 集群中的默认 DNS 服务器，负责为服务发现和 DNS 解析提供支持。
 
-3. **Helm**：
-    - Kubernetes 的包管理工具，用于简化应用程序的部署和管理。Helm 使用“charts”来定义、安装和升级 Kubernetes 应用程序。
+3. Helm：
+    - k8s 的包管理工具，用于简化应用程序的部署和管理。Helm 使用“charts”来定义、安装和升级 k8s 应用程序。
 
-4. **Prometheus**：
-    - 用于监控和告警的系统，可以与 Kubernetes 集成，以收集集群和应用程序的性能数据。
+4. Prometheus：
+    - 用于监控和告警的系统，可以与 k8s 集成，以收集集群和应用程序的性能数据。
 
-5. **Grafana**：
+5. Grafana：
     - 开源的可视化工具，与 Prometheus 配合使用，提供丰富的监控和可视化能力。
 
-6. **kube-state-metrics**：
-    - 用于暴露 Kubernetes 集群状态指标，供 Prometheus 采集。
+6. kube-state-metrics：
+    - 用于暴露 k8s 集群状态指标，供 Prometheus 采集。
 
-7. **Fluentd**：
-    - 日志收集和聚合工具，可以将 Kubernetes 集群中的日志收集并发送到不同的存储后端。
+7. Fluentd：
+    - 日志收集和聚合工具，可以将 k8s 集群中的日志收集并发送到不同的存储后端。
 
-8. **Jaeger 或 Zipkin**：
+8. Jaeger 或 Zipkin：
     - 分布式追踪系统，用于监控和调试微服务架构中的延迟和性能问题。
 
-9. **Cert-Manager**：
-    - 用于在 Kubernetes 集群中自动化管理 TLS 证书，常用于自动申请和续订 Let’s Encrypt 证书。
+9. Cert-Manager：
+    - 用于在 k8s 集群中自动化管理 TLS 证书，常用于自动申请和续订 Let’s Encrypt 证书。
 
-10. **Kubeflow**：
-    - 用于在 Kubernetes 上运行和部署机器学习工作负载的工具包。
+10. Kubeflow：
+    - 用于在 k8s 上运行和部署机器学习工作负载的工具包。
 
-11. **Velero**：
-    - 用于备份和恢复 Kubernetes 集群资源和持久化卷的工具。
+11. Velero：
+    - 用于备份和恢复 k8s 集群资源和持久化卷的工具。
 
-12. **Kubernetes Dashboard**：
-    - 一个基于 Web 的用户界面，用于管理和监控 Kubernetes 集群。
+12. Kubernetes Dashboard：
+    - 一个基于 Web 的用户界面，用于管理和监控 k8s 集群。
 
-13. **Operators**：
-    - 用于将复杂的应用程序管理自动化的 Kubernetes 扩展，使用自定义控制器来管理特定的应用程序或服务。
+13. Operators：
+    - 用于将复杂的应用程序管理自动化的 k8s 扩展，使用自定义控制器来管理特定的应用程序或服务。
 
-14. **Kustomize**：
-    - 原生于 Kubernetes 的配置管理工具，允许用户声明性地管理 Kubernetes 对象配置。
+14. Kustomize：
+    - 原生于 k8s 的配置管理工具，允许用户声明性地管理 k8s 对象配置。
 
-这些组件和工具在不同的应用场景下发挥着重要作用，可以极大地增强 Kubernetes 的功能和用户体验。
+这些组件和工具在不同的应用场景下发挥着重要作用，可以极大地增强 k8s 的功能和用户体验。
 
 ### 其它组件
 
 除了之前提到的组件和工具，还有一些其他的重要组件和工具，它们在特定的用例中也非常有用：
 
-1. **kubeadm**：
-    - Kubernetes 集群的安装和配置工具，提供简单的命令行接口来引导集群。
+1. kubeadm：
+    - k8s 集群的安装和配置工具，提供简单的命令行接口来引导集群。
 
-2. **Minikube**：
-    - 本地运行 Kubernetes 的工具，适用于开发和测试环境。
+2. Minikube：
+    - 本地运行 k8s 的工具，适用于开发和测试环境。
 
-3. **Kind (Kubernetes IN Docker)**：
-    - 在 Docker 容器中运行本地 Kubernetes 集群的工具，常用于测试和 CI/CD 环境。
+3. Kind (Kubernetes IN Docker)：
+    - 在 Docker 容器中运行本地 k8s 集群的工具，常用于测试和 CI/CD 环境。
 
-4. **Weave Net**：
+4. Weave Net：
     - 另一种网络插件，提供简单易用的网络配置和管理。
 
-5. **Cilium**：
+5. Cilium：
     - 基于 eBPF 的网络插件，提供高级网络安全和监控功能。
 
-6. **Linkerd**：
+6. Linkerd：
     - 轻量级服务网格，用于提供服务间通信的可观察性、安全性和可靠性。
 
-7. **Istio**：
+7. Istio：
     - 功能丰富的服务网格，提供流量管理、安全性、策略控制和可观察性。
 
-8. **Keda (Kubernetes Event-driven Autoscaling)**：
+8. Keda (Kubernetes Event-driven Autoscaling)：
     - 允许基于事件的自动扩展，为应用程序提供基于事件的自动缩放能力。
 
-9.  **Argo CD**：
-    - 声明式的 GitOps 继续交付工具，帮助管理 Kubernetes 应用程序的持续交付。
+9.  Argo CD：
+    - 声明式的 GitOps 继续交付工具，帮助管理 k8s 应用程序的持续交付。
 
-10. **Tekton**：
+10. Tekton：
     - 云原生的 CI/CD 系统，提供构建、测试和部署应用程序的流水线。
 
-11. **Velero**：
-    - Kubernetes 的备份和恢复工具，用于保护和恢复集群资源和持久化存储。
+11. Velero：
+    - k8s 的备份和恢复工具，用于保护和恢复集群资源和持久化存储。
 
-12. **OpenEBS**：
+12. OpenEBS：
     - 云原生的持久化存储解决方案，提供基于容器的存储编排。
 
-13. **Longhorn**：
-    - CNCF 孵化的分布式块存储系统，用于 Kubernetes 环境。
+13. Longhorn：
+    - CNCF 孵化的分布式块存储系统，用于 k8s 环境。
 
-14. **Kong for Kubernetes**：
+14. Kong for Kubernetes：
     - 云原生 API 网关，提供服务管理、路由、负载均衡和安全性。
 
-15. **Harbor**：
+15. Harbor：
     - 云原生的容器镜像仓库，提供镜像管理、安全扫描和访问控制功能。
 
-16. **Kiali**：
+16. Kiali：
     - 服务网格（如 Istio）的可观察性和可管理性工具，提供仪表盘和可视化功能。
 
-这些组件和工具可以根据具体需求选择和使用，进一步增强 Kubernetes 的功能和管理能力。
+这些组件和工具可以根据具体需求选择和使用，进一步增强 k8s 的功能和管理能力。
 
 ## 推荐容量
 
-根据 Kubernetes 官方文档，集群的推荐容量上限：
+根据 k8s 官方文档，集群的推荐容量上限：
 
 1. 节点数（Nodes）：5000 个节点
 2. Pod 数（Pods）：每个集群最多 150,000 个 Pod
@@ -252,12 +252,12 @@ Kubernetes（k8s）集群初始化后，**控制平面（Control Plane）**和**
 
 ## 控制器
 
-在 Kubernetes 中，有几种常用的控制器用于管理和部署容器化应用程序。以下是主要的控制器及其用途：
+在 k8s 中，有几种常用的控制器用于管理和部署容器化应用程序。以下是主要的控制器及其用途：
 
-### 1. **Deployment**
+### 1. Deployment
 
-- **用途**：用于声明和管理一组 Pod 的副本。
-- **功能**：支持滚动更新、回滚、扩展和缩减副本数。
+- 用途：用于声明和管理一组 Pod 的副本。
+- 功能：支持滚动更新、回滚、扩展和缩减副本数。
 
 ```yaml
 apiVersion: apps/v1
@@ -281,10 +281,10 @@ template:
           - containerPort: 80
 ```
 
-### 2. **ReplicaSet**
+### 2. ReplicaSet
 
-- **用途**：确保指定数量的 Pod 副本始终在运行。
-- **功能**：主要用于 Deployment 内部，直接使用的场景较少。
+- 用途：确保指定数量的 Pod 副本始终在运行。
+- 功能：主要用于 Deployment 内部，直接使用的场景较少。
 
 ```yaml
 apiVersion: apps/v1
@@ -308,10 +308,10 @@ spec:
             - containerPort: 80
 ```
 
-### 3. **StatefulSet**
+### 3. StatefulSet
 
-- **用途**：用于管理有状态应用程序，提供稳定的标识、持久存储和有序部署。
-- **功能**：保证 Pod 的顺序启动和停止，持久卷绑定到特定的 Pod。
+- 用途：用于管理有状态应用程序，提供稳定的标识、持久存储和有序部署。
+- 功能：保证 Pod 的顺序启动和停止，持久卷绑定到特定的 Pod。
 
 ```yaml
 apiVersion: apps/v1
@@ -336,10 +336,10 @@ spec:
             - containerPort: 80
 ```
 
-### 4. **DaemonSet**
+### 4. DaemonSet
 
-- **用途**：在集群的每个节点上运行一个 Pod 的副本。
-- **功能**：确保所有（或特定节点上的）节点都运行一个 Pod 实例，适用于日志、监控等系统服务。
+- 用途：在集群的每个节点上运行一个 Pod 的副本。
+- 功能：确保所有（或特定节点上的）节点都运行一个 Pod 实例，适用于日志、监控等系统服务。
 
 ```yaml
 apiVersion: apps/v1
@@ -360,10 +360,10 @@ spec:
           image: fluentd:v1.2.0
 ```
 
-### 5. **Job**
+### 5. Job
 
-- **用途**：用于一次性任务，即执行完成后终止的任务。
-- **功能**：保证任务的完成，支持并行任务。
+- 用途：用于一次性任务，即执行完成后终止的任务。
+- 功能：保证任务的完成，支持并行任务。
 
 ```yaml
 apiVersion: batch/v1
@@ -380,10 +380,10 @@ spec:
       restartPolicy: Never
 ```
 
-### 6. **CronJob**
+### 6. CronJob
 
-- **用途**：用于定时任务，类似于 Linux 的 cron 任务。
-- **功能**：按照预定的时间表运行任务。
+- 用途：用于定时任务，类似于 Linux 的 cron 任务。
+- 功能：按照预定的时间表运行任务。
 
 ```yaml
 apiVersion: batch/v1
@@ -406,10 +406,10 @@ spec:
           restartPolicy: OnFailure
 ```
 
-### 7. **HorizontalPodAutoscaler (HPA)**
+### 7. HorizontalPodAutoscaler (HPA)
 
-- **用途**：根据 CPU 利用率或其他指标自动扩展或缩减 Pod 数量。
-- **功能**：动态调整 Pod 副本数以应对负载变化。
+- 用途：根据 CPU 利用率或其他指标自动扩展或缩减 Pod 数量。
+- 功能：动态调整 Pod 副本数以应对负载变化。
 
 ```yaml
 apiVersion: autoscaling/v1
@@ -430,29 +430,29 @@ spec:
 
 ## 流量
 
-在 Kubernetes 中处理流量的方式主要有以下几种：
+在 k8s 中处理流量的方式主要有以下几种：
 
-1. **Service**：
-    - **ClusterIP**：默认类型，只能在集群内部访问，提供内部服务的负载均衡。
-    - **NodePort**：在每个节点上开放一个端口，允许外部流量访问集群中的服务。
-    - **LoadBalancer**：创建一个外部负载均衡器，允许外部流量通过负载均衡器访问集群中的服务。
-    - **Headless Service**：不分配 ClusterIP，直接将流量发送到后端 Pod，适用于需要直接访问 Pod 的场景，如状态服务。
+1. Service：
+    - ClusterIP：默认类型，只能在集群内部访问，提供内部服务的负载均衡。
+    - NodePort：在每个节点上开放一个端口，允许外部流量访问集群中的服务。
+    - LoadBalancer：创建一个外部负载均衡器，允许外部流量通过负载均衡器访问集群中的服务。
+    - Headless Service：不分配 ClusterIP，直接将流量发送到后端 Pod，适用于需要直接访问 Pod 的场景，如状态服务。
 
-2. **Ingress**：
+2. Ingress：
     - Ingress 是一种 API 对象，提供 HTTP 和 HTTPS 路由功能。通过配置 Ingress Controller，可以定义路由规则，将流量从外部路由到集群内部的服务。
 
-3. **NetworkPolicy**：
+3. NetworkPolicy：
     - 用于定义网络访问控制规则，以限制不同 Pod 之间的流量。可以实现细粒度的安全策略，控制哪些 Pod 可以访问其他 Pod。
 
-4. **Service Mesh**：
+4. Service Mesh：
     - 通过 Service Mesh（如 Istio、Linkerd）提供更高级的流量管理功能，包括流量路由、负载均衡、故障恢复、监控和安全控制等。
 
-5. **Ingress Controller**：
+5. Ingress Controller：
     - Ingress Controller 是实现 Ingress 资源的控制器。常用的 Ingress Controller 有 NGINX Ingress
       Controller、Traefik、HAProxy 等。
 
-6. **Custom Resource Definitions (CRDs)**：
-    - 通过自定义资源定义扩展 Kubernetes 的功能，可以定义自定义的流量管理策略，满足特定需求。
+6. Custom Resource Definitions (CRDs)：
+    - 通过自定义资源定义扩展 k8s 的功能，可以定义自定义的流量管理策略，满足特定需求。
 
 这些方式可以单独使用，也可以结合使用，根据实际需求和场景选择最合适的流量处理方式。
 
@@ -473,7 +473,7 @@ spec:
    - Ambassador
    - Gloo
 
-4. Gateway API：Kubernetes新一代的入口资源，比Ingress更强大
+4. Gateway API：k8s新一代的入口资源，比Ingress更强大
 
 Ingress Controller是最推荐的方案，它通过主机名和路径规则将流量转发到不同的服务，支持多域名配置，还能集成SSL/TLS证书自动管理。
 
@@ -575,8 +575,7 @@ spec:
 
 PersistentVolumeClaim（持久卷声明）
 
-PersistentVolumeClaim 是用户用来请求存储资源的对象。它描述了应用所需的存储容量、访问模式等。Kubernetes
-会根据持久卷声明的要求选择适当的持久卷，或者根据 StorageClass 动态创建新的 PersistentVolume。
+PersistentVolumeClaim 是用户用来请求存储资源的对象。它描述了应用所需的存储容量、访问模式等。k8s会根据持久卷声明的要求选择适当的持久卷，或者根据 StorageClass 动态创建新的 PersistentVolume。
 
 persistentvolumeclaim.yaml
 
@@ -594,7 +593,7 @@ spec:
   storageClassName: aws-ebs
 ```
 
-使用这些组件，Kubernetes 可以自动化存储的管理，并根据需求提供适当的存储资源。
+使用这些组件，k8s 可以自动化存储的管理，并根据需求提供适当的存储资源。
 
 ```shell
 # 查看存储类
@@ -649,7 +648,7 @@ sudo kubeadm reset -f
 
 ### 通过helm安装kubesphere4.x（推荐）
 
-kubesphere是Kubernetes的开源平台，提供了完整的云原生应用管理、监控、日志、配置、服务发现、网关、身份认证、访问控制、策略管理、工作负载编排、Helm应用管理、多集群管理、多租户管理、多环境管理、多语言支持等功能。
+kubesphere是k8s的开源平台，提供了完整的云原生应用管理、监控、日志、配置、服务发现、网关、身份认证、访问控制、策略管理、工作负载编排、Helm应用管理、多集群管理、多租户管理、多环境管理、多语言支持等功能。
 
 [https://helm.sh/zh/docs/intro/install/](https://helm.sh/zh/docs/intro/install/)
 
@@ -855,7 +854,7 @@ ctr run --tty --rm alpine:latest mycontainer /bin/sh
 
 ### crictl
 
-crictl 是 Kubernetes CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
+crictl 是 k8s CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
 
 ```shell
 #列出正在运行的容器
