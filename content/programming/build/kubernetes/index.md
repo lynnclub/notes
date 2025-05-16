@@ -4,6 +4,150 @@ type: "docs"
 weight: 3
 ---
 
+## 常用命令
+
+### kubectl
+
+```shell
+#列出所有支持的 API 资源
+kubectl api-resources
+#查看集群信息
+kubectl cluster-info
+#列出所有节点
+kubectl get nodes
+#列出所有命名空间
+kubectl get namespaces
+#创建命名空间
+kubectl create namespace my-namespace
+#查看集群的所有资源
+kubectl get all --all-namespaces
+
+
+#查看详细信息
+kubectl describe node
+kubectl describe service
+kubectl describe pod <pod-name> -n <namespace>
+#查看全部pods
+kubectl get pods --all-namespaces -o wide
+kubectl get pods --all-namespaces
+kubectl get pods -n <namespace>
+#查看系统pods
+kubectl get pods -n kube-system
+
+#创建、删除资源
+kubectl apply -f <file.yaml>
+kubectl delete -f <file.yaml>
+kubectl delete pod <pod-name> -n <namespace>
+
+# 执行命令进入到某个 pod 的容器中
+kubectl exec -it <pod-name> -n <namespace> -- /bin/bash
+
+#查看 pod 的日志
+kubectl logs <pod-name> -n <namespace>
+#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
+kubectl logs <pod-name> -n <namespace> --previous
+
+#使用定时任务模版创建任务
+kubectl create job --from=cronjob/test test-1 -n namespace
+
+#flannel网络插件
+kubectl get pod -n kube-flannel -l app=flannel
+kubectl get daemonset -n kube-flannel kube-flannel-ds
+kubectl edit configmap kube-flannel-cfg -n kube-flannel
+kubectl delete pod -l app=flannel -n kube-flannel
+
+#服务
+kubectl get svc --all-namespaces
+kubectl describe service openldap -n kubesphere-system
+kubectl edit service openldap -n kubesphere-system
+kubectl delete service openldap -n kubesphere-system
+
+#工作负载
+kubectl get deployments --all-namespaces
+kubectl describe deployment nginx-deployment
+kubectl set image deployment/nginx-deployment nginx=nginx:1.19
+kubectl rollout undo deployment/nginx-deployment
+kubectl scale deployment/nginx-deployment --replicas=5
+kubectl delete deployment nginx-deployment
+```
+
+### containerd
+
+containerd 是一个类似 docker 的容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
+
+```shell
+#启动和停止
+sudo systemctl start containerd
+sudo systemctl stop containerd
+sudo systemctl status containerd
+#查看日志
+journalctl -u containerd
+
+#容器管理
+ctr containers list
+ctr container info <container-id>
+
+#容器操作
+ctr container create <image> <container-id>
+ctr run <options> <image> <container-id> <command> [<args>...]
+ctr task start <container-id>
+ctr task status <container-id>
+ctr task kill <container-id>
+ctr container delete <container-id>
+
+#镜像管理
+ctr images list
+ctr images pull <image-name>
+ctr images remove <image-name>
+ctr images info <image-name>
+
+#运行容器
+ctr run <options> <image> <container-id> <command>
+ctr run --tty --rm alpine:latest mycontainer /bin/sh
+```
+
+### crictl
+
+crictl 是 k8s CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
+
+```shell
+#列出正在运行的容器
+sudo crictl ps
+
+#列出所有容器（包括已停止的容器）
+sudo crictl ps -a
+
+#查看容器详细信息
+sudo crictl inspect <容器ID>
+
+#列出所有镜像
+sudo crictl images
+
+#查看镜像详细信息
+sudo crictl inspecti <镜像ID或名称>
+
+#删除容器
+sudo crictl rm <容器ID>
+
+#拉取镜像
+sudo crictl pull <镜像名称>
+
+#删除镜像
+sudo crictl rmi <镜像ID或名称>
+
+#查看容器日志
+sudo crictl logs <容器ID>
+
+#启动容器
+sudo crictl start <容器ID>
+
+#停止容器
+sudo crictl stop <容器ID>
+
+#运行一个交互式 shell
+sudo crictl exec -it <容器ID> sh
+```
+
 ## 架构
 
 ![k8s](k8s.png)
@@ -813,145 +957,4 @@ spec:
       port: 5000
       targetPort: 5000
       nodePort: 32000
-```
-
-## 常用命令
-
-### containerd
-
-containerd 是一个类似 docker 的容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
-
-```shell
-#启动和停止
-sudo systemctl start containerd
-sudo systemctl stop containerd
-sudo systemctl status containerd
-#查看日志
-journalctl -u containerd
-
-#容器管理
-ctr containers list
-ctr container info <container-id>
-
-#容器操作
-ctr container create <image> <container-id>
-ctr run <options> <image> <container-id> <command> [<args>...]
-ctr task start <container-id>
-ctr task status <container-id>
-ctr task kill <container-id>
-ctr container delete <container-id>
-
-#镜像管理
-ctr images list
-ctr images pull <image-name>
-ctr images remove <image-name>
-ctr images info <image-name>
-
-#运行容器
-ctr run <options> <image> <container-id> <command>
-ctr run --tty --rm alpine:latest mycontainer /bin/sh
-```
-
-### crictl
-
-crictl 是 k8s CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
-
-```shell
-#列出正在运行的容器
-sudo crictl ps
-
-#列出所有容器（包括已停止的容器）
-sudo crictl ps -a
-
-#查看容器详细信息
-sudo crictl inspect <容器ID>
-
-#列出所有镜像
-sudo crictl images
-
-#查看镜像详细信息
-sudo crictl inspecti <镜像ID或名称>
-
-#删除容器
-sudo crictl rm <容器ID>
-
-#拉取镜像
-sudo crictl pull <镜像名称>
-
-#删除镜像
-sudo crictl rmi <镜像ID或名称>
-
-#查看容器日志
-sudo crictl logs <容器ID>
-
-#启动容器
-sudo crictl start <容器ID>
-
-#停止容器
-sudo crictl stop <容器ID>
-
-#运行一个交互式 shell
-sudo crictl exec -it <容器ID> sh
-```
-
-### kubectl
-
-```shell
-#列出所有支持的 API 资源
-kubectl api-resources
-#查看集群信息
-kubectl cluster-info
-#列出所有节点
-kubectl get nodes
-#列出所有命名空间
-kubectl get namespaces
-#创建命名空间
-kubectl create namespace my-namespace
-#查看集群的所有资源
-kubectl get all --all-namespaces
-
-#查看详细信息
-kubectl describe node
-kubectl describe service
-kubectl describe pod <pod-name> -n <namespace>
-
-kubectl get pods --all-namespaces -o wide
-kubectl get pods --all-namespaces
-kubectl get pods -n <namespace>
-
-#创建、删除资源
-kubectl apply -f <file.yaml>
-kubectl delete -f <file.yaml>
-kubectl delete pod <pod-name> -n <namespace>
-
-# 执行命令进入到某个 pod 的容器中
-kubectl exec -it <pod-name> -n <namespace> -- /bin/bash
-
-#查看 pod 的日志
-kubectl logs <pod-name> -n <namespace>
-#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
-kubectl logs <pod-name> -n <namespace> --previous
-
-#使用定时任务模版创建任务
-kubectl create job --from=cronjob/test test-1 -n namespace
-
-#flannel网络插件
-kubectl get pod -n kube-flannel -l app=flannel
-kubectl get daemonset -n kube-flannel kube-flannel-ds
-kubectl edit configmap kube-flannel-cfg -n kube-flannel
-kubectl delete pod -l app=flannel -n kube-flannel
-
-#服务
-kubectl get svc --all-namespaces
-kubectl describe service openldap -n kubesphere-system
-kubectl edit service openldap -n kubesphere-system
-kubectl delete service openldap -n kubesphere-system
-
-#工作负载
-kubectl get deployments --all-namespaces
-kubectl describe deployment nginx-deployment
-kubectl set image deployment/nginx-deployment nginx=nginx:1.19
-kubectl rollout undo deployment/nginx-deployment
-kubectl scale deployment/nginx-deployment --replicas=5
-kubectl delete deployment nginx-deployment
 ```
