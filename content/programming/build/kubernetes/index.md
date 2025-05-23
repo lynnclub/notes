@@ -69,6 +69,9 @@ kubectl set image deployment/nginx-deployment nginx=nginx:1.19
 kubectl rollout undo deployment/nginx-deployment
 kubectl scale deployment/nginx-deployment --replicas=5
 kubectl delete deployment nginx-deployment
+
+#重启
+kubectl rollout restart deployment ks-apiserver -n kubesphere-system
 ```
 
 ### containerd
@@ -780,6 +783,8 @@ kubeadm token create --print-join-command
 
 #加入工作节点（分布式集群）
 kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-hash <hash>
+#删除工作节点
+kubectl delete node <节点名>
 
 #设置存储（配置文件见 存储 章节）
 kubectl apply -f storageclass.yaml

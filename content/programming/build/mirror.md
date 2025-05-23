@@ -76,7 +76,7 @@ wget https://github.com/containerd/containerd/releases/download/v1.7.25/containe
 tar xvf containerd-1.7.25-linux-amd64.tar.gz
 
 # 开机自启与启动
-sudo systemctl enable containerd && systemctl start containerd
+sudo systemctl enable containerd --now
 ```
 
 用于k8s需要开启cri，/etc/containerd/config.toml 
@@ -121,6 +121,7 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirro
 
 apt update
 apt install -y kubelet kubeadm kubectl
+systemctl enable kubelet --now
 ```
 
 CentOS/RHEL/Fedora
@@ -137,7 +138,6 @@ EOF
 
 setenforce 0
 yum install -y kubelet kubeadm kubectl
-systemctl enable kubelet && systemctl start kubelet
 ```
 
 ### Snap
