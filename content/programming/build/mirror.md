@@ -72,8 +72,8 @@ k8s默认使用containerd作为容器。
 [https://containerd.io/downloads/](https://containerd.io/downloads/)
 
 ```
-wget https://github.com/containerd/containerd/releases/download/v1.7.25/containerd-1.7.25-linux-amd64.tar.gz
-tar xvf containerd-1.7.25-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.27/containerd-1.7.27-linux-amd64.tar.gz
+tar xvf containerd-1.7.27-linux-amd64.tar.gz
 
 # 开机自启与启动
 sudo systemctl enable containerd --now

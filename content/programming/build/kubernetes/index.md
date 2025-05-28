@@ -9,43 +9,51 @@ weight: 3
 ### kubectl
 
 ```shell
-#列出所有支持的 API 资源
+#列出所有支持的API资源
 kubectl api-resources
 #查看集群信息
 kubectl cluster-info
+
 #列出所有节点
 kubectl get nodes
 #列出所有命名空间
 kubectl get namespaces
 #创建命名空间
 kubectl create namespace my-namespace
+
 #查看集群的所有资源
 kubectl get all --all-namespaces
-
-
-#查看详细信息
-kubectl describe node
-kubectl describe service
-kubectl describe pod <pod-name> -n <namespace>
-#查看全部pods
-kubectl get pods --all-namespaces -o wide
 kubectl get pods --all-namespaces
+kubectl get pods --all-namespaces -o wide
 kubectl get pods -n <namespace>
 #查看系统pods
 kubectl get pods -n kube-system
 
+#查看 pod 的日志
+kubectl logs -n <namespace> <pod-name> 
+kubectl logs -n kube-system pod/kube-proxy-www59
+#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
+kubectl logs -n <namespace> <pod-name> --previous
+
+#查看详细信息
+kubectl describe node
+kubectl describe service
+kubectl describe pod -n <namespace> <pod-name>
+
 #创建、删除资源
 kubectl apply -f <file.yaml>
 kubectl delete -f <file.yaml>
-kubectl delete pod <pod-name> -n <namespace>
 
 # 执行命令进入到某个 pod 的容器中
 kubectl exec -it <pod-name> -n <namespace> -- /bin/bash
+# 编辑 kube-proxy 配置
+kubectl edit configmap kube-proxy -n kube-system
 
-#查看 pod 的日志
-kubectl logs <pod-name> -n <namespace>
-#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
-kubectl logs <pod-name> -n <namespace> --previous
+#重启pod
+kubectl delete pod -n <namespace> <pod-name>
+kubectl delete pods -n kube-system -l k8s-app=kube-proxy
+kubectl delete pods -n kube-flannel -l k8s-app=flannel
+kubectl -n kube-system rollout restart deployment coredns
 
 #使用定时任务模版创建任务
 kubectl create job --from=cronjob/test test-1 -n namespace
@@ -149,6 +157,51 @@ sudo crictl stop <容器ID>
 
 #运行一个交互式 shell
 sudo crictl exec -it <容器ID> sh
+```
+
+## 安装kubernetes
+
+安装请参考文档 [镜像](../mirror/#kubernetes)。
+
+### 控制节点
+
+```shell
+#初始化控制节点
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+#配置文件
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+#安装网络插件calico，性能好，功能强大
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+#或者安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+#设置存储（配置文件见 存储 章节）
+kubectl apply -f storageclass.yaml
+#设置默认存储
+kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+
+# 重置，危险！
+sudo kubeadm reset -f
+```
+
+### 工作节点
+
+```shell
+#生成加入命令（控制节点）
+kubeadm token create --print-join-command
+
+#加入集群（工作节点）
+kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-hash <hash>
+
+#删除工作节点（控制节点）
+kubectl delete node <节点名>
 ```
 
 ## 架构
@@ -753,46 +806,6 @@ kubectl delete pv aws-ebs
 # 查看持久卷声明
 kubectl get pvc
 kubectl delete pvc aws-ebs  
-```
-
-## 安装kubernetes
-
-安装请参考文档 [镜像](../mirror/#kubernetes)。
-
-### 控制节点与工作节点
-
-```shell
-#初始化控制节点
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-
-#配置文件
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
-
-#安装网络插件calico
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-#或者安装网络插件flannel
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-
-#控制平面节点生成加入命令
-kubeadm token create --print-join-command
-
-#加入工作节点（分布式集群）
-kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-hash <hash>
-#删除工作节点
-kubectl delete node <节点名>
-
-#设置存储（配置文件见 存储 章节）
-kubectl apply -f storageclass.yaml
-#设置默认存储
-kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
-
-# 重置，危险！
-sudo kubeadm reset -f
 ```
 
 ### 通过helm安装kubesphere4.x（推荐）
