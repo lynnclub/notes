@@ -166,6 +166,15 @@ sudo crictl exec -it <容器ID> sh
 ### 控制节点
 
 ```shell
+#启用IP转发
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+echo "net.ipv6.conf.all.forwarding = 1" >> /etc/sysctl.conf
+echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf
+sysctl -p
+
+#内核模块，calico依赖
+sudo modprobe ip_tables ipip nf_conntrack ip6_tunnel tun br_netfilter
+
 #初始化控制节点
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 

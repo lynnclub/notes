@@ -71,12 +71,11 @@ k8s默认使用containerd作为容器。
 
 [https://containerd.io/downloads/](https://containerd.io/downloads/)
 
+Centos
 ```
-wget https://github.com/containerd/containerd/releases/download/v1.7.27/containerd-1.7.27-linux-amd64.tar.gz
-tar xvf containerd-1.7.27-linux-amd64.tar.gz
-
-# 开机自启与启动
-sudo systemctl enable containerd --now
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install -y containerd.io
+sudo systemctl enable --now containerd
 ```
 
 用于k8s需要开启cri，/etc/containerd/config.toml 
@@ -113,7 +112,7 @@ Debian/Ubuntu安装k8s，注意更换版本
 ```
 apt update && apt install -y apt-transport-https
 
-VERSION="v1.31"
+VERSION="v1.32"
 curl -fsSL https://mirrors.aliyun.com/kubernetes-new/core/stable/$VERSION/deb/Release.key |
     gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirrors.aliyun.com/kubernetes-new/core/stable/$VERSION/deb/ /" |
@@ -130,14 +129,16 @@ CentOS/RHEL/Fedora
 cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/rpm/
+baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.32/rpm/
 enabled=1
 gpgcheck=1
-gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.31/rpm/repodata/repomd.xml.key
+gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.32/rpm/repodata/repomd.xml.key
 EOF
 
 setenforce 0
 yum install -y kubelet kubeadm kubectl
+systemctl enable kubelet --now
+yum install -y iproute-tc
 ```
 
 ### Snap
