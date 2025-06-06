@@ -436,10 +436,10 @@ CNI网络插件负责Pod网络的创建和管理。
 | **BGP**      | ✅ 真正的 L3 路由互通，无需封装                             | ❌ 配置复杂、依赖网络控制器                                   | Calico 发布路由，裸机集群或公网互通场景     |
 
 - **小型测试集群**：kube-proxy: iptables + Flannel VXLAN/IPIP  简单、兼容性好
-- **中型生产集群**：kube-proxy: IPVS + Calico BGP  无封装、高性能
+- **中型生产集群**：kube-proxy: IPVS + Calico BGP  无封装、高性能、支持直连
 - **高性能场景**：kube-proxy: none + Cilium eBPF  极限性能、复杂微服务通信，用eBPF替代kube-proxy
-- **安全优先**：Calico WireGuard  加密通信、路由灵活性
-- **操作系统使用nftables**：建议切换成 iptables-legacy 或使用 eBPF
+- **安全优先**：kube-proxy: IPVS + Calico WireGuard  加密通信、路由灵活性
+- **操作系统使用nftables**：Flannel、Calico不支持nftables，建议切换成 iptables-legacy 或使用 eBPF绕过iptables/nftables
 
 ### 重要组件
 
