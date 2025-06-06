@@ -36,9 +36,10 @@ kubectl logs -n kube-system pod/kube-proxy-www59
 kubectl logs -n <namespace> <pod-name> --previous
 
 #查看详细信息
-kubectl describe node
-kubectl describe service
+kubectl describe node ip-172-16-1-111.compute.internal
 kubectl describe pod -n <namespace> <pod-name>
+kubectl describe service openldap -n kubesphere-system
+kubectl describe deployment nginx-deployment
 
 #创建、删除资源
 kubectl apply -f <file.yaml>
@@ -66,13 +67,12 @@ kubectl delete pod -l app=flannel -n kube-flannel
 
 #服务
 kubectl get svc --all-namespaces
-kubectl describe service openldap -n kubesphere-system
+
 kubectl edit service openldap -n kubesphere-system
 kubectl delete service openldap -n kubesphere-system
 
 #工作负载
 kubectl get deployments --all-namespaces
-kubectl describe deployment nginx-deployment
 kubectl set image deployment/nginx-deployment nginx=nginx:1.19
 kubectl rollout undo deployment/nginx-deployment
 kubectl scale deployment/nginx-deployment --replicas=5
@@ -80,11 +80,18 @@ kubectl delete deployment nginx-deployment
 
 #重启
 kubectl rollout restart deployment ks-apiserver -n kubesphere-system
+
+kubectl get deployments --all-namespaces -o yaml > all_deployments.yaml
+kubectl get jobs --all-namespaces -o json > all_jobs.json
+kubectl get cronjobs --all-namespaces -o json > all_cronjobs.json
+
+#查看kubelet日志
+journalctl -u kubelet -f
 ```
 
 ### containerd
 
-containerd 是一个类似 docker 的容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
+containerd 是 k8s 默认的容器运行时，它提供了容器的生命周期管理、镜像管理等功能。
 
 ```shell
 #启动和停止
@@ -119,7 +126,7 @@ ctr run --tty --rm alpine:latest mycontainer /bin/sh
 
 ### crictl
 
-crictl 是 k8s CRI（容器运行时接口）的命令行工具，命令跟 docker 接近。
+crictl 是 k8s CRI（容器运行时接口）的命令行工具。
 
 ```shell
 #列出正在运行的容器
@@ -163,17 +170,91 @@ sudo crictl exec -it <容器ID> sh
 
 安装请参考文档 [镜像](../mirror/#kubernetes)。
 
-### 控制节点
+### 作为控制节点
 
 ```shell
+#前置：calico依赖内核模块
+lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
+#临时启用
+modprobe ip_tables iptable_nat ip6_tables ip6table_nat ip_set xt_set ipip nf_conntrack ip6_tunnel tun br_netfilter
+#长期启用
+sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+ip_tables
+iptable_nat
+ip6_tables
+ip6table_nat
+ip_set
+xt_set
+ipip
+nf_conntrack
+ip6_tunnel
+tun
+br_netfilter
+EOF
+sudo systemctl restart systemd-modules-load.service
 #启用IP转发
-echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-echo "net.ipv6.conf.all.forwarding = 1" >> /etc/sysctl.conf
-echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
 sysctl -p
 
-#内核模块，calico依赖
-sudo modprobe ip_tables ipip nf_conntrack ip6_tunnel tun br_netfilter
+#推荐使用IPVS
+#calico默认使用ip_tables，如果是最新系统可能只有nf_tables，需要在集群统一使用nf_tables
+#calico还需要注意网卡名称
+lsmod | grep -E 'ip_vs|ip_tables|iptable_nat|ip6_tables|ip6table_nat|nf_tables|nf_nat|ip_set|xt_set|ipip|nf_conntrack|nf_defrag_ipv4|nf_defrag_ipv6|ip6_tunnel|tun|br_netfilter'
+#临时启用
+modprobe ip_tables iptable_nat ip6_tables ip6table_nat nf_tables nf_nat ip_set xt_set ipip nf_conntrack nf_defrag_ipv4 nf_defrag_ipv6 ip6_tunnel tun br_netfilter
+#长期启用
+sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+ip_vs
+ip_vs_rr
+ip_vs_wrr
+ip_vs_sh
+ip_tables
+iptable_nat
+ip6_tables
+ip6table_nat
+nf_tables
+nf_nat
+nf_conntrack
+nf_defrag_ipv4
+nf_defrag_ipv6
+ip_set
+xt_set
+ipip
+ip6_tunnel
+tun
+br_netfilter
+EOF
+sudo systemctl restart systemd-modules-load.service
+#启用IP转发
+echo -e "net.ipv4.conf.all.arp_ignore=1\nnet.ipv4.conf.all.arp_announce=2\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+sysctl -p
+
+yum install -y ipset ipvsadm
+
+# 旧系统从iptables切换到nftables兼容模式（不推荐）
+# sudo yum install -y iptables nftables iptables-nft
+# 手动创建备选方案配置
+# sudo update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 100
+# sudo update-alternatives --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 100
+# sudo update-alternatives --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 100
+# sudo update-alternatives --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 100
+# 设置默认选项
+# sudo update-alternatives --set iptables /usr/sbin/iptables-nft
+# sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+# sudo update-alternatives --set arptables /usr/sbin/arptables-nft
+# sudo update-alternatives --set ebtables /usr/sbin/ebtables-nft
+# 如果有问题切换回来
+# sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+# sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+# sudo update-alternatives --set arptables /usr/sbin/arptables-legacy
+# sudo update-alternatives --set ebtables /usr/sbin/ebtables-legacy
+# 验证配置
+# sudo iptables -V
+# 应输出: iptables v1.8.x (nf_tables)
+
+# 新系统从nftables切换到iptables模式
+# sudo yum install iptables-legacy -y
+# sudo systemctl enable iptables --now
 
 #初始化控制节点
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
@@ -183,10 +264,10 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-#安装网络插件calico，性能好，功能强大
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-#或者安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
+#安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+#或者安装网络插件calico，性能好，功能强大
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
 #移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
@@ -196,8 +277,20 @@ kubectl apply -f storageclass.yaml
 #设置默认存储
 kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 
-# 重置，危险！
+#重置，危险！
 sudo kubeadm reset -f
+rm -rf ~/.kube /etc/kubernetes /var/lib/etcd /var/lib/kubelet/* /etc/cni/net.d
+#清理Calico残留（可选）
+rm -rf /var/run/calico /etc/calico
+#重置iptables
+iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
+```
+
+calico兼容多种网卡
+```
+env:
+  - name: IP_AUTODETECTION_METHOD
+    value: "interface=ens.*|eth.*"
 ```
 
 ### 工作节点
@@ -219,32 +312,42 @@ kubectl delete node <节点名>
 
 Kubernetes（简称K8s）是一个用于自动化部署、弹性伸缩、负载均衡、服务发现和管理容器化应用程序的开源系统。
 
-架构主要包括以下几个组件：
+机器类型：
 
-1. Control Plane（控制平面）：
-    - API Server：处理所有的操作请求并更新etcd中的状态。它是 k8s 集群的入口点。
-    - Controller Manager：管理集群中的各种控制器，包括节点控制器、复制控制器、端点控制器和服务账户控制器等，负责确保集群状态与预期状态的一致性。
-    - Scheduler：负责将 Pod 分配到合适的工作节点上。
-    - etcd：一个高可用的键值存储系统，存储 k8s 集群的所有数据和状态。
+1. Control Plane（控制平面，奇数数量）：
+    - API Server：k8s 集群的入口点，接收所有操作请求（kubectl、dashboard、controller等），并更新etcd中的状态。
+    - Controller Manager：运行各种控制器，包括Node Controller（节点监控）、Replication Controller（副本管理）、Service Account Controller（权限分配）等，负责确保集群状态与预期状态的一致性。
+    - Scheduler：根据资源、约束和策略为新建 Pod 选择最佳工作节点。
+    - etcd：一个高可用的键值存储系统，保存所有集群状态和配置数据（如资源对象信息、配置项、服务发现等）。
 
-2. Worker Node（计算节点）：
-    - Kubelet：负责管理节点上的 Pod，确保容器在节点上按预期运行。
-    - Kube-Proxy：提供网络代理服务，处理服务的负载均衡和网络流量。
-    - Container Runtime：负责运行和管理容器，常见的有 Docker、containerd 等。默认使用containerd。
+2. Worker Node（工作节点/计算节点）：
+    - Kubelet： Pod 的生命周期管理，与 API Server 通信，负责本节点的 Pod 创建、监控与回收。
+    - Kube-Proxy：实现 Service 的通信逻辑，支持 iptables/IPVS 模式，处理请求转发、负载均衡。
+    - Container Runtime：运行容器的底层引擎，常见的有 Docker、containerd（默认） 等。
 
-3. Pod：k8s 中的基本调度单元，包含一个或多个容器（通常是 Docker 容器），这些容器共享网络和存储。
+3. Edge Node（边缘节点）：控制平面在中心云，工作负载运行在物理/弱网边缘设备，KubeEdge/SuperEdge 等边缘计算框架。
 
-4. Service：定义了一组 Pod 的访问策略，提供负载均衡和服务发现。
+资源类型：
 
-5. Deployment：用于管理 Pod 的副本和更新策略，确保应用程序的高可用性和可扩展性。
+1. Namespace：用于将集群中的资源划分为多个虚拟集群，实现资源的隔离。
 
-6. Namespace：用于将集群中的资源划分为多个虚拟集群，实现资源的隔离。
+2. Pod：k8s 中的基本调度单元，包含一个或多个容器，这些容器共享网络和存储。
 
-7. ConfigMap 和 Secret：用于存储和管理应用程序配置和敏感数据。
+3. Deployment：用于管理 Pod 的副本和更新策略，确保应用程序的高可用性和可扩展性。
 
-8. Volume：提供持久化存储解决方案，确保数据在容器重启或迁移时不丢失。
+4. DaemonSet：用于确保某些 Pod 在多个节点上都运行，例如日志收集、监控、代理等。
 
-9. Ingress：管理外部访问 k8s 集群中服务的策略，通常与负载均衡器结合使用。
+5. ReplicaSet：负责维护一定数量的 Pod 副本。Deployment 的底层就是通过 ReplicaSet 实现副本管理的，但通常用户不会直接使用。
+
+6.  Job/CronJob：一次性任务/定时任务。
+
+7.  Service：定义了一组 Pod 的访问策略，提供负载均衡和服务发现。
+
+8.  Ingress：管理外部访问 k8s 集群中服务的策略，通常与负载均衡器结合使用。
+
+9.  ConfigMap/Secret：用于存储和管理应用程序配置/敏感数据。
+
+10. Volume：提供持久化存储解决方案，确保数据在容器重启或迁移时不丢失。
 
 ## 系統 Pod
 
@@ -313,79 +416,69 @@ k8s 集群初始化后，控制平面（Control Plane）和工作节点（Worker
 - 作用：收集集群资源使用指标（如 CPU、内存），供 `kubectl top` 和 HPA（自动扩缩容）使用。
 - 部署方式：可能需要手动部署（部分工具会默认安装）。
 
----
+### CNI网络插件
 
-### 总结表格
-| 组件                 | 运行位置       | 作用简述                                                                 |
-|----------------------|---------------|--------------------------------------------------------------------------|
-| `etcd`               | 控制平面      | 存储集群状态                                                             |
-| `kube-apiserver`     | 控制平面      | 处理 API 请求，集群的入口                                                |
-| `kube-controller-manager` | 控制平面 | 运行控制器，确保集群状态符合预期                                         |
-| `kube-scheduler`     | 控制平面      | 调度 Pod 到节点                                                          |
-| `kubelet`            | 工作节点      | 管理节点上的 Pod 和容器                                                  |
-| `kube-proxy`         | 工作节点      | 维护网络规则，实现 Service 的负载均衡                                    |
-| `CoreDNS`            | 控制平面/节点 | 提供集群内部 DNS 解析                                                    |
+CNI网络插件负责Pod网络的创建和管理。
 
----
+1. Flannel：支持 VXLAN/host-gw/IPIP，简单稳定，默认使用 VXLAN 封装，性能较差。
+2. Calico：支持 BGP/VXLAN/IPIP/WireGuard/eBPF（v3.20+），支持网络策略和安全性等高级网络功能。
+3. Cilium：依赖eBPF，高性能，安全性强，对内核要求较高。
 
-### 其它核心组件
+| 技术        | 优点                                                         | 缺点                                                           | 常见应用/备注                                |
+|-------------|--------------------------------------------------------------|----------------------------------------------------------------|----------------------------------------------|
+| **iptables** | ✅ 成熟稳定、广泛支持                                         | ❌ 表规则多时效率低，配置复杂                                 | kube-proxy 默认模式                          |
+| **nftables** | ✅ 替代 iptables，结构更清晰                                  | ❌ 一些旧软件兼容性差                                          | Debian / Ubuntu 等现代发行版默认使用         |
+| **IPVS**     | ✅ 高性能，支持连接追踪，适合高并发                         | ❌ 配置和调试复杂                                               | kube-proxy 推荐在高并发集群使用             |
+| **eBPF**     | ✅ 内核态执行、超高性能、灵活编程                          | ❌ 依赖高版本内核、学习曲线陡峭                                | Cilium、网络策略、Service Mesh              |
+| **VXLAN**    | ✅ 支持跨主机通信，网络可扩展                               | ❌ 基于 UDP 封装，性能损耗较高，可能丢包                     | Flannel、Calico 的 overlay 模式             |
+| **IPIP**     | ✅ 相比 VXLAN 封装效率更高                                  | ❌ 云环境常有限制，容易遇到 MTU 问题                          | Flannel、Calico（轻量 overlay）             |
+| **WireGuard**| ✅ 安全、轻量、现代加密方式                                 | ❌ 不支持负载分发                                               | Calico 加密节点通信、集群间 VPN              |
+| **BGP**      | ✅ 真正的 L3 路由互通，无需封装                             | ❌ 配置复杂、依赖网络控制器                                   | Calico 发布路由，裸机集群或公网互通场景     |
 
-1. Kubelet：运行在每个节点上的代理，确保容器按Pod的定义运行。
-
-2. Flannel：简单的网络插件，负责Pod网络的创建和管理。
-
-3. Calico：高级的网络插件，用于提供网络策略和安全性，支持 BGP 等高级网络功能。
-
-4. Kube-Proxy：维护Service网络规则，允许Pod间的通信和与外部网络的通信。
-
-5. Cloud Controller Manager（如果使用云提供商）：与云提供商集成，以管理负载均衡器、存储卷等云资源。
-
-这些核心组件共同工作，以确保k8s集群能够有效地管理和调度容器化应用。
+- **小型测试集群**：kube-proxy: iptables + Flannel VXLAN/IPIP  简单、兼容性好
+- **中型生产集群**：kube-proxy: IPVS + Calico BGP  无封装、高性能
+- **高性能场景**：kube-proxy: none + Cilium  极限性能、复杂微服务通信，eBPF替代kube-proxy
+- **安全优先**：Calico WireGuard  加密通信、路由灵活性
+- **操作系统使用nftables**：切换成 iptables-legacy 或使用 eBPF
 
 ### 重要组件
 
 除了核心组件之外，k8s 中还有许多重要的组件和工具，它们在不同的场景和需求下发挥着重要作用：
 
-1. Ingress Controller：
-    - 用于管理 Ingress 资源，实现 HTTP 和 HTTPS 路由。常见的 Ingress Controller 有 NGINX、Traefik 和 HAProxy。
-
-2. CoreDNS：
-    - k8s 集群中的默认 DNS 服务器，负责为服务发现和 DNS 解析提供支持。
-
-3. Helm：
+1. Helm：
     - k8s 的包管理工具，用于简化应用程序的部署和管理。Helm 使用“charts”来定义、安装和升级 k8s 应用程序。
 
-4. Prometheus：
+2. Prometheus：
     - 用于监控和告警的系统，可以与 k8s 集成，以收集集群和应用程序的性能数据。
 
-5. Grafana：
+3. Grafana：
     - 开源的可视化工具，与 Prometheus 配合使用，提供丰富的监控和可视化能力。
 
-6. kube-state-metrics：
+4. kube-state-metrics：
     - 用于暴露 k8s 集群状态指标，供 Prometheus 采集。
 
-7. Fluentd：
+5. Fluentd：
     - 日志收集和聚合工具，可以将 k8s 集群中的日志收集并发送到不同的存储后端。
 
-8. Jaeger 或 Zipkin：
+6. Jaeger 或 Zipkin：
     - 分布式追踪系统，用于监控和调试微服务架构中的延迟和性能问题。
 
-9. Cert-Manager：
+7. Cert-Manager：
     - 用于在 k8s 集群中自动化管理 TLS 证书，常用于自动申请和续订 Let’s Encrypt 证书。
 
-10. Kubeflow：
+8.  Kubeflow：
     - 用于在 k8s 上运行和部署机器学习工作负载的工具包。
 
-11. Velero：
+9.  Velero：
     - 用于备份和恢复 k8s 集群资源和持久化卷的工具。
 
-12. Kubernetes Dashboard：
+10. Kubernetes Dashboard：
     - 一个基于 Web 的用户界面，用于管理和监控 k8s 集群。
 
-13. Operators：
+11. Operators：
     - 用于将复杂的应用程序管理自动化的 k8s 扩展，使用自定义控制器来管理特定的应用程序或服务。
 
-14. Kustomize：
+12. Kustomize：
     - 原生于 k8s 的配置管理工具，允许用户声明性地管理 k8s 对象配置。
 
 这些组件和工具在不同的应用场景下发挥着重要作用，可以极大地增强 k8s 的功能和用户体验。
@@ -394,52 +487,43 @@ k8s 集群初始化后，控制平面（Control Plane）和工作节点（Worker
 
 除了之前提到的组件和工具，还有一些其他的重要组件和工具，它们在特定的用例中也非常有用：
 
-1. kubeadm：
-    - k8s 集群的安装和配置工具，提供简单的命令行接口来引导集群。
-
-2. Minikube：
+1. Minikube：
     - 本地运行 k8s 的工具，适用于开发和测试环境。
 
-3. Kind (Kubernetes IN Docker)：
+2. Kind (Kubernetes IN Docker)：
     - 在 Docker 容器中运行本地 k8s 集群的工具，常用于测试和 CI/CD 环境。
 
-4. Weave Net：
-    - 另一种网络插件，提供简单易用的网络配置和管理。
-
-5. Cilium：
-    - 基于 eBPF 的网络插件，提供高级网络安全和监控功能。
-
-6. Linkerd：
+3. Linkerd：
     - 轻量级服务网格，用于提供服务间通信的可观察性、安全性和可靠性。
 
-7. Istio：
+4. Istio：
     - 功能丰富的服务网格，提供流量管理、安全性、策略控制和可观察性。
 
-8. Keda (Kubernetes Event-driven Autoscaling)：
+5. Keda (Kubernetes Event-driven Autoscaling)：
     - 允许基于事件的自动扩展，为应用程序提供基于事件的自动缩放能力。
 
-9.  Argo CD：
+6.  Argo CD：
     - 声明式的 GitOps 继续交付工具，帮助管理 k8s 应用程序的持续交付。
 
-10. Tekton：
+7.  Tekton：
     - 云原生的 CI/CD 系统，提供构建、测试和部署应用程序的流水线。
 
-11. Velero：
+8.  Velero：
     - k8s 的备份和恢复工具，用于保护和恢复集群资源和持久化存储。
 
-12. OpenEBS：
+9.  OpenEBS：
     - 云原生的持久化存储解决方案，提供基于容器的存储编排。
 
-13. Longhorn：
+10. Longhorn：
     - CNCF 孵化的分布式块存储系统，用于 k8s 环境。
 
-14. Kong for Kubernetes：
+11. Kong for Kubernetes：
     - 云原生 API 网关，提供服务管理、路由、负载均衡和安全性。
 
-15. Harbor：
+12. Harbor：
     - 云原生的容器镜像仓库，提供镜像管理、安全扫描和访问控制功能。
 
-16. Kiali：
+13. Kiali：
     - 服务网格（如 Istio）的可观察性和可管理性工具，提供仪表盘和可视化功能。
 
 这些组件和工具可以根据具体需求选择和使用，进一步增强 k8s 的功能和管理能力。
@@ -650,15 +734,14 @@ spec:
 2. Ingress：
     - Ingress 是一种 API 对象，提供 HTTP 和 HTTPS 路由功能。通过配置 Ingress Controller，可以定义路由规则，将流量从外部路由到集群内部的服务。
 
-3. NetworkPolicy：
+3. Ingress Controller：
+    - Ingress Controller 是实现 Ingress 资源的控制器。常用的 Ingress Controller 有 NGINX Ingress Controller、Traefik、HAProxy 等。
+
+4. NetworkPolicy：
     - 用于定义网络访问控制规则，以限制不同 Pod 之间的流量。可以实现细粒度的安全策略，控制哪些 Pod 可以访问其他 Pod。
 
-4. Service Mesh：
+5. Service Mesh：
     - 通过 Service Mesh（如 Istio、Linkerd）提供更高级的流量管理功能，包括流量路由、负载均衡、故障恢复、监控和安全控制等。
-
-5. Ingress Controller：
-    - Ingress Controller 是实现 Ingress 资源的控制器。常用的 Ingress Controller 有 NGINX Ingress
-      Controller、Traefik、HAProxy 等。
 
 6. Custom Resource Definitions (CRDs)：
     - 通过自定义资源定义扩展 k8s 的功能，可以定义自定义的流量管理策略，满足特定需求。

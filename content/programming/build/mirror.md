@@ -136,9 +136,8 @@ gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.32/rpm/repodata/
 EOF
 
 setenforce 0
-yum install -y kubelet kubeadm kubectl
+yum install -y iproute-tc kubernetes-cni kubelet kubeadm kubectl
 systemctl enable kubelet --now
-yum install -y iproute-tc
 ```
 
 ### Snap

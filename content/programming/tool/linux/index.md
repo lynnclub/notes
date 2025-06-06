@@ -147,10 +147,12 @@ free -h
 
 ```shell
 netstat -tuln
+netstat -tulnp | grep 9099
 
 iftop
 
 # 端口
+ss -tnlp | grep 179
 nc -vz -w 2 192.168.0.107 8080
 telnet 192.168.0.107 8080
 nmap -p 8080 192.168.0.107
