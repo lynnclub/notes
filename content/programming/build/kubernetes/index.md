@@ -420,9 +420,9 @@ k8s 集群初始化后，控制平面（Control Plane）和工作节点（Worker
 
 CNI网络插件负责Pod网络的创建和管理。
 
-1. Flannel：支持 VXLAN/host-gw/IPIP，简单稳定，默认使用 VXLAN 封装，性能较差。
-2. Calico：支持 BGP/VXLAN/IPIP/WireGuard/eBPF（v3.20+），支持网络策略和安全性等高级网络功能。
-3. Cilium：依赖eBPF，高性能，安全性强，对内核要求较高。
+1. Flannel：支持 VXLAN/host-gw/IPIP，简单稳定，默认使用 VXLAN 封装，性能较差、兼容性好。
+2. Calico：支持 BGP/VXLAN/IPIP/WireGuard/eBPF（v3.20+），支持网络策略和安全性等高级网络功能，比较复杂。
+3. Cilium：依赖eBPF，高性能，安全性强，对内核要求较高，最复杂。
 
 | 技术        | 优点                                                         | 缺点                                                           | 常见应用/备注                                |
 |-------------|--------------------------------------------------------------|----------------------------------------------------------------|----------------------------------------------|
@@ -437,9 +437,9 @@ CNI网络插件负责Pod网络的创建和管理。
 
 - **小型测试集群**：kube-proxy: iptables + Flannel VXLAN/IPIP  简单、兼容性好
 - **中型生产集群**：kube-proxy: IPVS + Calico BGP  无封装、高性能
-- **高性能场景**：kube-proxy: none + Cilium  极限性能、复杂微服务通信，eBPF替代kube-proxy
+- **高性能场景**：kube-proxy: none + Cilium eBPF  极限性能、复杂微服务通信，用eBPF替代kube-proxy
 - **安全优先**：Calico WireGuard  加密通信、路由灵活性
-- **操作系统使用nftables**：切换成 iptables-legacy 或使用 eBPF
+- **操作系统使用nftables**：建议切换成 iptables-legacy 或使用 eBPF
 
 ### 重要组件
 
