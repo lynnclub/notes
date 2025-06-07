@@ -27,11 +27,11 @@ kubectl get pods --all-namespaces -o wide
 kubectl get pods -n <namespace>
 #查看系统pods
 kubectl get pods -n kube-system
+kubectl get pods -n kubesphere-system
 
 #查看 pod 的日志
 kubectl logs -n <namespace> <pod-name> 
-kubectl logs -n kube-system pod/kube-proxy-www59
-#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用。
+#查看前一个容器的日志，对于调试崩溃或重启的容器特别有用
 kubectl logs -n <namespace> <pod-name> --previous
 
 #查看详细信息
@@ -79,6 +79,7 @@ kubectl delete deployment nginx-deployment
 
 #重启
 kubectl rollout restart deployment ks-apiserver -n kubesphere-system
+kubectl rollout restart daemonset cilium -n kube-system
 
 kubectl get deployments --all-namespaces -o yaml > all_deployments.yaml
 kubectl get jobs --all-namespaces -o json > all_jobs.json
@@ -94,9 +95,9 @@ containerd 是 k8s 默认的容器运行时，它提供了容器的生命周期�
 
 ```shell
 #启动和停止
-sudo systemctl start containerd
-sudo systemctl stop containerd
-sudo systemctl status containerd
+systemctl start containerd
+systemctl stop containerd
+systemctl status containerd
 #查看日志
 journalctl -u containerd
 
@@ -129,40 +130,40 @@ crictl 是 k8s CRI（容器运行时接口）的命令行工具。
 
 ```shell
 #列出正在运行的容器
-sudo crictl ps
+crictl ps
 
 #列出所有容器（包括已停止的容器）
-sudo crictl ps -a
+crictl ps -a
 
 #查看容器详细信息
-sudo crictl inspect <容器ID>
+crictl inspect <容器ID>
 
 #列出所有镜像
-sudo crictl images
+crictl images
 
 #查看镜像详细信息
-sudo crictl inspecti <镜像ID或名称>
+crictl inspecti <镜像ID或名称>
 
 #删除容器
-sudo crictl rm <容器ID>
+crictl rm <容器ID>
 
 #拉取镜像
-sudo crictl pull <镜像名称>
+crictl pull <镜像名称>
 
 #删除镜像
-sudo crictl rmi <镜像ID或名称>
+crictl rmi <镜像ID或名称>
 
 #查看容器日志
-sudo crictl logs <容器ID>
+crictl logs <容器ID>
 
 #启动容器
-sudo crictl start <容器ID>
+crictl start <容器ID>
 
 #停止容器
-sudo crictl stop <容器ID>
+crictl stop <容器ID>
 
 #运行一个交互式 shell
-sudo crictl exec -it <容器ID> sh
+crictl exec -it <容器ID> sh
 ```
 
 ## 架构
@@ -776,15 +777,15 @@ kubectl delete pvc aws-ebs
 
 ```shell
 #环境准备
-sudo swapoff -a
-sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab  # 永久禁用
+swapoff -a
+sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab  # 永久禁用
 
 #网络插件选项一：截止20250607，Flannel/Calico网络插件依赖iptables，需要开启对应内核模块。
 lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
 #临时启用
 modprobe ip_tables iptable_nat ip6_tables ip6table_nat ip_set xt_set ipip nf_conntrack ip6_tunnel tun br_netfilter
 #长期启用
-sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
 ip_tables
 iptable_nat
 ip6_tables
@@ -797,32 +798,31 @@ ip6_tunnel
 tun
 br_netfilter
 EOF
-sudo systemctl restart systemd-modules-load.service
+systemctl restart systemd-modules-load.service
 #启用IP转发
-echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
 
-#网络插件选项二：最新Linux系统只有nftables，需要开启iptables-nft兼容iptables-legacy语法，如果集群中同时存在iptables/nftables节点需要开启Calico BGP的iptablesBackend: Auto，但是不建议混用。更好的办法是使用Cilium eBPF彻底绕过iptables/nftables。
+#网络插件选项二：最新Linux系统只有nftables，需要开启iptables-nft兼容iptables-legacy语法，如果集群中同时存在iptables/nftables节点需要开启Calico BGP的iptablesBackend: Auto，但是不建议混用。
 #切换到iptables-nft，Calico BGP从3.15开始支持iptables-nft，Flannel从0.15.0开始支持iptables-nft。
 lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|nf_tables|nf_nat|nf_conntrack|nf_defrag_ipv4|nf_defrag_ipv6|ip_set|xt_set|ipip|ip6_tunnel|tun|br_netfilter'
 #安装基础软件包（CentOS/RHEL）
-sudo yum install -y iptables nftables
+yum install -y iptables nftables
+systemctl enable --now nftables
 #创建备选方案配置
-sudo update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 100
-sudo update-alternatives --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 100
-sudo update-alternatives --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 100
-sudo update-alternatives --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 100
+update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 100
+update-alternatives --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 100
+update-alternatives --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 100
+update-alternatives --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 100
 #设置默认选项
-sudo update-alternatives --set iptables /usr/sbin/iptables-nft
-sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
-sudo update-alternatives --set arptables /usr/sbin/arptables-nft
-sudo update-alternatives --set ebtables /usr/sbin/ebtables-nft
+update-alternatives --set iptables /usr/sbin/iptables-nft
+update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+update-alternatives --set arptables /usr/sbin/arptables-nft
+update-alternatives --set ebtables /usr/sbin/ebtables-nft
 #验证配置
-sudo iptables -V #正确输出: iptables v1.x.x (nf_tables)
-#临时启用
-modprobe ip_tables iptable_nat ip6_tables ip6table_nat nf_tables nf_nat nf_conntrack nf_defrag_ipv4 nf_defrag_ipv6 ip_set xt_set ipip ip6_tunnel tun br_netfilter
+iptables -V #正确输出: iptables v1.x.x (nf_tables)
 #长期启用
-sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
 ip_tables
 iptable_nat
 ip6_tables
@@ -839,19 +839,17 @@ ip6_tunnel
 tun
 br_netfilter
 EOF
-sudo systemctl restart systemd-modules-load.service
+systemctl restart systemd-modules-load.service
 #启用IP转发
-echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
 
-#网络插件选项三：iptables+kube-proxy使用IPVS
+#网络插件选项三：nftables+kube-proxy使用IPVS
 lsmod | grep -E 'ip_vs|ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
 #安装基础软件包（CentOS/RHEL）
 yum install -y ipset ipvsadm
-#临时启用
-modprobe ip_vs ip_vs_rr ip_vs_wrr ip_vs_sh ip_tables iptable_nat ip6_tables ip6table_nat ip_set xt_set ipip nf_conntrack ip6_tunnel tun br_netfilter
 #长期启用
-sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
 ip_vs
 ip_vs_rr
 ip_vs_wrr
@@ -860,35 +858,54 @@ ip_tables
 iptable_nat
 ip6_tables
 ip6table_nat
+nf_tables
+nf_nat
+nf_conntrack
+nf_defrag_ipv4
+nf_defrag_ipv6
 ip_set
 xt_set
 ipip
-nf_conntrack
 ip6_tunnel
 tun
 br_netfilter
 EOF
-sudo systemctl restart systemd-modules-load.service
+systemctl restart systemd-modules-load.service
 #启用IP转发
-echo -e "net.ipv4.conf.all.arp_ignore=1\nnet.ipv4.conf.all.arp_announce=2\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+echo -e "net.ipv4.conf.all.arp_ignore=1\nnet.ipv4.conf.all.arp_announce=2\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
-#修改kube-proxy的mode=ipvs
 
 #初始化控制节点
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+kubeadm init --pod-network-cidr=192.168.0.0/16
+kubeadm init --pod-network-cidr=10.244.0.0/16
+#修改kube-proxy的mode=ipvs（可选）
+kubectl -n kube-system edit configmap kube-proxy
 
 #配置文件
 mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-#安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-#或者安装网络插件calico，性能好，功能强大（可选）
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+#查看节点
+kubectl get nodes
 
 #移除控制节点标签，使其同时运行工作负载（不推荐）
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+#安装网络插件calico，性能好，功能强大
+#默认是iptables legacy模式
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+#如果是nftables换如下方式
+helm repo add projectcalico https://docs.tigera.io/calico/charts
+helm repo update
+helm install calico projectcalico/tigera-operator \
+  --create-namespace -n tigera-operator \
+  --set installation.kubernetesProvider= \
+  --set installation.calicoNetwork.linuxDataplane=Iptables \
+  --set installation.calicoNetwork.iptablesBackend=NFT
+
+#或者安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+#注意：网络插件与宿主机的网段重复会导致网络冲突和通信异常
 
 #设置存储（配置文件见 存储 章节）
 kubectl apply -f storageclass.yaml
@@ -896,13 +913,14 @@ kubectl apply -f storageclass.yaml
 kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 
 #重置，危险！
-sudo kubeadm reset -f
-rm -rf ~/.kube /etc/kubernetes /var/lib/etcd /var/lib/kubelet/* /etc/cni/net.d
+kubeadm reset -f
+rm -rf /etc/cni/net.d /opt/cni/bin/ /etc/kubernetes /var/lib/etcd ~/.kube
+iptables -F && iptables -t nat -F
+ipvsadm --clear
 #清理Calico残留（可选）
-umount  /var/run/calico/cgroup
-rm -rf /var/run/calico /etc/calico
+umount  /var/run/calico/cgroup && rm -rf /var/run/calico /etc/calico
 #重置iptables，危险！
-iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
+#iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
 systemctl restart containerd kubelet
 ```
 
@@ -913,46 +931,44 @@ env:
     value: "interface=ens.*|eth.*"
 ```
 
-kube-proxy: none + Cilium eBPF 高性能方案
+kube-proxy: none + Cilium eBPF 高性能方案（kubesphere官方未针对Cilium做过测试！实测不通！）
 ```shell
-#环境准备
-sudo swapoff -a
-sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab  # 永久禁用
 #添加 Cilium Helm 仓库
 helm repo add cilium https://helm.cilium.io/
 helm repo update
-#临时启用
-modprobe overlay br_netfilter
-#长期启用
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-overlay
-br_netfilter
-EOF
-sudo systemctl restart systemd-modules-load.service
 #启用IP转发
-echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
-#配置 containerd
-containerd config default | sudo tee /etc/containerd/config.toml
-sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
-sudo systemctl restart containerd
 
 #初始化控制节点，跳过 kube-proxy 安装
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --skip-phases=addon/kube-proxy
+kubeadm init --pod-network-cidr=10.0.0.0/16 --skip-phases=addon/kube-proxy
 
 #配置文件
 mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
 
 #安装 Cilium 1.17.4，搭配 Kubernetes 1.32.5
 helm install cilium cilium/cilium \
   --version 1.17.4 \
   --namespace kube-system \
+  --set kubeProxyReplacement=false \
   --set k8sServiceHost=<MASTER_IP> \
-  --set k8sServicePort=6443
+  --set k8sServicePort=6443 \
+  --set ipam.mode=kubernetes \
+  --set hostServices.enabled=true \
+  --set externalIPs.enabled=true \
+  --set nodePort.enabled=true \
+  --set hostPort.enabled=true \
+  --set tunnelProtocol=disabled \
+  --set autoDirectNodeRoutes=true
+#如果出现Error creating: Timeout: request did not complete within requested timeout - context deadline exceeded，先不要开 kubeProxyReplacement=true，等系统稳定再改
+helm upgrade cilium cilium/cilium \
+  --version 1.17.4 \
+  --namespace kube-system \
+  --set kubeProxyReplacement=true
 
-#更新
+#按配置文件更新
 cat > cilium-values.yaml <<EOF
 kubeProxyReplacement: true  # 完全替代 kube-proxy
 k8sServiceHost: 172.16.12.xxx  # 替换为控制节点内网 IP
@@ -1007,8 +1023,22 @@ helm upgrade cilium cilium/cilium \
   --values cilium-values.yaml \
   --wait
 
-#卸载
-helm uninstall cilium -n kube-system
+#卸载，危险！
+helm uninstall -n kube-system cilium
+
+#kubesphere安装方法有所不同
+#查看 Cilium 实际使用的 CIDR
+kubectl -n kube-system get cm cilium-config -o jsonpath='{.data.cluster-pool-ipv4-cidr}'
+#安装kubesphere
+helm upgrade --install -n kubesphere-system ks-core \
+  https://charts.kubesphere.io/main/ks-core-1.1.4.tgz \
+  --set disableKubeProxyCheck=true \
+  --set ks-installer.configuration.network.networkPlugin=cilium \
+  --set ks-installer.configuration.network.kubePodsCIDR=10.0.0.0/8 \
+  --set ks-installer.configuration.network.kubeServiceCIDR=10.96.0.0/12 \
+  --debug --wait
+#卸载，危险！
+helm -n kubesphere-system uninstall ks-core
 ```
 
 ### 作为工作节点
@@ -1065,7 +1095,7 @@ helm install kubesphere kubesphere/ks-installer --namespace kubesphere-system --
 
 ```shell
 #创建用户名和密码
-sudo yum install httpd-tools
+yum install httpd-tools
 mkdir -p /root/auth
 htpasswd -Bc /root/auth/htpasswd default
 
