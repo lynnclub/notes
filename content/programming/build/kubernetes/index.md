@@ -13,7 +13,6 @@ weight: 3
 kubectl api-resources
 #查看集群信息
 kubectl cluster-info
-
 #列出所有节点
 kubectl get nodes
 #列出所有命名空间
@@ -652,7 +651,7 @@ kubectl edit deployment ingress-nginx-controller -n ingress-nginx
 
 StorageClass、PersistentVolume（PV）和 PersistentVolumeClaim（PVC）是用于管理存储资源的关键概念。
 
-StorageClass（存储类）
+### StorageClass（存储类）
 
 StorageClass 用于定义存储的类型和质量，例如性能特征和存储类型（如 SSD、HDD）。它允许用户指定存储的要求和动态提供存储卷。通过不同的存储类，你可以选择不同的存储提供商和配置。
 
@@ -689,7 +688,7 @@ volumeBindingMode: WaitForFirstConsumer
 
 ebs.csi.aws.com 是 AWS 提供的更现代的、基于 CSI 的存储解决方案，推荐在新项目中使用，支持更多的功能和未来发展。kubernetes.io/aws-ebs 是传统的 in-tree 驱动，功能有限且逐步被淘汰，建议尽早迁移到 CSI 驱动。
 
-PersistentVolume（持久卷）
+### PersistentVolume（持久卷）
 
 PersistentVolume 是一个集群范围的资源，表示存储资源的实际实现。它由管理员配置，提供了持久的存储卷。持久卷是存储的实际实例，可以是
 NFS、iSCSI、云存储等。
@@ -733,7 +732,7 @@ spec:
     path: /app/k8s_pv
 ```
 
-PersistentVolumeClaim（持久卷声明）
+### PersistentVolumeClaim（持久卷声明）
 
 PersistentVolumeClaim 是用户用来请求存储资源的对象。它描述了应用所需的存储容量、访问模式等。k8s会根据持久卷声明的要求选择适当的持久卷，或者根据 StorageClass 动态创建新的 PersistentVolume。
 
@@ -888,7 +887,7 @@ kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/
 #或者安装网络插件calico，性能好，功能强大（可选）
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
-#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
+#移除控制节点标签，使其同时运行工作负载（不推荐）
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 #设置存储（配置文件见 存储 章节）
@@ -900,9 +899,11 @@ kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storagecl
 sudo kubeadm reset -f
 rm -rf ~/.kube /etc/kubernetes /var/lib/etcd /var/lib/kubelet/* /etc/cni/net.d
 #清理Calico残留（可选）
+umount  /var/run/calico/cgroup
 rm -rf /var/run/calico /etc/calico
 #重置iptables，危险！
 iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
+systemctl restart containerd kubelet
 ```
 
 calico兼容多种网卡
@@ -917,6 +918,9 @@ kube-proxy: none + Cilium eBPF 高性能方案
 #环境准备
 sudo swapoff -a
 sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab  # 永久禁用
+#添加 Cilium Helm 仓库
+helm repo add cilium https://helm.cilium.io/
+helm repo update
 #临时启用
 modprobe overlay br_netfilter
 #长期启用
@@ -940,6 +944,71 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --skip-phases=addon/kube-prox
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+#安装 Cilium 1.17.4，搭配 Kubernetes 1.32.5
+helm install cilium cilium/cilium \
+  --version 1.17.4 \
+  --namespace kube-system \
+  --set k8sServiceHost=<MASTER_IP> \
+  --set k8sServicePort=6443
+
+#更新
+cat > cilium-values.yaml <<EOF
+kubeProxyReplacement: true  # 完全替代 kube-proxy
+k8sServiceHost: 172.16.12.xxx  # 替换为控制节点内网 IP
+k8sServicePort: 6443
+
+ipam:
+  mode: kubernetes
+
+hostServices:
+  enabled: true
+externalIPs:
+  enabled: true
+nodePort:
+  enabled: true
+hostPort:
+  enabled: true
+
+loadBalancer:
+  algorithm: maglev
+
+bpf:
+  masquerade: true
+  hostRouting: true
+  tproxy: true
+
+cni:
+  chainingMode: none   # 独立 CNI 模式
+
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+
+# 针对 AWS 优化
+eni:
+  enabled: false       # 如需 AWS ENI 模式可开启
+routingMode: native  # 默认是 vxlan
+ipv4NativeRoutingCIDR: 172.16.0.0/16  # 替换为你的 VPC CIDR
+autoDirectNodeRoutes: true
+
+# 内核参数优化
+kernel:
+  hostRouting: true
+  bpf:
+    numaAware: true
+EOF
+helm upgrade cilium cilium/cilium \
+  --version 1.17.4 \
+  --namespace kube-system \
+  --values cilium-values.yaml \
+  --wait
+
+#卸载
+helm uninstall cilium -n kube-system
 ```
 
 ### 作为工作节点
@@ -962,12 +1031,9 @@ kubesphere是k8s的开源平台，提供了完整的云原生应用管理、监�
 [https://helm.sh/zh/docs/intro/install/](https://helm.sh/zh/docs/intro/install/)
 
 ```shell
-# 如果没有helm，安装
-brew install helm
-
 # 如果无法访问 charts.kubesphere.io, 可将 charts.kubesphere.io 替换为 charts.kubesphere.com.cn
 helm upgrade --install -n kubesphere-system --create-namespace ks-core https://charts.kubesphere.io/main/ks-core-1.1.4.tgz --debug --wait
-# 如果访问 Docker Hub 受限，请在命令后添加如下配置，修改默认的镜像拉取地址。
+# 如果访问 Docker Hub 受限，请在命令后添加如下参数，修改成镜像拉取地址。
 --set global.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
 --set extension.imageRegistry=swr.cn-southwest-2.myhuaweicloud.com/ks
 
@@ -983,9 +1049,6 @@ admin/P@88w0rd
 ### 通过helm安装kubesphere3.x
 
 ```shell
-# 如果没有helm，安装
-brew install helm
-
 # 添加 KubeSphere 的 Helm 仓库
 helm repo add kubesphere https://charts.kubesphere.io/main
 helm repo update
