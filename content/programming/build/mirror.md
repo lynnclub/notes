@@ -72,7 +72,7 @@ k8s默认使用containerd作为容器。
 [https://containerd.io/downloads/](https://containerd.io/downloads/)
 
 Centos
-```
+```shell
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install -y containerd.io
 sudo systemctl enable --now containerd
@@ -109,7 +109,7 @@ server = "https://docker.io"
 
 Debian/Ubuntu安装k8s，注意更换版本
 
-```
+```shell
 apt update && apt install -y apt-transport-https
 
 VERSION="v1.32"
@@ -125,7 +125,7 @@ systemctl enable kubelet --now
 
 CentOS/RHEL/Fedora
 
-```
+```shell
 cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -138,6 +138,14 @@ EOF
 setenforce 0
 yum install -y iproute-tc kubernetes-cni kubelet kubeadm kubectl
 systemctl enable kubelet --now
+```
+
+### Helm
+
+Helm 是 Kubernetes 的包管理器。
+
+```shell
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 
 ### Snap

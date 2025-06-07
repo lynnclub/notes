@@ -166,146 +166,6 @@ sudo crictl stop <容器ID>
 sudo crictl exec -it <容器ID> sh
 ```
 
-## 安装kubernetes
-
-安装请参考文档 [镜像](../mirror/#kubernetes)。
-
-### 作为控制节点
-
-```shell
-#前置：calico依赖内核模块
-lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
-#临时启用
-modprobe ip_tables iptable_nat ip6_tables ip6table_nat ip_set xt_set ipip nf_conntrack ip6_tunnel tun br_netfilter
-#长期启用
-sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
-ip_tables
-iptable_nat
-ip6_tables
-ip6table_nat
-ip_set
-xt_set
-ipip
-nf_conntrack
-ip6_tunnel
-tun
-br_netfilter
-EOF
-sudo systemctl restart systemd-modules-load.service
-#启用IP转发
-echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
-sysctl -p
-
-#推荐使用IPVS
-#calico默认使用ip_tables，如果是最新系统可能只有nf_tables，需要在集群统一使用nf_tables
-#calico还需要注意网卡名称
-lsmod | grep -E 'ip_vs|ip_tables|iptable_nat|ip6_tables|ip6table_nat|nf_tables|nf_nat|ip_set|xt_set|ipip|nf_conntrack|nf_defrag_ipv4|nf_defrag_ipv6|ip6_tunnel|tun|br_netfilter'
-#临时启用
-modprobe ip_tables iptable_nat ip6_tables ip6table_nat nf_tables nf_nat ip_set xt_set ipip nf_conntrack nf_defrag_ipv4 nf_defrag_ipv6 ip6_tunnel tun br_netfilter
-#长期启用
-sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
-ip_vs
-ip_vs_rr
-ip_vs_wrr
-ip_vs_sh
-ip_tables
-iptable_nat
-ip6_tables
-ip6table_nat
-nf_tables
-nf_nat
-nf_conntrack
-nf_defrag_ipv4
-nf_defrag_ipv6
-ip_set
-xt_set
-ipip
-ip6_tunnel
-tun
-br_netfilter
-EOF
-sudo systemctl restart systemd-modules-load.service
-#启用IP转发
-echo -e "net.ipv4.conf.all.arp_ignore=1\nnet.ipv4.conf.all.arp_announce=2\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
-sysctl -p
-
-yum install -y ipset ipvsadm
-
-# 旧系统从iptables切换到nftables兼容模式（不推荐）
-# sudo yum install -y iptables nftables iptables-nft
-# 手动创建备选方案配置
-# sudo update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 100
-# sudo update-alternatives --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 100
-# sudo update-alternatives --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 100
-# sudo update-alternatives --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 100
-# 设置默认选项
-# sudo update-alternatives --set iptables /usr/sbin/iptables-nft
-# sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
-# sudo update-alternatives --set arptables /usr/sbin/arptables-nft
-# sudo update-alternatives --set ebtables /usr/sbin/ebtables-nft
-# 如果有问题切换回来
-# sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-# sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-# sudo update-alternatives --set arptables /usr/sbin/arptables-legacy
-# sudo update-alternatives --set ebtables /usr/sbin/ebtables-legacy
-# 验证配置
-# sudo iptables -V
-# 应输出: iptables v1.8.x (nf_tables)
-
-# 新系统从nftables切换到iptables模式
-# sudo yum install iptables-legacy -y
-# sudo systemctl enable iptables --now
-
-#初始化控制节点
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-
-#配置文件
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-#安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-#或者安装网络插件calico，性能好，功能强大
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-
-#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
-
-#设置存储（配置文件见 存储 章节）
-kubectl apply -f storageclass.yaml
-#设置默认存储
-kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
-
-#重置，危险！
-sudo kubeadm reset -f
-rm -rf ~/.kube /etc/kubernetes /var/lib/etcd /var/lib/kubelet/* /etc/cni/net.d
-#清理Calico残留（可选）
-rm -rf /var/run/calico /etc/calico
-#重置iptables
-iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
-```
-
-calico兼容多种网卡
-```
-env:
-  - name: IP_AUTODETECTION_METHOD
-    value: "interface=ens.*|eth.*"
-```
-
-### 工作节点
-
-```shell
-#生成加入命令（控制节点）
-kubeadm token create --print-join-command
-
-#加入集群（工作节点）
-kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-hash <hash>
-
-#删除工作节点（控制节点）
-kubectl delete node <节点名>
-```
-
 ## 架构
 
 ![k8s](k8s.png)
@@ -420,16 +280,20 @@ k8s 集群初始化后，控制平面（Control Plane）和工作节点（Worker
 
 CNI网络插件负责Pod网络的创建和管理。
 
-1. Flannel：支持 VXLAN/host-gw/IPIP，简单稳定，默认使用 VXLAN 封装，性能较差、兼容性好。
+[https://github.com/flannel-io/flannel](https://github.com/flannel-io/flannel)
+[https://docs.tigera.io/calico/latest/about/](https://docs.tigera.io/calico/latest/about/)
+[https://docs.cilium.io/en/stable/overview/intro/](https://docs.cilium.io/en/stable/overview/intro/)
+
+1. Flannel：支持 VXLAN/host-gw/IPIP，简单稳定，默认使用 VXLAN 封装，性能一般、兼容性好。
 2. Calico：支持 BGP/VXLAN/IPIP/WireGuard/eBPF（v3.20+），支持网络策略和安全性等高级网络功能，比较复杂。
-3. Cilium：依赖eBPF，高性能，安全性强，对内核要求较高>=5.10，最复杂。
+3. Cilium：依赖eBPF，高性能，安全性强，对内核要求高>=5.10，最复杂。
 
 | 技术        | 优点                                                         | 缺点                                                           | 常见应用/备注                                |
 |-------------|--------------------------------------------------------------|----------------------------------------------------------------|----------------------------------------------|
 | **iptables** | 成熟稳定、广泛支持                                         | 表规则多时效率低，配置复杂                                 | kube-proxy 默认模式                          |
 | **nftables** | 替代 iptables，结构更清晰                                  | 一些旧软件兼容性差                                          | Debian / Ubuntu 等现代发行版默认使用         |
 | **IPVS**     | 高性能，支持连接追踪，适合高并发                         | 配置和调试复杂                                               | kube-proxy 推荐在高并发集群使用             |
-| **eBPF**     | 内核态执行、超高性能、灵活编程                          | 依赖高版本内核、学习曲线陡峭                                | Cilium、网络策略、Service Mesh              |
+| **eBPF**     | 内核态执行、超高性能、灵活编程                          | 依赖高版本内核>=5.10、学习曲线陡峭                                | Cilium、网络策略、Service Mesh              |
 | **VXLAN**    | 支持跨主机通信，网络可扩展                               | 基于 UDP 封装，性能损耗较高，可能丢包                     | Flannel、Calico 的 overlay 模式             |
 | **IPIP**     | 相比 VXLAN 封装效率更高                                  | 云环境常有限制，容易遇到 MTU 问题                          | Flannel、Calico（轻量 overlay）             |
 | **WireGuard**| 安全、轻量、现代加密方式                                 | 不支持负载分发                                               | Calico 加密节点通信、集群间 VPN              |
@@ -439,7 +303,11 @@ CNI网络插件负责Pod网络的创建和管理。
 - **中型生产集群**：kube-proxy: IPVS + Calico BGP  无封装、高性能、支持直连
 - **高性能场景**：kube-proxy: none + Cilium eBPF  极限性能、复杂微服务通信，用eBPF替代kube-proxy
 - **安全优先**：kube-proxy: IPVS + Calico WireGuard  加密通信、路由灵活性
-- **操作系统使用nftables**：Flannel、Calico不支持nftables，建议切换成 iptables-legacy 或使用 eBPF绕过iptables/nftables
+- **操作系统使用nftables**：Flannel、Calico不支持nftables，建议切换成iptables-nft兼容iptables-legacy语法或使用Cilium eBPF彻底绕过iptables/nftables。
+
+注意：
+1. Calico eBPF在某些场景下依然少量依赖iptables。
+2. Flannel VXLAN/host-gw和Calico BGP非常依赖iptables，使用nftables需要通过iptables-nft兼容。
 
 ### 重要组件
 
@@ -898,6 +766,193 @@ kubectl delete pv aws-ebs
 # 查看持久卷声明
 kubectl get pvc
 kubectl delete pvc aws-ebs  
+```
+
+## 安装kubernetes
+
+安装kubernetes请参考文档 [镜像kubernetes章节](../mirror/#kubernetes)。  
+安装helm请参考文档 [镜像helm章节](../mirror/#helm)。
+
+### 作为控制节点
+
+```shell
+#环境准备
+sudo swapoff -a
+sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab  # 永久禁用
+
+#网络插件选项一：截止20250607，Flannel/Calico网络插件依赖iptables，需要开启对应内核模块。
+lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
+#临时启用
+modprobe ip_tables iptable_nat ip6_tables ip6table_nat ip_set xt_set ipip nf_conntrack ip6_tunnel tun br_netfilter
+#长期启用
+sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+ip_tables
+iptable_nat
+ip6_tables
+ip6table_nat
+ip_set
+xt_set
+ipip
+nf_conntrack
+ip6_tunnel
+tun
+br_netfilter
+EOF
+sudo systemctl restart systemd-modules-load.service
+#启用IP转发
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+sysctl -p
+
+#网络插件选项二：最新Linux系统只有nftables，需要开启iptables-nft兼容iptables-legacy语法，如果集群中同时存在iptables/nftables节点需要开启Calico BGP的iptablesBackend: Auto，但是不建议混用。更好的办法是使用Cilium eBPF彻底绕过iptables/nftables。
+#切换到iptables-nft，Calico BGP从3.15开始支持iptables-nft，Flannel从0.15.0开始支持iptables-nft。
+lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|nf_tables|nf_nat|nf_conntrack|nf_defrag_ipv4|nf_defrag_ipv6|ip_set|xt_set|ipip|ip6_tunnel|tun|br_netfilter'
+#安装基础软件包（CentOS/RHEL）
+sudo yum install -y iptables nftables
+#创建备选方案配置
+sudo update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 100
+sudo update-alternatives --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 100
+sudo update-alternatives --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 100
+sudo update-alternatives --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 100
+#设置默认选项
+sudo update-alternatives --set iptables /usr/sbin/iptables-nft
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+sudo update-alternatives --set arptables /usr/sbin/arptables-nft
+sudo update-alternatives --set ebtables /usr/sbin/ebtables-nft
+#验证配置
+sudo iptables -V #正确输出: iptables v1.x.x (nf_tables)
+#临时启用
+modprobe ip_tables iptable_nat ip6_tables ip6table_nat nf_tables nf_nat nf_conntrack nf_defrag_ipv4 nf_defrag_ipv6 ip_set xt_set ipip ip6_tunnel tun br_netfilter
+#长期启用
+sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+ip_tables
+iptable_nat
+ip6_tables
+ip6table_nat
+nf_tables
+nf_nat
+nf_conntrack
+nf_defrag_ipv4
+nf_defrag_ipv6
+ip_set
+xt_set
+ipip
+ip6_tunnel
+tun
+br_netfilter
+EOF
+sudo systemctl restart systemd-modules-load.service
+#启用IP转发
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+sysctl -p
+
+#网络插件选项三：iptables+kube-proxy使用IPVS
+lsmod | grep -E 'ip_vs|ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
+#安装基础软件包（CentOS/RHEL）
+yum install -y ipset ipvsadm
+#临时启用
+modprobe ip_vs ip_vs_rr ip_vs_wrr ip_vs_sh ip_tables iptable_nat ip6_tables ip6table_nat ip_set xt_set ipip nf_conntrack ip6_tunnel tun br_netfilter
+#长期启用
+sudo tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+ip_vs
+ip_vs_rr
+ip_vs_wrr
+ip_vs_sh
+ip_tables
+iptable_nat
+ip6_tables
+ip6table_nat
+ip_set
+xt_set
+ipip
+nf_conntrack
+ip6_tunnel
+tun
+br_netfilter
+EOF
+sudo systemctl restart systemd-modules-load.service
+#启用IP转发
+echo -e "net.ipv4.conf.all.arp_ignore=1\nnet.ipv4.conf.all.arp_announce=2\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+sysctl -p
+#修改kube-proxy的mode=ipvs
+
+#初始化控制节点
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+#配置文件
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+#安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+#或者安装网络插件calico，性能好，功能强大（可选）
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+#移除控制节点标签，使其同时作为工作节点（分布式集群不推荐）
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+#设置存储（配置文件见 存储 章节）
+kubectl apply -f storageclass.yaml
+#设置默认存储
+kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+
+#重置，危险！
+sudo kubeadm reset -f
+rm -rf ~/.kube /etc/kubernetes /var/lib/etcd /var/lib/kubelet/* /etc/cni/net.d
+#清理Calico残留（可选）
+rm -rf /var/run/calico /etc/calico
+#重置iptables，危险！
+iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
+```
+
+calico兼容多种网卡
+```yaml
+env:
+  - name: IP_AUTODETECTION_METHOD
+    value: "interface=ens.*|eth.*"
+```
+
+kube-proxy: none + Cilium eBPF 高性能方案
+```shell
+#环境准备
+sudo swapoff -a
+sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab  # 永久禁用
+#临时启用
+modprobe overlay br_netfilter
+#长期启用
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+sudo systemctl restart systemd-modules-load.service
+#启用IP转发
+echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.conf
+sysctl -p
+#配置 containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+sudo systemctl restart containerd
+
+#初始化控制节点，跳过 kube-proxy 安装
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --skip-phases=addon/kube-proxy
+
+#配置文件
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+### 作为工作节点
+
+```shell
+#生成加入命令（控制节点）
+kubeadm token create --print-join-command
+
+#加入集群（工作节点）
+kubeadm join <control-plane-endpoint> --token <token> --discovery-token-ca-cert-hash <hash>
+
+#删除工作节点（控制节点）
+kubectl delete node <节点名>
 ```
 
 ### 通过helm安装kubesphere4.x（推荐）
