@@ -853,12 +853,10 @@ systemctl restart systemd-modules-load.service
 echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
 
-#初始化控制节点calico
+#初始化控制节点，calico
 kubeadm init --pod-network-cidr=192.168.0.0/16
-#初始化控制节点flannel
+#初始化控制节点，flannel
 kubeadm init --pod-network-cidr=10.244.0.0/16
-#修改kube-proxy的mode=ipvs（可选）
-kubectl -n kube-system edit configmap kube-proxy
 
 #配置文件
 mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -891,7 +889,6 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 kubeadm reset -f
 #清理网络（可选）
 iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X && iptables -t nat -X && iptables -t mangle -X
-ipvsadm --clear
 rm -rf /etc/cni/net.d/* /etc/sysconfig/kubelet /opt/cni/bin/ /etc/kubernetes /var/lib/etcd ~/.kube
 umount  /var/run/calico/cgroup && rm -rf /var/run/calico /etc/calico
 #重启
