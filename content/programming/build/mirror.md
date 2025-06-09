@@ -75,12 +75,19 @@ Centos
 ```shell
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install -y containerd.io
+sudo containerd config default | sudo tee /etc/containerd/config.toml
 sudo systemctl enable --now containerd
+
+#重启
+sudo systemctl restart containerd
 ```
 
-用于k8s需要开启cri，/etc/containerd/config.toml 
+vi /etc/containerd/config.toml  
+用于k8s需要开启cri  
+kubeadm初始化时会将kubelet配置为systemd，containerd需要开启
 ```yaml
 #disabled_plugins = ["cri"]
+SystemdCgroup = true
 ```
 
 /etc/containerd/certs.d/registry.k8s.io/host.toml
@@ -107,12 +114,12 @@ server = "https://docker.io"
 
 [https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
 
-Debian/Ubuntu安装k8s，注意更换版本
+Debian/Ubuntu安装k8s，注意更换版本。kubesphere v4.1.3建议v1.21至v1.30。
 
 ```shell
 apt update && apt install -y apt-transport-https
 
-VERSION="v1.32"
+VERSION="v1.30"
 curl -fsSL https://mirrors.aliyun.com/kubernetes-new/core/stable/$VERSION/deb/Release.key |
     gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirrors.aliyun.com/kubernetes-new/core/stable/$VERSION/deb/ /" |
@@ -129,10 +136,10 @@ CentOS/RHEL/Fedora
 cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.32/rpm/
+baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/
 enabled=1
 gpgcheck=1
-gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.32/rpm/repodata/repomd.xml.key
+gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/repodata/repomd.xml.key
 EOF
 
 setenforce 0

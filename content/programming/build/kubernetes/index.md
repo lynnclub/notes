@@ -8,6 +8,8 @@ weight: 3
 
 ### kubectl
 
+控制节点可以执行kubectl
+
 ```shell
 #列出所有支持的API资源
 kubectl api-resources
@@ -22,7 +24,9 @@ kubectl create namespace my-namespace
 
 #查看集群的所有资源
 kubectl get all --all-namespaces
+kubectl get all -A
 kubectl get pods --all-namespaces
+kubectl get pods -A
 kubectl get pods --all-namespaces -o wide
 kubectl get pods -n <namespace>
 #查看系统pods
@@ -84,6 +88,11 @@ kubectl rollout restart daemonset cilium -n kube-system
 kubectl get deployments --all-namespaces -o yaml > all_deployments.yaml
 kubectl get jobs --all-namespaces -o json > all_jobs.json
 kubectl get cronjobs --all-namespaces -o json > all_cronjobs.json
+
+#标记节点为不可调度（控制节点）
+kubectl cordon <节点名>
+#恢复（控制节点）
+kubectl uncordon <节点名称>
 
 #查看kubelet日志
 journalctl -u kubelet -f
@@ -844,53 +853,18 @@ systemctl restart systemd-modules-load.service
 echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
 
-#网络插件选项三：nftables+kube-proxy使用IPVS
-lsmod | grep -E 'ip_vs|ip_tables|iptable_nat|ip6_tables|ip6table_nat|ip_set|xt_set|ipip|nf_conntrack|ip6_tunnel|tun|br_netfilter'
-#安装基础软件包（CentOS/RHEL）
-yum install -y ipset ipvsadm
-#长期启用
-tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
-ip_vs
-ip_vs_rr
-ip_vs_wrr
-ip_vs_sh
-ip_tables
-iptable_nat
-ip6_tables
-ip6table_nat
-nf_tables
-nf_nat
-nf_conntrack
-nf_defrag_ipv4
-nf_defrag_ipv6
-ip_set
-xt_set
-ipip
-ip6_tunnel
-tun
-br_netfilter
-EOF
-systemctl restart systemd-modules-load.service
-#启用IP转发
-echo -e "net.ipv4.conf.all.arp_ignore=1\nnet.ipv4.conf.all.arp_announce=2\nnet.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
-sysctl -p
-
-#初始化控制节点
+#初始化控制节点calico
 kubeadm init --pod-network-cidr=192.168.0.0/16
+#初始化控制节点flannel
 kubeadm init --pod-network-cidr=10.244.0.0/16
 #修改kube-proxy的mode=ipvs（可选）
 kubectl -n kube-system edit configmap kube-proxy
 
 #配置文件
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
-#查看节点
-kubectl get nodes
 
-#移除控制节点标签，使其同时运行工作负载（不推荐）
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
-
+#注意：网络插件与宿主机的网段重复会导致网络冲突和通信异常
 #安装网络插件calico，性能好，功能强大
 #默认是iptables legacy模式
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -900,27 +874,27 @@ helm repo update
 helm install calico projectcalico/tigera-operator \
   --create-namespace -n tigera-operator \
   --set installation.kubernetesProvider= \
-  --set installation.calicoNetwork.linuxDataplane=Iptables \
-  --set installation.calicoNetwork.iptablesBackend=NFT
+  --set felix.iptablesBackend=NFT
 
 #或者安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-#注意：网络插件与宿主机的网段重复会导致网络冲突和通信异常
 
 #设置存储（配置文件见 存储 章节）
 kubectl apply -f storageclass.yaml
 #设置默认存储
 kubectl patch storageclass hostpath -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 
+#移除控制节点标签，使其同时运行工作负载（不推荐）
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
 #重置，危险！
 kubeadm reset -f
-rm -rf /etc/cni/net.d /opt/cni/bin/ /etc/kubernetes /var/lib/etcd ~/.kube
-iptables -F && iptables -t nat -F
+#清理网络（可选）
+iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X && iptables -t nat -X && iptables -t mangle -X
 ipvsadm --clear
-#清理Calico残留（可选）
+rm -rf /etc/cni/net.d/* /etc/sysconfig/kubelet /opt/cni/bin/ /etc/kubernetes /var/lib/etcd ~/.kube
 umount  /var/run/calico/cgroup && rm -rf /var/run/calico /etc/calico
-#重置iptables，危险！
-#iptables -P INPUT ACCEPT && iptables -P FORWARD ACCEPT && iptables -P OUTPUT ACCEPT && iptables -F && iptables -X && iptables -t nat -F && iptables -t nat -X && iptables -t mangle -F && iptables -t mangle -X && iptables -t raw -F && iptables -t raw -X && iptables -Z && ip6tables -P INPUT ACCEPT && ip6tables -P FORWARD ACCEPT && ip6tables -P OUTPUT ACCEPT && ip6tables -F && ip6tables -X && ip6tables -t nat -F && ip6tables -t nat -X && ip6tables -t mangle -F && ip6tables -t mangle -X && ip6tables -t raw -F && ip6tables -t raw -X && ip6tables -Z
+#重启
 systemctl restart containerd kubelet
 ```
 
@@ -936,6 +910,13 @@ kube-proxy: none + Cilium eBPF 高性能方案（kubesphere官方未针对Cilium
 #添加 Cilium Helm 仓库
 helm repo add cilium https://helm.cilium.io/
 helm repo update
+#长期启用
+tee /etc/modules-load.d/k8s.conf > /dev/null <<EOF
+overlay
+nf_conntrack
+br_netfilter
+EOF
+systemctl restart systemd-modules-load.service
 #启用IP转发
 echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
@@ -944,29 +925,29 @@ sysctl -p
 kubeadm init --pod-network-cidr=10.0.0.0/16 --skip-phases=addon/kube-proxy
 
 #配置文件
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
 #安装 Cilium 1.17.4，搭配 Kubernetes 1.32.5
 helm install cilium cilium/cilium \
   --version 1.17.4 \
   --namespace kube-system \
-  --set kubeProxyReplacement=false \
-  --set k8sServiceHost=<MASTER_IP> \
+  --set k8sServiceHost=$(hostname -I | awk '{print $1}') \
   --set k8sServicePort=6443 \
   --set ipam.mode=kubernetes \
+  --set kubeProxyReplacement=true \
   --set hostServices.enabled=true \
   --set externalIPs.enabled=true \
   --set nodePort.enabled=true \
   --set hostPort.enabled=true \
   --set tunnelProtocol=disabled \
   --set autoDirectNodeRoutes=true
-#如果出现Error creating: Timeout: request did not complete within requested timeout - context deadline exceeded，先不要开 kubeProxyReplacement=true，等系统稳定再改
+
+#如果出现Error creating: Timeout: request did not complete within requested timeout - context deadline exceeded，是cilium与kube依赖死循环，先关闭kubeProxyReplacement，等系统稳定再开启
 helm upgrade cilium cilium/cilium \
   --version 1.17.4 \
   --namespace kube-system \
-  --set kubeProxyReplacement=true
+  --set kubeProxyReplacement=false
 
 #按配置文件更新
 cat > cilium-values.yaml <<EOF
@@ -1025,6 +1006,9 @@ helm upgrade cilium cilium/cilium \
 
 #卸载，危险！
 helm uninstall -n kube-system cilium
+
+#移除控制节点标签，使其同时运行工作负载（不推荐）
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 #kubesphere安装方法有所不同
 #查看 Cilium 实际使用的 CIDR
