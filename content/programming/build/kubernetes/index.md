@@ -679,6 +679,7 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 ```
 
 aws的ebs磁盘
@@ -694,6 +695,7 @@ provisioner: ebs.csi.aws.com
 parameters:
   type: aws-ebs
 volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 ```
 
 ebs.csi.aws.com 是 AWS 提供的更现代的、基于 CSI 的存储解决方案，推荐在新项目中使用，支持更多的功能和未来发展。kubernetes.io/aws-ebs 是传统的 in-tree 驱动，功能有限且逐步被淘汰，建议尽早迁移到 CSI 驱动。
@@ -817,7 +819,8 @@ sysctl -p
 lsmod | grep -E 'ip_tables|iptable_nat|ip6_tables|ip6table_nat|nf_tables|nf_nat|nf_conntrack|nf_defrag_ipv4|nf_defrag_ipv6|ip_set|xt_set|ipip|ip6_tunnel|tun|br_netfilter'
 #安装基础软件包（CentOS/RHEL）
 yum install -y iptables nftables
-systemctl enable --now nftables
+#nftables运行完成需要关闭，以免重置
+systemctl disable nftables
 #创建备选方案配置
 update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 100
 update-alternatives --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 100
@@ -853,17 +856,20 @@ systemctl restart systemd-modules-load.service
 echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\nnet.bridge.bridge-nf-call-iptables = 1\nnet.bridge.bridge-nf-call-ip6tables = 1" | tee -a /etc/sysctl.conf
 sysctl -p
 
-#初始化控制节点，calico
-kubeadm init --pod-network-cidr=192.168.0.0/16
 #初始化控制节点，flannel
 kubeadm init --pod-network-cidr=10.244.0.0/16
+#初始化控制节点，calico
+kubeadm init --pod-network-cidr=192.168.0.0/16
 
 #配置文件
 mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
 #注意：网络插件与宿主机的网段重复会导致网络冲突和通信异常
-#安装网络插件calico，性能好，功能强大
+#安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+#或者安装网络插件calico，性能好，功能强大
 #默认是iptables legacy模式
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 #如果是nftables换如下方式
@@ -874,8 +880,22 @@ helm install calico projectcalico/tigera-operator \
   --set installation.kubernetesProvider= \
   --set felix.iptablesBackend=NFT
 
-#或者安装网络插件flannel，简单适合初学者，依赖少，大多数环境都能跑起来，默认网段10.244.0.0/16
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+#calico默认拒绝未明确允许的流量，允许所有
+kubectl apply -f - <<EOF
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: allow-all
+spec:
+  selector: all()
+  types:
+  - Ingress
+  - Egress
+  ingress:
+  - action: Allow
+  egress:
+  - action: Allow
+EOF
 
 #设置存储（配置文件见 存储 章节）
 kubectl apply -f storageclass.yaml
@@ -889,10 +909,18 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 kubeadm reset -f
 #清理网络（可选）
 iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X && iptables -t nat -X && iptables -t mangle -X
-rm -rf /etc/cni/net.d/* /etc/sysconfig/kubelet /opt/cni/bin/ /etc/kubernetes /var/lib/etcd ~/.kube
-umount  /var/run/calico/cgroup && rm -rf /var/run/calico /etc/calico
+rm -rf /etc/cni/net.d/*  /opt/cni/bin/flannel* /opt/cni/bin/calico* /etc/sysconfig/kubelet /etc/kubernetes /var/lib/etcd ~/.kube
+ip link delete flannel.1
+rm -rf /var/run/calico /etc/calico #可能需要先执行 umount /var/run/calico/cgroup
 #重启
 systemctl restart containerd kubelet
+```
+
+flannel缺失loopback
+```
+cd /opt/cni/bin
+curl -LO https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-arm64-v1.3.0.tgz
+tar -xzvf cni-plugins-linux-arm64-v1.3.0.tgz
 ```
 
 calico兼容多种网卡
