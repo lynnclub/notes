@@ -138,10 +138,12 @@ cat /proc/cpuinfo
 ### 查看内存
 
 ```shell
+# 这将显示总内存、已使用内存、可用内存等信息
 free -h
-```
 
-这将显示总内存、已使用内存、可用内存等信息。
+# 内存合计
+ps -C php-fpm -o rss= | awk '{sum+=$1} END {printf "Total: %.2f MB\n", sum/1024}'
+```
 
 ### 查看网络
 
