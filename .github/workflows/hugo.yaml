@@ -57,20 +57,11 @@ jobs:
         run: |
           hugo \
             --gc --minify \
-            --baseURL "https://lynnclub.github.io/notes/"
-      - name: Prepare deployment directory
-        run: |
-          # Create a new deployment directory
-          mkdir -p ./deploy
-          mkdir -p ./deploy/notes
-          # Copy Hugo generated content to 'notes' subdirectory  
-          cp -r ./public/* ./deploy/notes/
-          # Copy index.html to root of deployment
-          cp index.html ./deploy/index.html
+            --baseURL "${{ steps.pages.outputs.base_url }}"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./deploy
+          path: ./public
 
   # Deployment job
   deploy:
