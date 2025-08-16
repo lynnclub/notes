@@ -1,1 +1,1 @@
-copyright: "© 2023 Lynn Club."
+copyright: "© {{ now.Year }} Lynn Club."

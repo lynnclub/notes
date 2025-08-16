@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-cn" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>林恩 - 个人主页</title>
-    <meta name="description" content="林恩的个人主页，包含学习笔记、思考与分享">
+    <title id="page-title">林恩 - 个人主页</title>
+    <meta name="description" content="林恩的个人主页" id="page-description">
     <style>
         * {
             margin: 0;
@@ -94,6 +94,36 @@
             color: rgba(255,255,255,0.8);
         }
 
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .language-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+        }
+
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .language-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -110,30 +140,96 @@
     </style>
 </head>
 <body>
+    <div class="language-switcher">
+        <button class="language-btn active" onclick="switchLanguage('zh-cn')" id="btn-zh">中文</button>
+        <button class="language-btn" onclick="switchLanguage('en')" id="btn-en">English</button>
+    </div>
+
     <div class="container">
         <div class="header">
-            <h1>林恩</h1>
-            <p>Welcome to Lynn's Personal Homepage</p>
+            <h1 id="main-title">林恩</h1>
+            <p id="main-subtitle">Welcome to Lynn's Personal Homepage</p>
         </div>
 
         <div class="cards">
             <a href="/notes/" class="card">
                 <div class="card-icon">📚</div>
-                <h3>林恩笔记</h3>
-                <p>我的学习与思考笔记，包含编程、科学、哲思、生活等各个方面的内容。记录成长路上的点点滴滴，分享知识与感悟。</p>
+                <h3 id="notes-title">林恩笔记</h3>
+                <p id="notes-desc">我的学习与思考笔记，包含编程、科学、哲思、生活等各个方面的内容。记录成长路上的点点滴滴，分享知识与感悟。</p>
             </a>
         </div>
 
         <div class="footer">
-            <p>&copy; 2023 Lynn Club. 林恩是一个爱做梦、也擅长做梦的人。</p>
+            <p id="footer-text">&copy; <span id="current-year">2023</span> Lynn Club. 林恩是一个爱做梦、也擅长做梦的人。</p>
         </div>
     </div>
 
     <script>
-        // 添加一些交互效果
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.card');
+        // 获取当前年份
+        const currentYear = new Date().getFullYear();
+        
+        // 语言翻译内容
+        const translations = {
+            'zh-cn': {
+                title: '林恩 - 个人主页',
+                description: '林恩的个人主页，包含学习笔记、思考与分享',
+                mainTitle: '林恩',
+                mainSubtitle: 'Welcome to Lynn\'s Personal Homepage',
+                notesTitle: '林恩笔记',
+                notesDesc: '我的学习与思考笔记，包含编程、科学、哲思、生活等各个方面的内容。记录成长路上的点点滴滴，分享知识与感悟。',
+                footerText: `© ${currentYear} Lynn Club. 林恩是一个爱做梦、也擅长做梦的人。`
+            },
+            'en': {
+                title: 'Lynn - Personal Homepage',
+                description: 'Lynn\'s personal homepage with learning notes, thoughts and sharing',
+                mainTitle: 'Lynn',
+                mainSubtitle: 'Welcome to Lynn\'s Personal Homepage',
+                notesTitle: 'Lynn\'s Notes',
+                notesDesc: 'My learning and thinking notes, covering programming, science, philosophy, life and other aspects. Recording bits and pieces on the journey of growth, sharing knowledge and insights.',
+                footerText: `© ${currentYear} Lynn Club. Lynn is a person who loves to dream and is also good at dreaming.`
+            }
+        };
+
+        // 语言切换功能
+        function switchLanguage(lang) {
+            // 更新按钮状态
+            document.querySelectorAll('.language-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(lang === 'zh-cn' ? 'btn-zh' : 'btn-en').classList.add('active');
             
+            // 更新页面内容
+            const t = translations[lang];
+            document.getElementById('page-title').textContent = t.title;
+            document.getElementById('page-description').setAttribute('content', t.description);
+            document.getElementById('html-root').setAttribute('lang', lang);
+            document.getElementById('main-title').textContent = t.mainTitle;
+            document.getElementById('main-subtitle').textContent = t.mainSubtitle;
+            document.getElementById('notes-title').textContent = t.notesTitle;
+            document.getElementById('notes-desc').textContent = t.notesDesc;
+            document.getElementById('footer-text').textContent = t.footerText;
+            
+            // 保存语言偏好
+            localStorage.setItem('preferred-language', lang);
+            
+            // 更新Hugo笔记链接
+            const notesCard = document.querySelector('.card');
+            if (lang === 'en') {
+                notesCard.href = '/notes/en/';
+            } else {
+                notesCard.href = '/notes/';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新页面中的年份
+            document.getElementById('current-year').textContent = currentYear;
+            
+            // 从localStorage获取语言偏好，默认为中文
+            const preferredLang = localStorage.getItem('preferred-language') || 'zh-cn';
+            switchLanguage(preferredLang);
+            
+            // 添加卡片交互效果
+            const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
