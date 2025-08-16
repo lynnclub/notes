@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>林恩 - 个人主页</title>
+    <meta name="description" content="林恩的个人主页，包含学习笔记、思考与分享">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            justify-items: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>林恩</h1>
+            <p>Welcome to Lynn's Personal Homepage</p>
+        </div>
+
+        <div class="cards">
+            <a href="/notes/" class="card">
+                <div class="card-icon">📚</div>
+                <h3>林恩笔记</h3>
+                <p>我的学习与思考笔记，包含编程、科学、哲思、生活等各个方面的内容。记录成长路上的点点滴滴，分享知识与感悟。</p>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2023 Lynn Club. 林恩是一个爱做梦、也擅长做梦的人。</p>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+                    this.style.color = 'white';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.background = 'white';
+                    this.style.color = 'inherit';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
