@@ -235,11 +235,24 @@ docker run -d --restart=always \
 -p 15691:15691 -p 15692:15692 -p 25672:25672 -p 4369:4369 -p 5671:5671 -p 5672:5672 \
 rabbitmq:alpine
 
-docker run -d --name tailscale \
+# 不推荐，IP变化后连不上
+docker run -d --restart always \
+  --name tailscale \
   --cap-add=NET_ADMIN \
   --cap-add=NET_RAW \
   --sysctl net.ipv4.ip_forward=1 \
   --sysctl net.ipv6.conf.all.forwarding=1 \
+  -v /var/lib/tailscale:/var/lib/tailscale \
+  -e TS_AUTHKEY=<YOUR_AUTH_KEY> \
+  -e TS_EXTRA_ARGS="--advertise-exit-node" \
+  tailscale/tailscale
+
+# 需要设置宿主机net转发
+docker run -d --restart always \
+  --name tailscale \
+  --network host \
+  --cap-add=NET_ADMIN \
+  --cap-add=NET_RAW \
   -v /var/lib/tailscale:/var/lib/tailscale \
   -e TS_AUTHKEY=<YOUR_AUTH_KEY> \
   -e TS_EXTRA_ARGS="--advertise-exit-node" \
