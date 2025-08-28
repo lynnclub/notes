@@ -199,6 +199,8 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 # 安装系统级软件（需要管理员权限）
 sudo scoop install -g <app>
+# 更新所有全局包
+sudo scoop update * -g
 ```
 
 高级安装
