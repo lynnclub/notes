@@ -89,7 +89,7 @@ ps -ef
 # 查看进程启动时间
 ps -p <进程ID> -o lstart
 # 根据端口号查看进程
-ps -fp $(lsof -ti:55382)
+lsof -ti:49706 | xargs -r ps -fp
 ```
 
 ### 杀死进程
