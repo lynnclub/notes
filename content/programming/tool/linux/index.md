@@ -88,6 +88,8 @@ ps aux --sort=-%cpu | head -n 10
 ps -ef
 # 查看进程启动时间
 ps -p <进程ID> -o lstart
+# 根据端口号查看进程
+ps -fp $(lsof -ti:55382)
 ```
 
 ### 杀死进程
