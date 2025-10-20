@@ -59,8 +59,7 @@ DaoCloud镜像源
 ```json
 {
   "registry-mirrors": [
-    "https://docker.m.daocloud.io",
-    "https://doublezonline.cloud"
+    "https://docker.m.daocloud.io"
   ]
 }
 ```
