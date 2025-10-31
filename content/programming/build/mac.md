@@ -19,9 +19,35 @@ brew install golang php python@3 nvm rust
 # Java8+tomcat9
 brew install openjdk@8 maven tomcat@9
 
-# Docker、Github Desktop、dbeaver-community数据库工具
-# 不推荐使用fig、sequel-ace、notion
-brew install --cask docker github dbeaver-community mongodb-compass another-redis-desktop-manager pgadmin4
+# Tailscale组网工具
+# Github Desktop代码版本控制
+# Docker Desktop容器环境
+# Dbeaver Community数据库工具，不推荐使用sequel-ace
+# 不推荐使用fig、notion
+brew install --cask tailscale docker github dbeaver-community mongodb-compass another-redis-desktop-manager pgadmin4
+```
+
+通过LaunchDaemon配置系统级启动（开机自启）  
+sudo nano /Library/LaunchDaemons/com.tailscale.tailscaled.plist  
+sudo launchctl load /Library/LaunchDaemons/com.tailscale.tailscaled.plist
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.tailscale.tailscaled</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/tailscaled</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>
 ```
 
 ## 刻录 Windows 系统盘
