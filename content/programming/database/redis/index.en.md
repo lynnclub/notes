@@ -25,7 +25,7 @@ Redis architecture mainly includes Standalone, Master-Slave Replication, Sentine
 
 ### Master-Slave Replication
 
-One Redis node acts as the master node (Master), responsible for write operations.
+One Redis node acts as the master node (Master), responsible for write operations.  
 One or more slave nodes (Slave) replicate master node data, mainly used for read request distribution and backup.
 
 Features:
@@ -42,8 +42,8 @@ Sentinel functions:
 - Automatic failover: When Master goes down, automatically elect a Slave to be promoted to Master.
 - Provide service discovery: Clients can obtain the current Master address through Sentinel.
 
-Typical architecture: One Master, multiple Slaves, multiple Sentinels.
-Advantages: High availability, automation.
+Typical architecture: One Master, multiple Slaves, multiple Sentinels.  
+Advantages: High availability, automation.  
 Disadvantages: Still a single-master architecture with limited storage capacity.
 
 ### Cluster
@@ -60,7 +60,7 @@ Disadvantages:
 - Relatively complex deployment and operation.
 - Does not support multi-key cross-slot transactions (unless in the same slot).
 
-Slot algorithm: `slot = CRC16(key) % 16384`
+Slot algorithm: `slot = CRC16(key) % 16384`  
 Slot migration: Adding or removing nodes will evenly distribute slots.
 
 In pursuit of extreme performance, the Redis cluster internally has no load balancing, no task splitting and scheduling, no distributed transactions, and other advanced features. Commands that cross shards or slots are restricted by this architectural design and cannot be executed, such as MGET, MSET, HMGET, MULTI/EXEC, etc. Moreover, commands like SCAN, FLUSHDB, FLUSHALL must be executed on each master node.
@@ -108,18 +108,15 @@ Tip: Among PHP built-in functions, only pfsockopen can reuse connections across 
 
 In Redis cluster or sentinel mode, due to network partition (network communication is partially or completely interrupted) or node failure, some nodes in the cluster each think they are the master node, resulting in data inconsistency. This problem is typical in distributed systems, also called the dual-master phenomenon caused by network partition.
 
-Secondary split-brain accident
-Redis cluster online abnormal accident - 20241225
-
 Methods to reduce split-brain:
 1. Ensure sufficient number of nodes and sentinels
-  1. Sentinel mode recommends at least 3 sentinels.
-  2. Cluster mode recommends master count ≥3.
+  1.1. Sentinel mode recommends at least 3 sentinels.
+  1.2. Cluster mode recommends master count ≥3.
 2. Network stability: Avoid frequent partitions.
 3. Configure reasonable timeout: down-after-milliseconds, failover-timeout should be adjusted according to actual latency and network stability.
 4. Monitoring and alerting:
-  1. Regularly monitor INFO replication / CLUSTER INFO.
-  2. Investigate promptly when encountering failover or master changes.
+  4.1. Regularly monitor INFO replication / CLUSTER INFO.
+  4.2. Investigate promptly when encountering failover or master changes.
 
 ## Underlying Mechanisms
 
@@ -131,15 +128,16 @@ Redis uses a hash table (an implementation of the dictionary concept) at the bot
 - Chained Hashing: When two different keys are calculated to have the same hash value (hash collision), Redis will attach a linked list to the existing key-value pair and store the conflicting multiple key-value pairs in this linked list in order. Starting from Redis 6, when the linked list length exceeds 8 (HT_BUCKET_MAX_LEN), it will consider using skip lists, red-black trees, or rehashing for optimization.
 - rehash: If the load factor is greater than the threshold (default 1), it expands; if the load factor is less than 0.1, it may consider shrinking. To avoid performance fluctuations caused by frequent expansion and shrinking, shrinking is relatively conservative; if the hash table is very sparse (used / size is very small), but the single-bucket linked list is too long, forced expansion.
 
-Load factor: `factor = used (current number of elements) / size (number of hash table buckets)`
+Load factor: `factor = used (current number of elements) / size (number of hash table buckets)`  
 Forced expansion: `size < used * dict_force_resize_ratio (default 5)`
 
 ![hash_table](hash_table.png)
 
 dict (dictionary/hash table) -> table (hash bucket) -> dictEntry (key-value pair)
 
-Hash bucket mapping algorithm: `index = siphash(key, secret_key) % ht[x].size`
+Hash bucket mapping algorithm: `index = siphash(key, secret_key) % ht[x].size`  
 Get hash bucket operation: `bucket = ht[x].table[index]`
+
 ht[x]: Redis implements two hash tables, so x represents these two tables. ht[0] is the main hash table currently in use, and ht[1] is the temporary target hash table during rehash expansion/shrinking, which will eventually replace ht[0].
 
 ### Data Structure - SDS
@@ -226,11 +224,11 @@ Used to delete keys when memory reaches the maxmemory limit.
 
 LFU access frequency is an 8-bit value (range 0-255). It is not a simple cumulative count, but a random probability count with a decay mechanism.
 
-Growth formula: `freq = min(freq + rand_prob, 255)`
-Growth probability formula: `rand_prob = 1 / (2^(freq - 1))`
+Growth formula: `freq = min(freq + rand_prob, 255)`  
+Growth probability formula: `rand_prob = 1 / (2^(freq - 1))`  
 Decay formula: `freq_new = freq_old * (1 - 2^(-(current_time - last_decay_time) / decay_time))`
 
-last_decay_time: The last time frequency decay was performed on this key
+last_decay_time: The last time frequency decay was performed on this key  
 decay_time: Decay period, default is about 60 seconds
 
 It can be simply understood as: approximate logarithmic growth + approximate exponential decay, that is, the higher the frequency, the slower the growth, and the higher the frequency, the faster the decay.
@@ -255,6 +253,7 @@ Redis full + incremental migration solutions are based on RDB+AOF implementation
 ### Cache Avalanche
 
 A large amount of cached data expires at the same time, causing a large number of requests to directly hit the database.
+
 Response:
 - Set random TTL to avoid expiring at the same time
 - Use mutex locks to rebuild cache
@@ -263,6 +262,7 @@ Response:
 ### Cache Breakdown
 
 When a HotKey expires, a large number of concurrent requests access the key at the same time, directly querying the database.
+
 Response:
 - Use mutex locks (distributed locks)
 - Set hot data that never expires
@@ -271,6 +271,7 @@ Response:
 ### Cache Penetration
 
 Querying data that does not exist, neither in cache nor in database, and each request hits the database.
+
 Response:
 - Cache null values (set shorter TTL)
 - Use Bloom filter for pre-judgment
@@ -285,13 +286,14 @@ There is no perfect solution for cache data consistency problems. More rigorous 
 Process:
 - Read: Check cache first, if miss then query database, then update cache
 - Write: Update database first, then delete cache
-Advantages: Clear logic, widely applicable
+
+Advantages: Clear logic, widely applicable  
 Disadvantages: May have brief inconsistency
 
 #### Delayed Double Delete
 
-Process: Delete cache → Update database → Delay N seconds → Delete cache again
-Advantages: Solves inconsistency caused by concurrent read-write
+Process: Delete cache → Update database → Delay N seconds → Delete cache again  
+Advantages: Solves inconsistency caused by concurrent read-write  
 Disadvantages: Delay time is difficult to determine
 
 ## Server Monitoring
@@ -310,12 +312,13 @@ Starting from Redis 6.x, the official introduced multi-threaded I/O, mainly refl
 
 ### Memory
 
-Memory usage: When usage reaches the set limit, the eviction strategy will be triggered. If the host memory is exhausted, it will directly crash.
+Memory usage: When usage reaches the set limit, the eviction strategy will be triggered. If the host memory is exhausted, it will directly crash.  
 Memory fragmentation ratio: 1.0 is normal, exceeding 1.5 indicates possible fragmentation, that is, the RSS (Resident Set Size, actual occupied physical memory) memory occupied by Redis is much larger than the actual data size.
 
 ### Bandwidth
 
 Network I/O: When bandwidth reaches the limit, it will cause increased request latency or TCP retransmission, affecting overall performance.
+
 Possible reasons:
 - BigKey causes increased data transmission traffic;
 - Instantaneous traffic peaks caused by batch operations;
@@ -330,6 +333,7 @@ BigKey read and write will cause a lot of network I/O pressure, blocking single-
 ### Slowlog
 
 BigKey or dangerous commands like DEL, KEYS, etc., are usually recorded in slowlog due to long execution time.
+
 ```shell
 SLOWLOG LEN
 SLOWLOG GET
@@ -344,6 +348,7 @@ HotKey is the top priority of Redis performance analysis. Once a problem occurs,
 ### Based on monitor Command Implementation
 
 The official client supports the monitor command, which can save the results for analysis. Monitor will output Redis operations being executed in real time, which consumes a lot of performance and cannot be executed for a long time, generally executed for 30s.
+
 ```shell
 redis-cli \
     -h clusters-Redis-0004-001.clusters-Redis.19ewug.usw2.cache.amazonaws.com \
@@ -359,8 +364,9 @@ Monitor is suitable for viewing real-time details, but consumes a lot of perform
 ### Official Client
 
 The official client provides a HotKey statistics method, which requires that the memory eviction strategy must use LFU (Least Frequently Used). This command is based on LFU's existing access frequency implementation and has lower performance consumption.
+
 ```shell
-redis-cli --hotkeys \
+redis-cli --HotKeys \
     -h clusters-Redis-0004-001.clusters-Redis.19ewug.usw2.cache.amazonaws.com \
     -p 6379 \
     -a xxx \
@@ -369,13 +375,14 @@ redis-cli --hotkeys \
 # -a  password
 # -i  Interval time between each batch scan is 1s, recommended to set to reduce performance pressure.
 ```
+
 After scanning is completed, it will list dozens of keys with the highest access frequency. For clusters, each master shard needs to be scanned.
 
 ### Imitate Official Implementation
 
 Although the official client HotKeys command produces a report, it needs to be executed in the AWS internal network environment and cannot be customized to write to Feishu documents. Writing code yourself is the only way to connect the process.
 
-HotKey analysis implementation principle: SCAN * + OBJECT FREQ key. Threshold 100.
+HotKey analysis implementation principle: SCAN * + OBJECT FREQ key. Threshold 100.  
 BigKey analysis implementation principle: SCAN * + MEMORY USAGE key. Threshold 1MB.
 
 It is recommended to analyze BigKey, HotKey, and patterns in one scan.

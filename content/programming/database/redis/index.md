@@ -25,7 +25,7 @@ Redis 架构主要有 单机、主从复制、哨兵和集群，不论哪种架�
 
 ### 主从复制（Master-Slave）
 
-一个 Redis 节点作为主节点（Master），负责写入操作。
+一个 Redis 节点作为主节点（Master），负责写入操作。  
 一个或多个从节点（Slave）复制主节点数据，主要用于读请求分流和备份。
 
 特点：
@@ -42,8 +42,8 @@ Sentinel 的功能：
 - 自动故障转移：Master 宕机后，自动选举一个 Slave 升级为 Master。
 - 提供服务发现：客户端可通过 Sentinel 获取当前的 Master 地址。
 
-典型架构：一个 Master，多个 Slave，多个 Sentinel。
-优点：高可用，自动化。
+典型架构：一个 Master，多个 Slave，多个 Sentinel。  
+优点：高可用，自动化。  
 缺点：仍是单主架构，存储容量有限。
 
 ### 集群（Cluster）
@@ -60,7 +60,7 @@ Redis Cluster 是分布式架构，解决了单机容量瓶颈，使用crc16算�
 - 部署和运维相对复杂。
 - 不支持多键跨槽事务（除非在同一槽位）。
 
-槽位算法：`slot = CRC16(key) % 16384`
+槽位算法：`slot = CRC16(key) % 16384`  
 槽位迁移：添加、移除节点会平均分配槽位。
 
 为了追求极致性能，Redis集群内部没有均衡负载、没有任务拆分调度、没有分布式事务等高级功能，跨分片或者槽位的命令会受到此架构设计限制无法执行，比如MGET、MSET、HMGET、MULTI/EXEC等，而且 SCAN、FLUSHDB、FLUSHALL等命令必须在每个主节点执行。
@@ -108,18 +108,15 @@ FAILOVER 策略
 
 Redis 集群或哨兵模式下，由于网络分区（网络通信被部分或全部中断）或节点故障，集群的部分节点各自认为自己是主节点，从而导致数据不一致的情况。这个问题在分布式系统中比较典型，也叫 网络分区导致的双主现象。
 
-次生的脑裂事故
-redis集群线上异常事故 - 20241225
-
 减少脑裂的方法：
 1. 保证节点和哨兵数量足够
-  1. Sentinel 模式建议至少 3 个哨兵。
-  2. Cluster 模式建议 master 数量 ≥3。
+  1.1. Sentinel 模式建议至少 3 个哨兵。
+  1.2. Cluster 模式建议 master 数量 ≥3。
 2. 网络稳定：避免频繁分区。
 3. 配置合理的超时时间：down-after-milliseconds、failover-timeout 要根据实际延迟和网络稳定性调整。
 4. 监控和告警：
-  1. 定期监控 INFO replication / CLUSTER INFO。
-  2. 遇到 failover 或 master 变化及时排查。
+  4.1. 定期监控 INFO replication / CLUSTER INFO。
+  4.2. 遇到 failover 或 master 变化及时排查。
 
 ## 底层机制
 
@@ -131,15 +128,16 @@ Redis 底层使用 哈希表（Hash Table，字典概念的一种实现）存储
 - 链式哈希（Chained Hashing）：当两个不同的键被计算出相同的哈希值（哈希冲突），Redis 会在已存在的键值对上挂一个链表，将冲突的多个键值对按顺序存入这个链表。从Redis 6开始，当链表长度超过8（HT_BUCKET_MAX_LEN），会考虑使用跳表、红黑树或进行rehash优化。
 - rehash：如果负载因子大于阈值（默认1）则扩容；如果负载因子小于0.1会考虑缩容，为了避免频繁扩缩容引起性能波动，缩容比较保守；如果哈希表很稀疏（used / size 很小），但单桶链表过长，强制扩容。
 
-负载因子：`factor = used(当前元素数量) / size(哈希表桶数量)`
+负载因子：`factor = used(当前元素数量) / size(哈希表桶数量)`  
 强制扩容：`size < used * dict_force_resize_ratio(默认5)`
 
 ![hash_table](hash_table.png)
 
 dict（字典/哈希表）-> table（哈希桶）-> dictEntry（键值对）
 
-哈希桶映射算法：`index = siphash(key, secret_key) % ht[x].size`
+哈希桶映射算法：`index = siphash(key, secret_key) % ht[x].size`  
 获取哈希桶操作：`bucket = ht[x].table[index]`
+
 ht[x]：Redis实现了两张哈希表，所以用x表示这两张表。ht[0]是正在使用的主哈希表，ht[1]是rehash扩容/收缩时临时的目标哈希表，最终将替换成ht[0]。
 
 ### 数据结构-SDS
@@ -226,11 +224,11 @@ Redis key过期删除，会同时使用 惰性删除 + 定期删除。
 
 LFU访问频率是一个 8 bit 数值（范围0-255），它不是简单的累加计数，而是带有衰减机制的随机概率计数。
 
-增长公式：`freq = min(freq + rand_prob, 255)`
-增长概率公式：`rand_prob = 1 / (2^(freq - 1))`
+增长公式：`freq = min(freq + rand_prob, 255)`  
+增长概率公式：`rand_prob = 1 / (2^(freq - 1))`  
 衰减公式：`freq_new = freq_old * (1 - 2^(-(current_time - last_decay_time) / decay_time))`
 
-last_decay_time：上一次对该 key 进行频率衰减的时间
+last_decay_time：上一次对该 key 进行频率衰减的时间  
 decay_time：衰减周期，默认约为 60 秒
 
 可以简单理解为：近似对数型增长+近似指数型衰减，即频率越高增长越慢、频率越高衰减越快。
@@ -255,6 +253,7 @@ Redis 全量+增量迁移方案就是基于 RDB+AOF 实现，还有伪装成从�
 ### 缓存雪崩（Cache Avalanche）
 
 大量缓存数据在同一时间过期，导致大量请求直接打到数据库。
+
 应对：
 - 设置随机TTL，避免同时过期
 - 使用互斥锁重建缓存
@@ -263,6 +262,7 @@ Redis 全量+增量迁移方案就是基于 RDB+AOF 实现，还有伪装成从�
 ### 缓存击穿（Cache Breakdown）
 
 HotKey过期时，大量并发请求同时访问该key，直接查询数据库。
+
 应对：
 - 使用互斥锁（分布式锁）
 - 设置永不过期的热点数据
@@ -271,6 +271,7 @@ HotKey过期时，大量并发请求同时访问该key，直接查询数据库�
 ### 缓存穿透（Cache Penetration）
 
 查询不存在的数据，缓存和数据库都没有，每次请求都打到数据库。
+
 应对：
 - 缓存null值（设置较短TTL）
 - 使用布隆过滤器预判
@@ -285,13 +286,14 @@ HotKey过期时，大量并发请求同时访问该key，直接查询数据库�
 流程：
 - 读：先查缓存，未命中再查数据库，然后更新缓存
 - 写：先更新数据库，再删除缓存
-优点：逻辑清晰，适用面广
+
+优点：逻辑清晰，适用面广  
 缺点：可能出现短暂不一致
 
 #### 延时双删
 
-流程：删除缓存 → 更新数据库 → 延时N秒 → 再次删除缓存
-优点：解决并发读写导致的不一致
+流程：删除缓存 → 更新数据库 → 延时N秒 → 再次删除缓存  
+优点：解决并发读写导致的不一致  
 缺点：延时时间难以确定
 
 ## 服务器监控
@@ -310,12 +312,13 @@ Redis使用单线程 + I/O多路复用的模型（epoll/kqueue/select/poll）处
 
 ### 内存
 
-内存使用率：使用达到设置上限会触发淘汰策略，如果是宿主机内存用尽会直接宕机。
+内存使用率：使用达到设置上限会触发淘汰策略，如果是宿主机内存用尽会直接宕机。  
 内存碎片率：1.0 正常，超过 1.5 说明可能有碎片，即 Redis 占用的 RSS（Resident Set Size，实际占用的物理内存）内存远大于实际数据大小。
 
 ### 带宽
 
 网络IO：带宽达到上限会导致请求延迟增加或 TCP 重传，影响整体性能。
+
 可能原因有：
 - BigKey导致数据传输流量增加；
 - 批量操作引起的瞬时流量峰值；
@@ -330,6 +333,7 @@ BigKey读写会造成大量网络IO压力，阻塞单线程执行。如果BigKey
 ### 慢查询
 
 BigKey或者DEL、KEYS等危险命令，由于执行时间较长通常会记录在slowlog。
+
 ```shell
 SLOWLOG LEN
 SLOWLOG GET
@@ -344,6 +348,7 @@ HotKey是Redis性能分析的重中之重，一出问题就是大事故，不出
 ### 基于monitor命令实现
 
 官方客户端支持monitor命令，可以将结果保存下来分析。monitor会实时输出正在执行的Redis操作，对性能消耗很大，不能长时间执行，一般执行30s。
+
 ```shell
 redis-cli \
     -h clusters-Redis-0004-001.clusters-Redis.19ewug.usw2.cache.amazonaws.com \
@@ -359,6 +364,7 @@ monitor适合查看实时明细，性能消耗大，一般不建议用于统计H
 ### 官方客户端
 
 官方客户端提供HotKey统计方法，要求内存淘汰策略必须使用LFU（Least Frequently Used），该命令基于LFU现成的访问频率实现，性能消耗较低。
+
 ```shell
 redis-cli --HotKeys \
     -h clusters-Redis-0004-001.clusters-Redis.19ewug.usw2.cache.amazonaws.com \
@@ -369,13 +375,14 @@ redis-cli --HotKeys \
 #-a  密码
 #-i  每批扫描间隔时间1s，建议设置以降低性能压力。
 ```
+
 扫描完成会列出访问频率最高的几十个key，集群需要扫描每个master分片。
 
 ### 仿官方实现
 
 官方客户端HotKeys命令虽然会产出报告，但是需要在aws内网环境执行，也不能自定义写入飞书文档，自行写代码才能打通流程。
 
-HotKey分析实现原理：SCAN * + OBJECT FREQ key。阈值100。
+HotKey分析实现原理：SCAN * + OBJECT FREQ key。阈值100。  
 BigKey分析实现原理：SCAN * + MEMORY USAGE key。阈值1MB。
 
 建议一次扫描同时分析BigKey、HotKey、模式。
