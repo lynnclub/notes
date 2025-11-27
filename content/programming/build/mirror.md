@@ -20,6 +20,7 @@ weight: 2
 [https://mirrors.163.com/](https://mirrors.163.com/)  
 [https://mirrors.tencent.com/](https://mirrors.tencent.com/)  
 [https://mirrors.huaweicloud.com/](https://mirrors.huaweicloud.com/)  
+[https://mirrors.nju.edu.cn](https://mirrors.nju.edu.cn)  
 
 ### GitHub
 
@@ -216,6 +217,14 @@ irm get.scoop.sh -outfile 'install.ps1'
 scoop config SCOOP_REPO "https://gitee.com/scoop-installer/scoop"
 # 拉取新库地址
 scoop update
+
+scoop bucket list
+
+# 更换南京大学源
+scoop bucket rm main
+scoop bucket add main https://mirrors.nju.edu.cn/git/scoop-main
+scoop bucket rm extras
+scoop bucket add extras https://mirrors.nju.edu.cn/git/scoop-extras
 ```
 
 ### Alpine

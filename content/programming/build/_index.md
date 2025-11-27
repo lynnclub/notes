@@ -1,5 +1,5 @@
 ---
-title: 构建
+title: 搭建
 weight: 4
 ---
 
