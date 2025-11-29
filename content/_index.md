@@ -13,7 +13,7 @@ title: "林恩笔记"
 {{< card link="programming/standard" title="规范" icon="document-duplicate" >}}
 {{< card link="programming/database" title="数据库" icon="document-duplicate" >}}
 {{< card link="programming/tool" title="工具" icon="document-duplicate" >}}
-{{< card link="programming/build" title="构建" icon="document-duplicate" >}}
+{{< card link="programming/build" title="搭建" icon="document-duplicate" >}}
 {{< card link="programming/architecture" title="架构" icon="document-duplicate" >}}
 {{< card link="programming/test_case" title="测试案例" icon="document-duplicate" >}}
 {{< /cards >}}
