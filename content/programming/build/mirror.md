@@ -56,11 +56,12 @@ sudo systemctl restart docker
 docker info
 ```
 
-DaoCloud镜像源
+DaoCloud与轩辕镜像源
 ```json
 {
   "registry-mirrors": [
-    "https://docker.m.daocloud.io"
+    "https://docker.m.daocloud.io",
+    "https://docker.xuanyuan.me"
   ]
 }
 ```
@@ -105,6 +106,9 @@ server = "https://registry.k8s.io"
 server = "https://docker.io"
 
 [host."https://docker.m.daocloud.io"]
+  capabilities = ["pull", "resolve"]
+
+[host."https://docker.xuanyuan.me"]
   capabilities = ["pull", "resolve"]
 ```
 
