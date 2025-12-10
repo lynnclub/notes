@@ -205,7 +205,8 @@ docker run -d --restart=always \
 -p 9200:9200 \
 -p 9300:9300 \
 -e "discovery.type=single-node" \
-elasticsearch:alpine
+-e "ELASTIC_PASSWORD=elasticsearch" \
+elasticsearch:8.19.8
 
 docker run -d --restart=always \
 --name clickhouse \
