@@ -197,15 +197,15 @@ docker run -d --restart=always \
 -p 6379:6379 \
 redis:alpine
 
-docker network create elasticsearch
+# 无用户密码
 docker run -d --restart=always \
 --name elasticsearch \
---net elasticsearch \
 -v ~/data/elasticsearch:/usr/share/elasticsearch/data \
 -p 9200:9200 \
 -p 9300:9300 \
 -e "discovery.type=single-node" \
--e "ELASTIC_PASSWORD=elasticsearch" \
+-e "network.host=0.0.0.0" \
+-e "xpack.security.enabled=false" \
 elasticsearch:8.19.8
 
 docker run -d --restart=always \
