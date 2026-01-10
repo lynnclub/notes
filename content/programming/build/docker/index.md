@@ -247,7 +247,7 @@ docker run -d --restart always \
   -e TS_EXTRA_ARGS="--advertise-exit-node" \
   tailscale/tailscale
 
-sudo docker run -d \
+docker run -d \
   --restart=unless-stopped \
   --privileged \
   --name=kuboard \
@@ -257,4 +257,23 @@ sudo docker run -d \
   -e KUBOARD_AGENT_SERVER_TCP_PORT="10081" \
   -v /root/kuboard-data:/data \
   eipwork/kuboard:v3
+
+docker run -d \
+  --name jaeger \
+  -e COLLECTOR_OTLP_ENABLED=true \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  -p 6831:6831/udp \
+  -p 6832:6832/udp \
+  -p 14268:14268 \
+  jaegertracing/all-in-one:latest
+
+docker run -d \
+--name open-webui \
+--restart always \
+-p 3000:8080 \
+--add-host=host.docker.internal:host-gateway \
+-v open-webui:/app/backend/data \
+ghcr.io/open-webui/open-webui:main
 ```
