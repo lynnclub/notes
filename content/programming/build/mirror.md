@@ -307,7 +307,7 @@ go env -w GOPROXY="https://mirrors.aliyun.com/goproxy/,direct"
 [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 export GO111MODULE=on
 export GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
-# 七牛云（中国最可靠的 Go 模块代理）
+# 或者七牛云
 export GOPROXY=https://goproxy.cn,direct
 ```
 
