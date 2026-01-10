@@ -247,6 +247,7 @@ docker run -d --restart always \
   -e TS_EXTRA_ARGS="--advertise-exit-node" \
   tailscale/tailscale
 
+# 国内可以使用镜像 swr.cn-east-2.myhuaweicloud.com/kuboard/kuboard:v3
 docker run -d \
   --restart=unless-stopped \
   --privileged \

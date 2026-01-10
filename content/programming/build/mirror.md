@@ -237,13 +237,12 @@ scoop bucket add extras https://mirrors.nju.edu.cn/git/scoop-extras
 
 ```shell
 # 阿里云
-sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+sudo sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 # 中国科学技术大学
-sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-
+sudo sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 # 清华大学
-sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+sudo sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 ```
 
 ### Debian
@@ -251,15 +250,15 @@ sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/reposi
 稳定、性能好，缺点是包版本旧。
 
 ```shell
-sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
-sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
-sed -i 's/ftp.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
+sudo sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
+sudo sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
+sudo sed -i 's/ftp.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
 ```
 
 ### Ubuntu
 
 ```shell
-sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.aliyuncs.com/g' /etc/apt/sources.list
+sudo sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.aliyuncs.com/g' /etc/apt/sources.list
 ```
 
 ### HomeBrew
@@ -330,7 +329,7 @@ machine codeup.aliyun.com login xxx password xxx
 阿里巴巴广泛应用 nodejs，镜像稳定可靠，推荐优先使用。清华未提供。
 
 ```shell
-# nodejs nvm，还需要配置 NVM_DIR
+# Mac安装nodejs nvm，还需要配置 NVM_DIR
 brew install nvm
 
 # 阿里云
