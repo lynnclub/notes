@@ -177,7 +177,7 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 # 后台运行
 docker run -d --name alpine3.15 alpine:3.15 tail -f /dev/null
 # 映射MacOS/Windows的Linux虚拟机目录
-docker run -d --name vm -v /:/host alpine tail -f /dev/null
+docker run -d --name vm -v /:/vm alpine tail -f /dev/null
 
 docker run -d --restart=always \
 --name mariadb \
