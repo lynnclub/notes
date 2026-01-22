@@ -32,6 +32,14 @@ kubectl get pods -n <namespace>
 #查看系统pods
 kubectl get pods -n kube-system
 kubectl get pods -n kubesphere-system
+#按CPU预留排序
+kubectl get pod -A -o json \
+  | jq -r '.items[] | .metadata.namespace as $ns | .metadata.name as $pod | .spec.containers[] | "\($ns)\t\($pod)\t\(.name)\t\(.resources.requests.cpu // "0")\t\(.resources.requests.memory // "0")"' \
+  | sort -k4 -nr
+#按内存预留排序
+kubectl get pod -A -o json \
+  | jq -r '.items[] | .metadata.namespace as $ns | .metadata.name as $pod | .spec.containers[] | "\($ns)\t\($pod)\t\(.name)\t\(.resources.requests.cpu // "0")\t\(.resources.requests.memory // "0")"' \
+  | sort -k5 -nr
 
 #查看 pod 的日志
 kubectl logs -n <namespace> <pod-name> 
@@ -90,9 +98,13 @@ kubectl get jobs --all-namespaces -o json > all_jobs.json
 kubectl get cronjobs --all-namespaces -o json > all_cronjobs.json
 
 #标记节点为不可调度（控制节点）
-kubectl cordon <节点名>
+kubectl cordon <node>
 #恢复（控制节点）
-kubectl uncordon <节点名称>
+kubectl uncordon <node>
+#驱逐容器、强制
+kubectl drain <node> --ignore-daemonsets --delete-emptydir-data --force
+#删除节点
+kubectl delete node <node>
 
 #查看kubelet日志
 journalctl -u kubelet -f
