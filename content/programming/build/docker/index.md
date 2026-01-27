@@ -186,11 +186,13 @@ docker run -d --restart=always \
 -p 3306:3306 \
 mariadb:latest
 
+#POSTGRES_PASSWORD设置密码
+#POSTGRES_HOST_AUTH_METHOD=trust允许无密码
 docker run -d --restart=always \
 --name postgres \
--e POSTGRES_PASSWORD= \
+-e POSTGRES_PASSWORD= \ 
 -e POSTGRES_HOST_AUTH_METHOD=trust \
--v ~/data/postgresql:/var/lib/postgresql/data \
+-v ~/data/postgresql:/var/lib/postgresql \
 -p 5432:5432 \
 postgres:alpine
 
