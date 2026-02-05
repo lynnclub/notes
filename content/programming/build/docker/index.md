@@ -207,6 +207,7 @@ docker run -d --restart=always \
 --name elasticsearch \
 -v ~/data/elasticsearch:/usr/share/elasticsearch/data \
 --network host \
+--cpus=2 --memory=4G \
 -p 9200:9200 \
 -p 9300:9300 \
 -e "discovery.type=single-node" \
