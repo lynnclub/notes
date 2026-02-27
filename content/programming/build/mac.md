@@ -25,9 +25,10 @@ brew install openjdk@8 tomcat@9 maven
 # 不推荐使用fig、notion
 brew install --cask docker-desktop sublime-text github dbeaver-community mongodb-compass redis-insight another-redis-desktop-manager pgadmin4 cyberduck apifox
 
-# Tailscale组网工具
+# Tailscale 组网工具
 brew install --cask tailscale-app
-# tailscale-app必须登录后启动，服务器开机自启不能用GUI
+
+# tailscale-app只能登录后启动，作为服务器开机自启不能用GUI
 brew install tailscale
 # 安装服务并启用开机自启
 sudo tailscaled install-system-daemon
