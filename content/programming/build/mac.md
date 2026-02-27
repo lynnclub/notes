@@ -18,13 +18,15 @@ brew install go php python@3 nvm rust
 # Java8+tomcat9
 brew install openjdk@8 tomcat@9 maven
 
-# Tailscale组网工具
-# Github Desktop代码版本控制
-# Docker Desktop容器环境
-# Dbeaver Community数据库工具，不推荐使用sequel-ace
+# Docker Desktop 容器环境
+# Sublime Text 文本编辑器
+# Github Desktop 代码版本控制
+# Dbeaver Community 数据库工具，不推荐使用sequel-ace
 # 不推荐使用fig、notion
-brew install --cask tailscale-app github docker dbeaver-community mongodb-compass another-redis-desktop-manager pgadmin4
+brew install --cask docker-desktop sublime-text github dbeaver-community mongodb-compass redis-insight another-redis-desktop-manager pgadmin4 cyberduck apifox
 
+# Tailscale组网工具
+brew install --cask tailscale-app
 # tailscale-app必须登录后启动，服务器开机自启不能用GUI
 brew install tailscale
 # 安装服务并启用开机自启
