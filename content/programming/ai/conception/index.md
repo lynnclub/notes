@@ -90,14 +90,10 @@ LoRA 是一种参数高效微调（PEFT）方法。
 1. 提高推理速度
 1. 降低部署成本
 
-### Normalization（归一化）
-
-稳定训练，加速收敛
-
 ## 推理相关
 
 ```text
-Inference（LLM大语言模型推理）
+Inference（推理）
 ↓
 Prompt / CoT / ReAct（思考方式）
 ↓
@@ -118,9 +114,9 @@ MCP / OpenAPI / OpenSpec（能力标准化）
 
 【2026.03更新】LLM 是大脑，Prompt 决定思考方式，Function Call 选择行动，Tools 执行操作，Skill 封装能力，Agent 形成闭环决策，Memory 和 RAG 提供知识增强，Workflow 负责工程调度，MCP 统一能力标准。
 
-### Inference（LLM大语言模型推理）
+### Inference（推理）
 
-LLM 是核心智能引擎，本质是基于上下文进行 token 概率预测的生成模型，负责理解、推理和生成文本，但不具备直接执行现实操作的能力。
+LLM 大语言模型是核心智能引擎，本质是基于上下文进行 token 概率预测的生成模型，负责理解、推理和生成文本，但不具备直接执行现实操作的能力。
 
 ### Prompt / CoT / ReAct（推理方式）
 
