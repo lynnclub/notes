@@ -1,5 +1,5 @@
 ---
-title: "AI概念"
+title: "概念"
 type: "docs"
 weight: 1
 ---
