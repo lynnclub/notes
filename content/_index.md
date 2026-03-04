@@ -9,6 +9,7 @@ title: "林恩笔记"
 ### 编程
 
 {{< cards >}}
+{{< card link="programming/ai" title="AI" icon="document-duplicate" >}}
 {{< card link="programming/programming" title="编程" icon="document-duplicate" >}}
 {{< card link="programming/standard" title="规范" icon="document-duplicate" >}}
 {{< card link="programming/database" title="数据库" icon="document-duplicate" >}}

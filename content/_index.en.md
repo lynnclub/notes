@@ -9,6 +9,7 @@ Lynn is a person who loves to dream and is also good at dreaming. His dreams are
 ### Programming
 
 {{< cards >}}
+{{< card link="programming/ai" title="AI" icon="document-duplicate" >}}
 {{< card link="programming/programming" title="Programming" icon="document-duplicate" >}}
 {{< card link="programming/standard" title="Standards" icon="document-duplicate" >}}
 {{< card link="programming/database" title="Database" icon="document-duplicate" >}}
