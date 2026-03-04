@@ -13,7 +13,9 @@ Architecture Design（架构设计）
 ↓
 Pretraining（预训练）
 ↓
-Fine-tuning（微调）、Quantization（量化）、Alignment（对齐）
+Fine-tuning（微调）、Quantization（量化）
+↓
+Alignment（对齐）
 ↓
 Distillation（蒸馏）
 ```
