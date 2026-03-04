@@ -5,6 +5,7 @@ weight: 1
 ---
 
 {{< cards >}}
+{{< card link="ai" title="AI" icon="document-duplicate" >}}
 {{< card link="programming" title="编程" icon="document-duplicate" >}}
 {{< card link="standard" title="规范" icon="document-duplicate" >}}
 {{< card link="database" title="数据库" icon="document-duplicate" >}}
