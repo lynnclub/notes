@@ -6,7 +6,7 @@ weight: 1
 
 AI发展日新月异，相关概念不时冒出来。
 
-## 基础概念
+## 训练相关
 
 ```text
 Architecture Design（架构设计）
@@ -15,26 +15,8 @@ Pretraining（预训练）
 ↓
 Fine-tuning（微调）、Quantization（量化）、Alignment（对齐）
 ↓
-Inference（LLM大语言模型推理）
-↓
-Prompt / CoT / ReAct（思考方式）
-↓
-Function Call（行动决策输出格式）
-↓
-Tools（可执行能力）
-↓
-Skill（能力封装）
-↓
-Agent（自主决策系统）
-↓
-Workflow / DAG（工程调度层）
-↓
-Context / Memory / RAG（记忆）
-↓
-MCP / OpenAPI / OpenSpec（能力标准化）
+Distillation（蒸馏）
 ```
-
-【2026.03更新】LLM 是大脑，Prompt 决定思考方式，Function Call 选择行动，Tools 执行操作，Skill 封装能力，Agent 形成闭环决策，Memory 和 RAG 提供知识增强，Workflow 负责工程调度，MCP 统一能力标准。
 
 ### Pretraining（预训练）
 
@@ -78,6 +60,62 @@ LoRA 是一种参数高效微调（PEFT）方法。
 
 通过 SFT监督微调、RLHF人类反馈的强化学习 等方式让模型行为符合人类价值和使用习惯。
 
+### MoE（Mixture of Experts 多专家架构）
+
+1. 每次只激活部分参数。
+1. 专家分工（代码专家 / 数学专家）。
+1. 目的：提升模型容量，提升多任务能力，同时控制计算成本。
+
+### Actor–Critic（演员–评论家范式）
+
+把模型拆成两个角色训练：
+1. Actor（演员，生成模型）：负责生成答案
+2. Critic（评论家，奖励模型/评估模型）：负责评价答案质量
+
+用 Critic 的评分来优化 Actor
+
+在 LLM 中的作用：
+1. 提升推理能力
+1. 强化逻辑一致性
+1. 解决长链推理误差积累
+
+### Distillation（蒸馏）
+
+用大模型训练小模型。
+
+目标：
+1. 降低模型体积
+1. 提高推理速度
+1. 降低部署成本
+
+### Normalization（归一化）
+
+稳定训练，加速收敛
+
+## 推理相关
+
+```text
+Inference（LLM大语言模型推理）
+↓
+Prompt / CoT / ReAct（思考方式）
+↓
+Function Call（行动决策输出格式）
+↓
+Tools（可执行能力）
+↓
+Skill（能力封装）
+↓
+Agent（自主决策系统）
+↓
+Workflow / DAG（工程调度层）
+↓
+Context / Memory / RAG（记忆）
+↓
+MCP / OpenAPI / OpenSpec（能力标准化）
+```
+
+【2026.03更新】LLM 是大脑，Prompt 决定思考方式，Function Call 选择行动，Tools 执行操作，Skill 封装能力，Agent 形成闭环决策，Memory 和 RAG 提供知识增强，Workflow 负责工程调度，MCP 统一能力标准。
+
 ### Inference（LLM大语言模型推理）
 
 LLM 是核心智能引擎，本质是基于上下文进行 token 概率预测的生成模型，负责理解、推理和生成文本，但不具备直接执行现实操作的能力。
@@ -113,37 +151,3 @@ Embedding 将文本转为向量；向量数据库存储并检索相似语义；R
 ### MCP / OpenAPI / OpenSpec（能力标准化）
 
 MCP 是模型上下文协议，用于统一能力接入；OpenAPI 是接口描述规范；OpenSpec 用于描述 AI 能力与工具结构，实现跨系统复用。
-
-## 更多术语
-
-### MoE（Mixture of Experts 多专家架构）
-
-1. 每次只激活部分参数。
-1. 专家分工（代码专家 / 数学专家）。
-1. 目的：提升模型容量，提升多任务能力，同时控制计算成本。
-
-### Actor–Critic（演员–评论家范式）
-
-把模型拆成两个角色训练：
-1. Actor（演员，生成模型）：负责生成答案
-2. Critic（评论家，奖励模型/评估模型）：负责评价答案质量
-
-用 Critic 的评分来优化 Actor
-
-在 LLM 中的作用：
-1. 提升推理能力
-1. 强化逻辑一致性
-1. 解决长链推理误差积累
-
-### Distillation（蒸馏）
-
-用大模型训练小模型。
-
-目标：
-1. 降低模型体积
-1. 提高推理速度
-1. 降低部署成本
-
-### Normalization（归一化）
-
-稳定训练，加速收敛
