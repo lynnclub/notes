@@ -14,7 +14,7 @@ weight: 2
 
 语义网络
 
-![语义：John gave the book to Mary](history.png)
+![语义：John gave the book to Mary](semantic.png)
 
 语义网络是一种用图来表示知识的结构化方式，类似知识图谱、图数据库，常用于社交关系挖掘。
 
@@ -22,8 +22,7 @@ weight: 2
 
 1958 年 Frank Rosenblatt 提出感知机，将神经元行为数学化，但未形成系统化神经网络理论；1982 年 John J. Hopfield 奠定神经网络数学基础，并获 2024 年诺贝尔物理学奖。
 
-[图片]
-感知机模型的几何意义
+![感知机模型的几何意义](perceptron.png)
 
 感知机由 加权求和 和 激活函数 组成，本质上是在抽象信息，数学同样是对现实世界的抽象。
 
@@ -42,8 +41,7 @@ weight: 2
 
 深度学习在图像、语音识别等特定领域取得突破，但距离通用人工智能仍有较大差距，行业再次出现投资退潮，机器“觉醒”的那一天似乎遥遥无期。
 
-[图片]
-深度神经网络
+![深度神经网络](deep-learning.png)
 
 大模型时代（2022）
 
@@ -54,13 +52,13 @@ weight: 2
 
 二、Transformer架构
 
-Transformer 由 Vaswani 等人在 2017 年论文 《Attention Is All You Need》 中提出，是基于注意力机制（Attention）的神经网络架构，用于处理序列数据（例如自然语言、时间序列），取代了以往的 RNN、LSTM 等循环结构，成为了 GPT、BERT 等大语言模型的基础。
+Transformer 由 Vaswani 等人在 2017 年论文 [《Attention Is All You Need》](https://arxiv.org/abs/1706.03762) 中提出，是基于注意力机制（Attention）的神经网络架构，用于处理序列数据（例如自然语言、时间序列），取代了以往的 RNN、LSTM 等循环结构，成为了 GPT、BERT 等大语言模型的基础。
 
-文件下载  [PDF] Attention is All you Need | Semantic Scholar
+文件下载  [Attention is All you Need](https://www.semanticscholar.org/paper/Attention-is-All-you-Need-Vaswani-Shazeer/204e3073870fae3d05bcbc2f6a8e263d9b72e776)
 
 架构设计
 
-[图片]
+![transformer](transformer.png)
 
 Transformer 主要包含编码器和解码器，核心流程如下：
 输入序列 → 令牌化编码与嵌入 → 位置编码 → 编码器（Encoder） → 解码器（Decoder） → 输出序列
@@ -97,18 +95,17 @@ W_v (value)：值向量，表示 “我实际的信息内容”
 3. 计算注意力权重（归一化）：对分数进行缩放后，用 Softmax 函数归一化，使每行权重之和为 1 。
 4. 加权求和（理解）：将每个词的 V 向量与注意力权重相乘后求和，得到融入上下文信息的新向量 。
 
-[图片]
+![attention](attention.png)
 
 整个过程主要是矩阵运算，在向量空间中具有几何意义：输入分散在向量空间中的点（即词向量），每个点根据其与周围点的几何方向相似性 Q·K，计算出对其他点的“注意力权重”，然后移动到由这些权重决定的、其他点的质心位置 (Q·K)V，得到一组新点，每个新点的位置都融入了上下文信息，最终语义相近的词在向量空间中位置更接近。
 
 计算图示
 
-[图片]
-步骤二：计算注意力分数（匹配）
-[图片]
-步骤三：计算注意力权重（归一化）
-[图片]
-步骤四：加权求和（理解）
+![步骤二：计算注意力分数（匹配）](attention2.png)
+
+![步骤三：计算注意力权重（归一化）](attention3.png)
+
+![步骤四：加权求和（理解）](attention4.png)
 
 通俗理解
 
@@ -142,7 +139,7 @@ W_v (value)：值向量，表示 “我实际的信息内容”
 
 之前的计算都是线性计算，无法满足非线性情况。对自注意力层的输出做进一步变换和非线性处理，以拟合任意复杂函数。
 
-[图片]
+![fnn](fnn.png)
 是不是很眼熟？这不就是两层感知机！
 
 四、大语言模型
@@ -178,8 +175,7 @@ deepseek思维链？
 
 六、未至之境：AI发展与人脑科学
 
-[图片]
-神经元
+![神经元](neurons.png)
 
 Transformer与神经元
 
