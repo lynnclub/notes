@@ -351,71 +351,6 @@ openclaw agents bind --agent chat --bind whatsapp
 openclaw agents bind --agent deep --bind telegram
 ```
 
-### Sub-Agent（后台子任务）详解
-
-Sub-Agent 是主 Agent 在后台派生的独立运行实例，拥有自己的会话和 token 用量，**非阻塞**——派生后立刻返回 `runId`，完成后将结果公告回主会话频道。
-
-**会话层级：**
-
-| 层级 | 会话 Key | 角色 | 能否再派生 |
-|------|---------|------|-----------|
-| 0 | `agent::main` | 主 Agent | 始终可以 |
-| 1 | `agent::subagent:<runId>` | 子 Agent（默认） | 需开启 `maxSpawnDepth: 2` |
-| 2 | `agent::subagent:...:subagent:<runId>` | 孙 Agent（叶节点） | 不可以 |
-
-**方式一：通过对话直接触发（最简单）**
-
-直接告诉 AI "帮我后台执行 XX 任务"，AI 会自动调用 `sessions_spawn`。
-
-**方式二：斜杠命令**
-
-```
-/subagents spawn --model anthropic/claude-sonnet-4-5 --thinking extended
-/subagents list                   # 查看当前所有子 Agent
-/subagents info <runId>           # 查看运行状态、时间戳、会话 ID
-/subagents log <runId> [limit]    # 查看输出日志
-/subagents steer <runId>          # 向运行中的子 Agent 发送补充指令
-/subagents send <runId>           # 向子 Agent 发送消息
-/subagents kill <runId>           # 终止指定子 Agent（级联终止其子孙）
-/subagents kill all               # 终止全部子 Agent
-```
-
-**方式三：AI 工具调用 `sessions_spawn`（编程式）**
-
-```
-sessions_spawn({
-  task: "抓取 https://example.com 并总结主要内容，完成后公告结果",
-  model: "anthropic/claude-sonnet-4-5",   // 可选，降低成本
-  thinking: "extended",                    // 可选
-  runTimeoutSeconds: 300,                  // 可选，超时自动终止
-  label: "网页摘要任务",                   // 可选，便于识别
-  cleanup: "delete"                        // 完成后自动归档
-})
-```
-
-**开启嵌套子 Agent（编排模式）：**
-
-```json5
-{
-  agents: {
-    defaults: {
-      subagents: {
-        maxSpawnDepth: 2,          // 允许子 Agent 再派生（默认 1）
-        maxChildrenPerAgent: 5,    // 每个会话最多同时 5 个子任务
-        maxConcurrent: 8,          // 全局并发上限
-        runTimeoutSeconds: 900,    // 全局默认超时（0 = 不限）
-        model: "anthropic/claude-sonnet-4-5"  // 子 Agent 默认使用更便宜的模型
-      }
-    }
-  }
-}
-```
-
-> **注意：**
-> - 子 Agent 只注入 `AGENTS.md` + `TOOLS.md`，**不注入** `SOUL.md`、`USER.md`、`IDENTITY.md`。
-> - `/stop` 会终止主会话并**级联**终止所有子 Agent。
-> - Gateway 重启后，未完成的子 Agent 公告任务会丢失。
-
 ---
 
 ## 五、Tools 与 Skills
@@ -542,154 +477,7 @@ clawhub update --all           # 更新所有已安装的 Skills
 
 ---
 
-## 六、会话管理
-
-### 查看会话
-
-```bash
-openclaw sessions                    # 默认 Agent 的会话
-openclaw sessions --agent work       # 指定 Agent
-openclaw sessions --all-agents       # 所有 Agent
-openclaw sessions --active 120       # 最近 120 分钟内活跃的会话
-```
-
-### 会话隔离范围
-
-通过 `dmScope` 控制私信的会话如何隔离：
-
-| 值 | 效果 |
-|----|------|
-| `main`（默认） | 所有私信共用一个会话 |
-| `per-peer` | 每个发送者独立会话 |
-| `per-channel-peer` | 每个渠道 + 发送者独立会话（多用户场景推荐） |
-| `per-account-channel-peer` | 最细粒度隔离 |
-
-```json5
-{ session: { dmScope: "per-channel-peer" } }
-```
-
-### 自动重置与清理
-
-```json5
-// 每天凌晨 4 点自动重置，或空闲 2 小时后重置
-{
-  session: {
-    reset: { mode: "daily", atHour: 4, idleMinutes: 120 }
-  }
-}
-```
-
-```bash
-openclaw sessions cleanup --dry-run          # 预览待清理内容
-openclaw sessions cleanup --all-agents --enforce   # 实际执行清理
-```
-
----
-
-## 七、进阶功能
-
-### Sub-Agent（后台子任务）
-
-Sub-Agent 的完整用法见「四、Agent 管理 → Sub-Agent 详解」。进阶场景中常见的是**编排模式**：主 Agent → 一级编排子 Agent → 多个并行叶节点 Worker。
-
-```
-主 Agent
-  └─ 编排子 Agent（maxSpawnDepth: 2）
-       ├─ Worker 1（并行）
-       ├─ Worker 2（并行）
-       └─ Worker 3（并行）
-```
-
-每层只收到来自**直接子节点**的公告，结果逐层向上汇总。
-
-### 沙箱隔离
-
-为不受信任的 Agent 启用 Docker 沙箱，限制其工具权限：
-
-```json5
-{
-  agents: {
-    list: [{
-      id: "untrusted",
-      workspace: "~/.openclaw/workspace-untrusted",
-      sandbox: { mode: "all", scope: "agent" },
-      tools: { allow: ["read"], deny: ["exec", "write", "edit"] }
-    }]
-  }
-}
-```
-
-### 定时任务（Cron）
-
-```json5
-{ cron: { enabled: true, maxConcurrentRuns: 2 } }
-```
-
-启用后可通过 AI 对话或 `openclaw cron` 命令管理定时触发的 Agent 任务。
-
-### Webhook 自动化
-
-让外部服务（如 Gmail 推送）触发 Agent 运行：
-
-```json5
-{
-  hooks: {
-    enabled: true,
-    token: "your-secret",
-    mappings: [{ match: { path: "gmail" }, action: "agent", agentId: "main" }]
-  }
-}
-```
-
-### 移动端节点（Nodes）
-
-配对 iOS / Android 设备后，Agent 可调用：摄像头、麦克风、设备位置、屏幕录制、系统通知等。
-
----
-
-## 八、CLI 速查
-
-```bash
-# Gateway
-openclaw gateway status / restart
-openclaw gateway --port 18789    # 前台调试模式
-openclaw doctor [--fix]          # 诊断并修复配置问题
-openclaw logs                    # 查看日志
-
-# 渠道
-openclaw channels login [--channel whatsapp] [--account biz]
-openclaw channels status [--probe]
-
-# Agent
-openclaw agents list [--bindings]
-openclaw agents add <id> [--workspace <path>]
-openclaw agents delete <id>
-openclaw agents bind --agent <id> --bind <channel>[:<accountId>]
-openclaw agents unbind --agent <id> --bind <channel>[:<accountId>] [--all]
-openclaw agents bindings [--agent <id>] [--json]
-openclaw agents set-identity --agent <id> [--name X] [--emoji X] [--avatar X]
-openclaw agents set-identity --workspace <path> --from-identity
-openclaw setup [--workspace <path>]  # 生成缺失的模板文件（不覆盖已有）
-
-# 会话
-openclaw sessions [--agent <id>] [--all-agents] [--active 120]
-openclaw sessions cleanup [--dry-run] [--enforce]
-
-# 配置
-openclaw onboard / configure
-openclaw config get <key>
-openclaw config set <key> <value>
-
-# 模型
-openclaw models list
-
-# 发消息
-openclaw message send --target +8613800138000 --message "Hello"
-```
-
----
-
-## 九、MCP（Model Context Protocol）
+## 六、MCP（Model Context Protocol）
 
 MCP 是由 Anthropic 主导、已捐赠给 Linux 基金会的开放标准，提供一套统一协议让 AI 客户端连接任意外部工具、数据库与 API。OpenClaw 原生支持 MCP，充当 **MCP Client**，而各类 MCP Server 则作为能力桥接层。
 
@@ -1012,7 +800,6 @@ func main() {
     s := mcp.NewMcpServer(c)
     defer s.Stop()
 
-    // 注册工具
     registerTools(s)
 
     s.Start()
@@ -1055,7 +842,6 @@ func registerTools(s *mcp.McpServer) {
         },
     }, func(ctx context.Context, req mcp.ToolRequest) (mcp.ToolResponse, error) {
         userID := req.Params["user_id"].(string)
-        // 替换为实际数据库查询
         text := fmt.Sprintf("用户 %s 共有 3 条订单：#1001, #1002, #1003", userID)
         return mcp.NewTextToolResponse(text), nil
     })
@@ -1077,7 +863,175 @@ func registerTools(s *mcp.McpServer) {
 
 ---
 
-## 十、运维
+## 七、会话管理
+
+### 查看会话
+
+```bash
+openclaw sessions                    # 默认 Agent 的会话
+openclaw sessions --agent work       # 指定 Agent
+openclaw sessions --all-agents       # 所有 Agent
+openclaw sessions --active 120       # 最近 120 分钟内活跃的会话
+```
+
+### 会话隔离范围
+
+通过 `dmScope` 控制私信的会话如何隔离：
+
+| 值 | 效果 |
+|----|------|
+| `main`（默认） | 所有私信共用一个会话 |
+| `per-peer` | 每个发送者独立会话 |
+| `per-channel-peer` | 每个渠道 + 发送者独立会话（多用户场景推荐） |
+| `per-account-channel-peer` | 最细粒度隔离 |
+
+```json5
+{ session: { dmScope: "per-channel-peer" } }
+```
+
+### 自动重置与清理
+
+```json5
+// 每天凌晨 4 点自动重置，或空闲 2 小时后重置
+{
+  session: {
+    reset: { mode: "daily", atHour: 4, idleMinutes: 120 }
+  }
+}
+```
+
+```bash
+openclaw sessions cleanup --dry-run          # 预览待清理内容
+openclaw sessions cleanup --all-agents --enforce   # 实际执行清理
+```
+
+---
+
+## 八、进阶功能
+
+### Sub-Agent（后台子任务）
+
+Sub-Agent 是主 Agent 在后台派生的独立运行实例，拥有自己的会话和 token 用量，**非阻塞**——派生后立刻返回 `runId`，完成后将结果公告回主会话频道。
+
+**会话层级：**
+
+| 层级 | 会话 Key | 角色 | 能否再派生 |
+|------|---------|------|-----------|
+| 0 | `agent::main` | 主 Agent | 始终可以 |
+| 1 | `agent::subagent:<runId>` | 子 Agent（默认） | 需开启 `maxSpawnDepth: 2` |
+| 2 | `agent::subagent:...:subagent:<runId>` | 孙 Agent（叶节点） | 不可以 |
+
+**方式一：通过对话直接触发（最简单）**
+
+直接告诉 AI "帮我后台执行 XX 任务"，AI 会自动调用 `sessions_spawn`。
+
+**方式二：斜杠命令**
+
+```
+/subagents spawn --model anthropic/claude-sonnet-4-5 --thinking extended
+/subagents list                   # 查看当前所有子 Agent
+/subagents info <runId>           # 查看运行状态、时间戳、会话 ID
+/subagents log <runId> [limit]    # 查看输出日志
+/subagents steer <runId>          # 向运行中的子 Agent 发送补充指令
+/subagents send <runId>           # 向子 Agent 发送消息
+/subagents kill <runId>           # 终止指定子 Agent（级联终止其子孙）
+/subagents kill all               # 终止全部子 Agent
+```
+
+**方式三：AI 工具调用 `sessions_spawn`（编程式）**
+
+```
+sessions_spawn({
+  task: "抓取 https://example.com 并总结主要内容，完成后公告结果",
+  model: "anthropic/claude-sonnet-4-5",   // 可选，降低成本
+  thinking: "extended",                    // 可选
+  runTimeoutSeconds: 300,                  // 可选，超时自动终止
+  label: "网页摘要任务",                   // 可选，便于识别
+  cleanup: "delete"                        // 完成后自动归档
+})
+```
+
+**开启嵌套子 Agent（编排模式）：**
+
+```json5
+{
+  agents: {
+    defaults: {
+      subagents: {
+        maxSpawnDepth: 2,          // 允许子 Agent 再派生（默认 1）
+        maxChildrenPerAgent: 5,    // 每个会话最多同时 5 个子任务
+        maxConcurrent: 8,          // 全局并发上限
+        runTimeoutSeconds: 900,    // 全局默认超时（0 = 不限）
+        model: "anthropic/claude-sonnet-4-5"  // 子 Agent 默认使用更便宜的模型
+      }
+    }
+  }
+}
+```
+
+**编排模式示意（主 Agent → 一级编排 → 多个并行 Worker）：**
+
+```
+主 Agent
+  └─ 编排子 Agent（maxSpawnDepth: 2）
+       ├─ Worker 1（并行）
+       ├─ Worker 2（并行）
+       └─ Worker 3（并行）
+```
+
+每层只收到来自**直接子节点**的公告，结果逐层向上汇总。
+
+> **注意：**
+> - 子 Agent 只注入 `AGENTS.md` + `TOOLS.md`，**不注入** `SOUL.md`、`USER.md`、`IDENTITY.md`。
+> - `/stop` 会终止主会话并**级联**终止所有子 Agent。
+> - Gateway 重启后，未完成的子 Agent 公告任务会丢失。
+
+### 沙箱隔离
+
+为不受信任的 Agent 启用 Docker 沙箱，限制其工具权限：
+
+```json5
+{
+  agents: {
+    list: [{
+      id: "untrusted",
+      workspace: "~/.openclaw/workspace-untrusted",
+      sandbox: { mode: "all", scope: "agent" },
+      tools: { allow: ["read"], deny: ["exec", "write", "edit"] }
+    }]
+  }
+}
+```
+
+### 定时任务（Cron）
+
+```json5
+{ cron: { enabled: true, maxConcurrentRuns: 2 } }
+```
+
+启用后可通过 AI 对话或 `openclaw cron` 命令管理定时触发的 Agent 任务。
+
+### Webhook 自动化
+
+让外部服务（如 Gmail 推送）触发 Agent 运行：
+
+```json5
+{
+  hooks: {
+    enabled: true,
+    token: "your-secret",
+    mappings: [{ match: { path: "gmail" }, action: "agent", agentId: "main" }]
+  }
+}
+```
+
+### 移动端节点（Nodes）
+
+配对 iOS / Android 设备后，Agent 可调用：摄像头、麦克风、设备位置、屏幕录制、系统通知等。
+
+---
+
+## 九、运维
 
 ### 配置 AI 模型
 
@@ -1121,3 +1075,45 @@ openclaw channels status --probe   # 检查渠道连接
 | Fly.io / Railway / Render | 无服务器云托管 |
 | VPS（Hetzner / DigitalOcean / GCP） | 自管云服务器 |
 | Raspberry Pi | 低功耗家用服务器 |
+
+---
+
+## 十、CLI 速查
+
+```bash
+# Gateway
+openclaw gateway status / restart
+openclaw gateway --port 18789    # 前台调试模式
+openclaw doctor [--fix]          # 诊断并修复配置问题
+openclaw logs                    # 查看日志
+
+# 渠道
+openclaw channels login [--channel whatsapp] [--account biz]
+openclaw channels status [--probe]
+
+# Agent
+openclaw agents list [--bindings]
+openclaw agents add <id> [--workspace <path>]
+openclaw agents delete <id>
+openclaw agents bind --agent <id> --bind <channel>[:<accountId>]
+openclaw agents unbind --agent <id> --bind <channel>[:<accountId>] [--all]
+openclaw agents bindings [--agent <id>] [--json]
+openclaw agents set-identity --agent <id> [--name X] [--emoji X] [--avatar X]
+openclaw agents set-identity --workspace <path> --from-identity
+openclaw setup [--workspace <path>]  # 生成缺失的模板文件（不覆盖已有）
+
+# 会话
+openclaw sessions [--agent <id>] [--all-agents] [--active 120]
+openclaw sessions cleanup [--dry-run] [--enforce]
+
+# 配置
+openclaw onboard / configure
+openclaw config get <key>
+openclaw config set <key> <value>
+
+# 模型
+openclaw models list
+
+# 发消息
+openclaw message send --target +8613800138000 --message "Hello"
+```
