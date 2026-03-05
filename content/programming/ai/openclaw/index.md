@@ -359,8 +359,6 @@ openclaw agents bind --agent deep --bind telegram
 
 Tool 是 AI 可调用的原子能力，通过 JSON Schema 传给模型 API（即通常说的 Function Calling）。工具通过两个并行通道呈现给 AI：一是传给模型的结构化 Schema（必须），二是系统 Prompt 中的说明文字（帮助模型理解何时使用）。
 
-除内置工具外，**插件（Plugin）也可在核心集之外注册额外的工具和 CLI 命令**（例如 `voice-call` 插件自带专属工具和对应的 Skill 说明）。详见 [插件文档](https://docs.openclaw.ai/zh-CN)。
-
 **内置工具分组：**
 
 | 分组 | 包含工具 | 说明 |
@@ -477,7 +475,7 @@ clawhub install <skill-name>   # 安装到 workspace/skills/
 clawhub update --all           # 更新所有已安装的 Skills
 ```
 
-插件安装与配置、自定义工具注册等进阶内容，参见 [官方文档](https://docs.openclaw.ai/zh-CN)。
+插件安装与配置、自定义工具注册等进阶内容，参见 [官方文档](https://docs.openclaw.ai/zh-CN/tools)。
 
 ---
 
