@@ -145,75 +145,276 @@ openclaw channels login --channel whatsapp   # 扫码授权
 
 群组消息默认需要 @mention 才响应，可在 Agent 配置中自定义触发词。
 
-> 配置文件支持**热重载**——保存后 Gateway 自动应用，大多数设置无需重启。
+配置文件支持**热重载**——保存后 Gateway 自动应用，大多数设置无需重启。
 
 ---
 
 ## 四、Agent 管理
 
-### 工作目录文件
+### 工作目录与初始化
 
-每个 Agent 有一个工作目录（默认 `~/.openclaw/workspace`），里面的 Markdown 文件在每次对话开始时注入 Prompt：
-
-| 文件 | 注入内容 |
-|------|----------|
-| `AGENTS.md` | 操作指令与"记忆"（最重要） |
-| `SOUL.md` | 人格、语气、边界 |
-| `USER.md` | 用户档案与称呼偏好 |
-| `TOOLS.md` | 工具使用提示（不控制工具是否存在） |
-| `IDENTITY.md` | Agent 名字、风格 |
+每个 Agent 有一个**工作目录**（默认 `~/.openclaw/workspace`），这是 AI 的"家"，也是文件工具的默认 cwd。配置、会话历史、凭证等位于 `~/.openclaw/`，**不在**工作目录中。
 
 ```bash
-openclaw setup   # 初始化工作目录，生成默认模板文件
+openclaw setup          # 在当前工作目录生成缺失的模板文件（不覆盖已有文件）
+openclaw setup --workspace ~/.openclaw/workspace-work   # 为指定路径生成模板
 ```
 
-### 添加与查看
-
-```bash
-openclaw agents add work          # 创建隔离的新 Agent
-openclaw agents list              # 列出所有 Agent
-openclaw agents list --bindings   # 同时显示路由规则
-```
-
-### 多 Agent 配置
-
-一台机器可以运行多个完全隔离的 Agent，每个 Agent 有独立的工作目录、认证档案、会话存储。
-
-**场景 A：个人号 / 工作号各一个 Agent**
+**初始化之后如何修改：** 直接用文本编辑器编辑工作目录下对应的 `.md` 文件即可，保存后下次对话自动生效，无需重启。如果某个文件被误删，再次运行 `openclaw setup` 只会补全缺失文件，不覆盖已有内容。若不想让 OpenClaw 自动生成引导文件，可在配置中禁用：
 
 ```json5
+{ agent: { skipBootstrap: true } }
+```
+
+### 工作目录文件详解（系统 Prompt 注入体系）
+
+工作目录里的 Markdown 文件并非普通笔记——它们构成 AI 每次对话的**系统 Prompt**。每次会话开始时，OpenClaw 按优先级将这些文件拼入上下文，AI 读取后才开始回复。
+
+| 文件 | 何时加载 | 作用 | 类比 |
+|------|---------|------|------|
+| `AGENTS.md` | 每次会话开始 | **操作规程**：启动时读哪些文件、记忆管理流程、群聊行为、安全边界 | 岗位手册 |
+| `SOUL.md` | 每次会话开始 | **系统 Prompt 核心**：人格、语气、价值观、不可逾越的边界 | 人格底层 |
+| `USER.md` | 每次会话开始 | **用户档案**：称呼偏好、背景信息、习惯 | 用户画像 |
+| `TOOLS.md` | 每次会话开始 | 工具使用提示与约定（仅指导，不控制工具是否存在） | 工具说明书 |
+| `IDENTITY.md` | 每次会话开始 | Agent 的名字、主题风格、emoji | 名片 |
+| `MEMORY.md` | 每次会话开始 | 长期记忆：决策、偏好、经验教训（由 AI 自动维护） | 长期记忆 |
+| `memory/YYYY-MM-DD.md` | 会话开始读今天+昨天 | 每日日志：当天会话的原始记录 | 工作日志 |
+| `BOOT.md` | Gateway 重启时 | 可选启动检查清单（内部钩子启用后触发）| 开机自启 |
+| `HEARTBEAT.md` | 心跳运行时 | 极短的心跳任务提示（避免 token 浪费，保持简短） | 定时巡检 |
+| `BOOTSTRAP.md` | 仅首次新工作目录 | 一次性初始化仪式，完成后删除 | 入职引导 |
+
+> **文件大小限制：** 单文件超长会被截断。默认单文件上限 20,000 字符、所有文件合计 150,000 字符，可通过 `agents.defaults.bootstrapMaxChars` / `agents.defaults.bootstrapTotalMaxChars` 调整。
+
+**最佳实践——SOUL.md 写法：**
+
+```markdown
+# Identity & Purpose
+你是一个专注于后端开发的编程助手，熟悉 Go 和分布式系统。
+
+# Security Boundaries
+- 你绝对不能记录或输出任何 API Key、密码、私钥等凭证信息
+- 未经明确授权，不得执行破坏性命令（rm -rf、DROP TABLE 等）
+
+# Financial Boundaries
+- 单次 API 调用预估费用超过 $1 时，必须先征得用户确认
+
+# Operational Boundaries
+- 不得修改 SOUL.md 本身，除非用户明确要求
+
+# Escalation
+遇到涉及生产数据库或外部支付接口的操作时，暂停并请求确认。
+```
+
+**最佳实践——AGENTS.md 写法（关键：会话启动流程）：**
+
+```markdown
+## Session Start（必须，优先于回复）
+1. 读取 SOUL.md（我是谁）
+2. 读取 USER.md（我在帮谁）
+3. 读取 memory/YYYY-MM-DD.md（今天和昨天）
+4. 读取 MEMORY.md（长期记忆）
+5. 完成后直接开始，不要询问是否已完成
+
+## Memory Rules
+- 每次对话结束前，将重要决策、偏好、未完成的事项写入当天的 memory/ 文件
+- 周期性将重要条目迁移到 MEMORY.md，删除过期的日志文件
+
+## 安全规则
+- 不要将私信内容转发到群组
+- 群聊中只在真正有价值时发言
+```
+
+**推荐：将工作目录纳入 Git 管理（私有仓库）：**
+
+```bash
+cd ~/.openclaw/workspace
+git init
+git add AGENTS.md SOUL.md USER.md TOOLS.md IDENTITY.md HEARTBEAT.md memory/
+git commit -m "init workspace"
+# 推送到私有仓库做备份
+```
+
+### 添加与管理 Agent（CLI）
+
+**创建新 Agent：**
+
+```bash
+openclaw agents add work --workspace ~/.openclaw/workspace-work
+openclaw setup --workspace ~/.openclaw/workspace-work   # 为新 Agent 生成模板文件
+```
+
+**查看与删除：**
+
+```bash
+openclaw agents list              # 列出所有 Agent
+openclaw agents list --bindings   # 同时显示路由绑定
+openclaw agents delete work       # 删除 Agent（不删除工作目录文件）
+```
+
+**设置 Agent 身份（写入 IDENTITY.md 或直接覆盖配置）：**
+
+```bash
+# 从工作目录中的 IDENTITY.md 读取并写入配置
+openclaw agents set-identity --workspace ~/.openclaw/workspace --from-identity
+
+# 直接用命令行覆盖字段
+openclaw agents set-identity --agent main --name "Claw" --emoji "🦞" --avatar avatars/openclaw.png
+```
+
+### 多 Agent 渠道路由（CLI + 配置双轨）
+
+**多 Agent 路由可以完全通过命令行配置，无需手动编辑 JSON 文件：**
+
+```bash
+# 为 work Agent 绑定 Telegram 的 ops 账号和 Discord 的 guild-a 服务器
+openclaw agents bind --agent work --bind telegram:ops --bind discord:guild-a
+
+# 查看当前所有绑定
+openclaw agents bindings
+openclaw agents bindings --agent work
+openclaw agents bindings --json    # 输出 JSON，便于脚本处理
+
+# 解绑
+openclaw agents unbind --agent work --bind telegram:ops
+openclaw agents unbind --agent work --all   # 解除该 Agent 的全部绑定
+```
+
+**绑定优先级规则（精确度高者优先）：**
+
+```
+精确 peer（特定用户）
+  > 父线程
+    > channel:accountId（特定账号）
+      > channel:*（渠道通配）
+        > 默认 Agent（default: true）
+```
+
+**配置文件方式（等效，适合版本控制）：**
+
+```json5
+// ~/.openclaw/openclaw.json
 {
   agents: {
     list: [
-      { id: "home", default: true, workspace: "~/.openclaw/workspace-home" },
-      { id: "work", workspace: "~/.openclaw/workspace-work", model: "anthropic/claude-opus-4-6" }
+      {
+        id: "home",
+        default: true,
+        workspace: "~/.openclaw/workspace-home",
+        identity: { name: "Home Claw", emoji: "🏠" }
+      },
+      {
+        id: "work",
+        workspace: "~/.openclaw/workspace-work",
+        model: "anthropic/claude-opus-4-6",
+        identity: { name: "Work Claw", emoji: "💼" }
+      }
     ]
-  },
-  bindings: [
-    { agentId: "home", match: { channel: "whatsapp", accountId: "personal" } },
-    { agentId: "work", match: { channel: "whatsapp", accountId: "biz" } }
-  ]
+  }
 }
 ```
 
-**场景 B：WhatsApp 用快速模型，Telegram 用深度思考模型**
+**配置写入命令（非交互式）：**
+
+```bash
+# 通过 config set 修改单个字段（不推荐改复杂嵌套结构，建议直接编辑 JSON）
+openclaw config set agents.defaults.workspace "~/.openclaw/workspace"
+openclaw config get agents.list    # 查看当前 agents 列表
+```
+
+**典型场景一：个人号 / 工作号分离**
+
+```bash
+# 创建两个 Agent
+openclaw agents add home --workspace ~/.openclaw/workspace-home
+openclaw agents add work --workspace ~/.openclaw/workspace-work
+
+# 绑定渠道
+openclaw agents bind --agent home --bind whatsapp:personal
+openclaw agents bind --agent work --bind whatsapp:biz --bind telegram:ops
+```
+
+**典型场景二：按渠道选用不同模型（需编辑 openclaw.json）**
 
 ```json5
 {
   agents: {
     list: [
       { id: "chat", workspace: "~/.openclaw/workspace-chat", model: "anthropic/claude-sonnet-4-5" },
-      { id: "opus", workspace: "~/.openclaw/workspace-opus", model: "anthropic/claude-opus-4-6" }
+      { id: "deep", workspace: "~/.openclaw/workspace-deep", model: "anthropic/claude-opus-4-6" }
     ]
-  },
-  bindings: [
-    { agentId: "chat", match: { channel: "whatsapp" } },
-    { agentId: "opus", match: { channel: "telegram" } }
-  ]
+  }
 }
 ```
 
-消息路由采用**最精确优先**原则：精确 peer > 父线程 > 频道账号 > 渠道通配 > 默认 Agent。
+```bash
+openclaw agents bind --agent chat --bind whatsapp
+openclaw agents bind --agent deep --bind telegram
+```
+
+### Sub-Agent（后台子任务）详解
+
+Sub-Agent 是主 Agent 在后台派生的独立运行实例，拥有自己的会话和 token 用量，**非阻塞**——派生后立刻返回 `runId`，完成后将结果公告回主会话频道。
+
+**会话层级：**
+
+| 层级 | 会话 Key | 角色 | 能否再派生 |
+|------|---------|------|-----------|
+| 0 | `agent::main` | 主 Agent | 始终可以 |
+| 1 | `agent::subagent:<runId>` | 子 Agent（默认） | 需开启 `maxSpawnDepth: 2` |
+| 2 | `agent::subagent:...:subagent:<runId>` | 孙 Agent（叶节点） | 不可以 |
+
+**方式一：通过对话直接触发（最简单）**
+
+直接告诉 AI "帮我后台执行 XX 任务"，AI 会自动调用 `sessions_spawn`。
+
+**方式二：斜杠命令**
+
+```
+/subagents spawn --model anthropic/claude-sonnet-4-5 --thinking extended
+/subagents list                   # 查看当前所有子 Agent
+/subagents info <runId>           # 查看运行状态、时间戳、会话 ID
+/subagents log <runId> [limit]    # 查看输出日志
+/subagents steer <runId>          # 向运行中的子 Agent 发送补充指令
+/subagents send <runId>           # 向子 Agent 发送消息
+/subagents kill <runId>           # 终止指定子 Agent（级联终止其子孙）
+/subagents kill all               # 终止全部子 Agent
+```
+
+**方式三：AI 工具调用 `sessions_spawn`（编程式）**
+
+```
+sessions_spawn({
+  task: "抓取 https://example.com 并总结主要内容，完成后公告结果",
+  model: "anthropic/claude-sonnet-4-5",   // 可选，降低成本
+  thinking: "extended",                    // 可选
+  runTimeoutSeconds: 300,                  // 可选，超时自动终止
+  label: "网页摘要任务",                   // 可选，便于识别
+  cleanup: "delete"                        // 完成后自动归档
+})
+```
+
+**开启嵌套子 Agent（编排模式）：**
+
+```json5
+{
+  agents: {
+    defaults: {
+      subagents: {
+        maxSpawnDepth: 2,          // 允许子 Agent 再派生（默认 1）
+        maxChildrenPerAgent: 5,    // 每个会话最多同时 5 个子任务
+        maxConcurrent: 8,          // 全局并发上限
+        runTimeoutSeconds: 900,    // 全局默认超时（0 = 不限）
+        model: "anthropic/claude-sonnet-4-5"  // 子 Agent 默认使用更便宜的模型
+      }
+    }
+  }
+}
+```
+
+> **注意：**
+> - 子 Agent 只注入 `AGENTS.md` + `TOOLS.md`，**不注入** `SOUL.md`、`USER.md`、`IDENTITY.md`。
+> - `/stop` 会终止主会话并**级联**终止所有子 Agent。
+> - Gateway 重启后，未完成的子 Agent 公告任务会丢失。
 
 ---
 
@@ -389,30 +590,17 @@ openclaw sessions cleanup --all-agents --enforce   # 实际执行清理
 
 ### Sub-Agent（后台子任务）
 
-Sub-Agent 是主 Agent 派生的独立后台运行实例，用于**并行处理耗时任务**，完成后将结果公告回主会话。
+Sub-Agent 的完整用法见「四、Agent 管理 → Sub-Agent 详解」。进阶场景中常见的是**编排模式**：主 Agent → 一级编排子 Agent → 多个并行叶节点 Worker。
 
 ```
-主 Agent  →  sessions_spawn  →  子 Agent（独立会话、独立 token）
-                                      ↓ 完成后
-                              公告结果到主会话频道
+主 Agent
+  └─ 编排子 Agent（maxSpawnDepth: 2）
+       ├─ Worker 1（并行）
+       ├─ Worker 2（并行）
+       └─ Worker 3（并行）
 ```
 
-在对话中直接说"帮我派生一个子任务"或使用斜杠命令：
-
-```
-/subagents list              # 查看子 Agent 列表
-/subagents spawn <任务描述>   # 手动派生
-/subagents kill <runId>      # 停止
-/subagents log <runId>       # 查看日志
-```
-
-嵌套子 Agent（编排模式，默认关闭）：
-
-```json5
-{
-  agents: { defaults: { subagents: { maxSpawnDepth: 2, maxConcurrent: 8 } } }
-}
-```
+每层只收到来自**直接子节点**的公告，结果逐层向上汇总。
 
 ### 沙箱隔离
 
@@ -474,8 +662,14 @@ openclaw channels status [--probe]
 
 # Agent
 openclaw agents list [--bindings]
-openclaw agents add <id>
-openclaw setup                   # 初始化工作目录
+openclaw agents add <id> [--workspace <path>]
+openclaw agents delete <id>
+openclaw agents bind --agent <id> --bind <channel>[:<accountId>]
+openclaw agents unbind --agent <id> --bind <channel>[:<accountId>] [--all]
+openclaw agents bindings [--agent <id>] [--json]
+openclaw agents set-identity --agent <id> [--name X] [--emoji X] [--avatar X]
+openclaw agents set-identity --workspace <path> --from-identity
+openclaw setup [--workspace <path>]  # 生成缺失的模板文件（不覆盖已有）
 
 # 会话
 openclaw sessions [--agent <id>] [--all-agents] [--active 120]
@@ -664,6 +858,223 @@ await server.connect(transport);
 }
 ```
 
+### 用 Go 实现 MCP Server
+
+Go 生态现有多个可用库：
+
+| 库 | 说明 |
+|----|------|
+| [`modelcontextprotocol/go-sdk`](https://github.com/modelcontextprotocol/go-sdk) | 官方 Go SDK，与 Google 合作维护，支持最新规范 |
+| [`mark3labs/mcp-go`](https://github.com/mark3labs/mcp-go) | 社区最流行实现，API 简洁，支持 stdio/SSE/HTTP 多种传输 |
+| [`zeromicro/go-zero`](https://go-zero.dev) | go-zero 框架内置 MCP 模块，适合已有 go-zero 项目 |
+
+#### 方案一：mcp-go（推荐独立使用）
+
+```bash
+go get github.com/mark3labs/mcp-go
+```
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/mark3labs/mcp-go/mcp"
+    "github.com/mark3labs/mcp-go/server"
+)
+
+func main() {
+    s := server.NewMCPServer("订单查询服务", "1.0.0",
+        server.WithToolCapabilities(false),
+    )
+
+    // 定义工具及参数 Schema
+    queryTool := mcp.NewTool("query_order",
+        mcp.WithDescription("根据订单 ID 查询订单详情"),
+        mcp.WithString("order_id",
+            mcp.Required(),
+            mcp.Description("订单 ID"),
+        ),
+    )
+    s.AddTool(queryTool, queryOrderHandler)
+
+    // 以 stdio 方式启动（供本地 MCP Client 调用）
+    if err := server.ServeStdio(s); err != nil {
+        fmt.Printf("server error: %v\n", err)
+    }
+}
+
+func queryOrderHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+    orderID, err := req.RequireString("order_id")
+    if err != nil {
+        return mcp.NewToolResultError(err.Error()), nil
+    }
+    // 替换为实际业务逻辑
+    result := fmt.Sprintf(`{"order_id":"%s","status":"shipped","amount":299.0}`, orderID)
+    return mcp.NewToolResultText(result), nil
+}
+```
+
+**Struct 风格（更类型安全）：**
+
+```go
+type QueryOrderArgs struct {
+    OrderID string `json:"order_id" jsonschema_description:"订单 ID" jsonschema:"required"`
+    UserID  string `json:"user_id,omitempty" jsonschema_description:"用户 ID（可选过滤）"`
+}
+
+type OrderResult struct {
+    OrderID string  `json:"order_id"`
+    Status  string  `json:"status"`
+    Amount  float64 `json:"amount"`
+}
+
+queryTool := mcp.NewTool("query_order",
+    mcp.WithDescription("查询订单详情"),
+    mcp.WithInputSchema[QueryOrderArgs](),
+    mcp.WithOutputSchema[OrderResult](),
+)
+```
+
+**HTTP/SSE 方式启动（供远程访问）：**
+
+```go
+// SSE 传输
+if err := server.ServeSSE(s, ":8080"); err != nil {
+    log.Fatal(err)
+}
+
+// Streamable HTTP 传输（新规范推荐）
+httpServer := server.NewStreamableHTTPServer(s)
+if err := httpServer.Start(":8080"); err != nil {
+    log.Fatal(err)
+}
+```
+
+接入 `openclaw.json`：
+
+```json5
+{
+  mcpServers: {
+    "order-service": {
+      command: "go",
+      args: ["run", "/path/to/mcp-server/main.go"],
+      // 或编译后：command: "/path/to/order-mcp-server"
+      env: { DB_DSN: "postgres://user:pass@localhost/orders" }
+    }
+  }
+}
+```
+
+#### 方案二：go-zero 内置 MCP（推荐已有 go-zero 项目）
+
+go-zero 从 v1.8+ 起内置 `mcp` 模块，基于 SSE 实现实时通信，支持工具、提示词（Prompt）、资源（Resource）三类能力。
+
+```bash
+go get github.com/zeromicro/go-zero@latest
+```
+
+**`config.yaml`：**
+
+```yaml
+Name: order-mcp-server
+Host: localhost
+Port: 8080
+Mcp:
+  Name: order-service
+  MessageTimeout: 30s
+  Cors:
+    - http://localhost:18789   # OpenClaw Dashboard 地址
+```
+
+**`main.go`：**
+
+```go
+package main
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+
+    "github.com/zeromicro/go-zero/core/conf"
+    "github.com/zeromicro/go-zero/core/logx"
+    "github.com/zeromicro/go-zero/mcp"
+)
+
+func main() {
+    var c mcp.McpConf
+    conf.MustLoad("config.yaml", &c)
+    logx.DisableStat()
+
+    s := mcp.NewMcpServer(c)
+    defer s.Stop()
+
+    // 注册工具
+    registerTools(s)
+
+    s.Start()
+}
+
+func registerTools(s *mcp.McpServer) {
+    // 工具 1：查询订单
+    s.AddTool(mcp.Tool{
+        Name:        "query_order",
+        Description: "根据订单 ID 查询订单详情",
+        InputSchema: mcp.ToolInputSchema{
+            Type: "object",
+            Properties: map[string]mcp.Property{
+                "order_id": {Type: "string", Description: "订单 ID"},
+            },
+            Required: []string{"order_id"},
+        },
+    }, func(ctx context.Context, req mcp.ToolRequest) (mcp.ToolResponse, error) {
+        orderID := req.Params["order_id"].(string)
+        data := map[string]any{
+            "order_id": orderID,
+            "status":   "shipped",
+            "amount":   299.0,
+        }
+        b, _ := json.Marshal(data)
+        return mcp.NewTextToolResponse(string(b)), nil
+    })
+
+    // 工具 2：列出用户订单
+    s.AddTool(mcp.Tool{
+        Name:        "list_orders",
+        Description: "列出指定用户的订单列表",
+        InputSchema: mcp.ToolInputSchema{
+            Type: "object",
+            Properties: map[string]mcp.Property{
+                "user_id": {Type: "string", Description: "用户 ID"},
+                "limit":   {Type: "integer", Description: "返回数量上限，默认 10"},
+            },
+            Required: []string{"user_id"},
+        },
+    }, func(ctx context.Context, req mcp.ToolRequest) (mcp.ToolResponse, error) {
+        userID := req.Params["user_id"].(string)
+        // 替换为实际数据库查询
+        text := fmt.Sprintf("用户 %s 共有 3 条订单：#1001, #1002, #1003", userID)
+        return mcp.NewTextToolResponse(text), nil
+    })
+}
+```
+
+接入 `openclaw.json`（HTTP/SSE 模式）：
+
+```json5
+{
+  mcpServers: {
+    "order-service": {
+      "url": "http://localhost:8080/sse",
+      "transport": "sse"
+    }
+  }
+}
+```
+
 ---
 
 ## 十、运维
@@ -687,11 +1098,7 @@ await server.connect(transport);
 
 ### 远程访问
 
-推荐通过 **Tailscale** 或 SSH 隧道访问：
-
-```bash
-ssh -N -L 18789:127.0.0.1:18789 user@your-server
-```
+推荐通过 **Tailscale** 或 SSH 隧道访问。
 
 ### 故障排查
 
