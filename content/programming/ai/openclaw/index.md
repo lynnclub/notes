@@ -6,7 +6,7 @@ weight: 3
 
 OpenClaw 是一个**自托管的 AI 网关**，让你可以通过 WhatsApp、Telegram、Discord、iMessage 等聊天软件随时与 AI 助手对话。你在自己的机器上运行一个 Gateway 进程，它成为消息应用与 AI 之间的桥梁。
 
-> 官方文档：[docs.openclaw.ai](https://docs.openclaw.ai/) · MIT 开源 · 需要 Node.js 22+
+官方文档：[docs.openclaw.ai](https://docs.openclaw.ai/)
 
 ---
 
