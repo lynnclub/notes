@@ -495,7 +495,178 @@ openclaw message send --target +8613800138000 --message "Hello"
 
 ---
 
-## 九、运维
+## 九、MCP（Model Context Protocol）
+
+MCP 是由 Anthropic 主导、已捐赠给 Linux 基金会的开放标准，提供一套统一协议让 AI 客户端连接任意外部工具、数据库与 API。OpenClaw 原生支持 MCP，充当 **MCP Client**，而各类 MCP Server 则作为能力桥接层。
+
+### MCP 与内置工具的对比
+
+| 维度 | 内置工具 / Skills | MCP Server |
+|------|-----------------|------------|
+| 接入方式 | 随 OpenClaw 安装或 SKILL.md | 独立进程，标准协议 |
+| 使用场景 | 个人工作流、OpenClaw 专属逻辑 | 对接外部 API / 数据库 / 云服务 |
+| 复用性 | 限 OpenClaw 生态 | 任意 MCP 兼容客户端可复用 |
+| 典型用法 | Skills 内部调用 MCP Server | GitHub、Notion、PostgreSQL… |
+
+### 安装 MCP Server
+
+**方式一：CLI 一键安装（内置支持的服务）**
+
+```bash
+openclaw mcp install github
+openclaw mcp install notion
+openclaw mcp install postgres
+```
+
+**方式二：在 `openclaw.json` 中手动配置**
+
+```json5
+// ~/.openclaw/openclaw.json
+{
+  mcpServers: {
+    github: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-github"],
+      env: {
+        GITHUB_TOKEN: "ghp_xxxxxxxxxxxx"
+      }
+    },
+    notion: {
+      command: "node",
+      args: ["/path/to/notion-mcp-server/index.js"],
+      env: {
+        NOTION_API_KEY: "secret_xxxxxxxxxxxx"
+      }
+    },
+    postgres: {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-postgres"],
+      env: {
+        POSTGRES_CONNECTION_STRING: "postgresql://user:pass@localhost:5432/mydb"
+      }
+    }
+  }
+}
+```
+
+**方式三：从社区获取（ClawHub / GitHub）**
+
+```bash
+# ClawHub 上的 MCP Skill
+clawhub install <mcp-skill-name>
+
+# 官方 MCP Server 仓库
+# github.com/modelcontextprotocol/servers
+```
+
+### 连接类型
+
+| 类型 | 说明 | 典型场景 |
+|------|------|---------|
+| `stdio` | 本地子进程，标准输入输出 | 大多数本地 Server（默认） |
+| `http` | REST API 端点 | 云端 / 远程 Server |
+| `websocket` | 实时双向连接 | 需要推送通知的服务 |
+| `ssh` | 远程服务器连接 | 内网 / 跳板机场景 |
+
+### 常用 MCP Server 一览
+
+| 类别 | Server | 能力 |
+|------|--------|------|
+| 开发 | `github` | 仓库管理、Issue、PR |
+| 开发 | `gitlab` | CI/CD、合并请求 |
+| 开发 | `jira` | 项目追踪、工单管理 |
+| 生产力 | `notion` | 页面读写、数据库查询 |
+| 生产力 | `slack` | 频道消息、工作空间 |
+| 生产力 | `google-workspace` | Gmail、Calendar、Drive |
+| 数据库 | `postgres` | SQL 查询、Schema 管理 |
+| 数据库 | `mysql` | 数据库操作 |
+| 数据库 | `mongodb` | 文档查询、聚合 |
+| 云服务 | `aws` | S3、Lambda、EC2 |
+| 云服务 | `google-cloud` | BigQuery、Cloud Storage |
+| 搜索 | `tavily` | AI 搜索 |
+| 爬虫 | `firecrawl` | 网页抓取 |
+| 浏览器 | `playwright` | 浏览器自动化 |
+
+### 使用示例
+
+配置好后无需额外操作，OpenClaw 会自动感知已挂载的 MCP Server 并在合适时调用：
+
+```
+你：帮我在 openclaw 仓库创建一个 Issue，标题是「支持自定义主题」
+AI：[调用 GitHub MCP Server → 创建 Issue] ✓ 已创建 #42
+```
+
+```
+你：查询数据库中本月新增的用户
+AI：[调用 PostgreSQL MCP Server → 执行 SQL] 共 128 条记录…
+```
+
+### 查看与调试
+
+```bash
+openclaw mcp list              # 查看已配置的 MCP Server
+openclaw logs                  # 查看 MCP 调用日志
+openclaw doctor                # 检查 MCP 配置是否正确
+```
+
+### 自定义 MCP Server（Node.js 示例）
+
+```javascript
+#!/usr/bin/env node
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+const server = new Server(
+  { name: 'my-server', version: '1.0.0' },
+  { capabilities: { tools: {} } }
+);
+
+// 声明工具
+server.setRequestHandler('tools/list', async () => ({
+  tools: [{
+    name: 'query_orders',
+    description: '查询订单信息',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string', description: '用户 ID' }
+      },
+      required: ['userId']
+    }
+  }]
+}));
+
+// 处理工具调用
+server.setRequestHandler('tools/call', async ({ params }) => {
+  const { name, arguments: args } = params;
+  if (name === 'query_orders') {
+    const data = await fetchOrders(args.userId);  // 你的业务逻辑
+    return { content: [{ type: 'text', text: JSON.stringify(data) }] };
+  }
+  throw new Error(`Unknown tool: ${name}`);
+});
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+开发完成后，将其加入 `openclaw.json` 的 `mcpServers` 即可：
+
+```json5
+{
+  mcpServers: {
+    "my-server": {
+      command: "node",
+      args: ["/path/to/my-server/index.js"],
+      env: { MY_API_KEY: "xxx" }
+    }
+  }
+}
+```
+
+---
+
+## 十、运维
 
 ### 配置 AI 模型
 
