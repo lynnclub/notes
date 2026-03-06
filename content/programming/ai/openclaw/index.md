@@ -1072,16 +1072,6 @@ openclaw channels status --probe   # 检查渠道连接
 
 常见原因：配置文件格式错误（用 `doctor` 定位）、`allowFrom` 白名单未填写、渠道 Token 失效。
 
-### 部署方式
-
-| 方式 | 适合场景 |
-|------|----------|
-| 本地守护进程（默认） | 个人开发机，长期运行 |
-| Docker | 服务器容器化部署 |
-| Fly.io / Railway / Render | 无服务器云托管 |
-| VPS（Hetzner / DigitalOcean / GCP） | 自管云服务器 |
-| Raspberry Pi | 低功耗家用服务器 |
-
 ---
 
 ## 十、CLI 速查
