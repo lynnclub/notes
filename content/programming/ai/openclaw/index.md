@@ -308,7 +308,8 @@ openclaw agents unbind --agent work --all   # 解除该 Agent 的全部绑定
 
 **提示词模式：**
 
-OpenClaw 可以为子智能体渲染更小的系统提示词。运行时为每次运行设置一个 promptMode（不是面向用户的配置）：
+OpenClaw 可以为子智能体渲染更小的系统提示词。运行时为每次运行设置一个 promptMode（不是面向用户的配置）。
+
 1. full（默认）：包含上述所有部分。
 2. minimal：用于子智能体；省略 Skills、Memory Recall、OpenClaw Self-Update、Model Aliases、User Identity、Reply Tags、Messaging、Silent Replies 和 Heartbeats。Tooling、Safety、Workspace、Sandbox、Current Date & Time（已知时）、Runtime 和注入的上下文仍然可用。
 3. none：仅返回基本身份行。
@@ -626,9 +627,7 @@ clawhub install <mcp-skill-name>
 ```
 你：帮我在 openclaw 仓库创建一个 Issue，标题是「支持自定义主题」
 AI：[调用 GitHub MCP Server → 创建 Issue] ✓ 已创建 #42
-```
 
-```
 你：查询数据库中本月新增的用户
 AI：[调用 PostgreSQL MCP Server → 执行 SQL] 共 128 条记录…
 ```
@@ -1035,31 +1034,6 @@ sessions_spawn({
 
 配对 iOS / Android 设备后，Agent 可调用：摄像头、麦克风、设备位置、屏幕录制、系统通知等。
 
----
-
-## 九、运维
-
-### 配置 AI 模型
-
-```json5
-{
-  agents: {
-    defaults: {
-      model: {
-        primary: "anthropic/claude-sonnet-4-5",
-        fallbacks: ["openai/gpt-5"]   // 主模型不可用时自动切换
-      }
-    }
-  }
-}
-```
-
-支持 Anthropic、OpenAI、OpenRouter、Ollama（本地）、Qwen、Moonshot 等。
-
-### 远程访问
-
-推荐通过 **Tailscale** 或 SSH 隧道访问。
-
 ### 故障排查
 
 ```bash
@@ -1074,7 +1048,7 @@ openclaw channels status --probe   # 检查渠道连接
 
 ---
 
-## 十、CLI 速查
+## 九、CLI 速查
 
 ```bash
 # Gateway
