@@ -147,14 +147,15 @@ openclaw channels add           # 飞书不支持login，需要app id、app secr
 
 ### 工作目录与初始化
 
-每个 Agent 有一个**工作目录**（默认 `~/.openclaw/workspace`），这是 AI 的"家"，也是文件工具的默认 cwd。配置、会话历史、凭证等位于 `~/.openclaw/`，**不在**工作目录中。
+每个 Agent 有一个**工作目录**（默认 `~/.openclaw/workspace`），这是 AI 的"家"，也是文件工具的默认 cwd。配置、会话历史、凭证等位于 `~/.openclaw/`，不在工作目录中。
 
 ```bash
-openclaw setup                                          # 在当前工作目录生成缺失的模板文件（不覆盖已有文件）
-openclaw setup --workspace ~/.openclaw/workspace-work   # 为指定路径生成模板
+# 生成缺失的模板文件（不覆盖已有文件）
+# 除非误删，通常不会缺失
+openclaw setup                  
 ```
 
-**初始化后修改：** 直接编辑工作目录下的 `.md` 文件，保存后自动生效，无需重启。误删文件后再次运行 `openclaw setup` 只补全缺失项，不覆盖已有内容。若不想自动生成引导文件，可禁用：
+**初始化后修改：** 直接编辑工作目录下的 `.md` 文件。误删文件后再次运行 `openclaw setup` 只补全缺失项，不覆盖已有内容。若不想自动生成引导文件，可禁用：
 
 ```json5
 { agent: { skipBootstrap: true } }
@@ -231,36 +232,31 @@ git commit -m "init workspace"
 
 ### 添加与管理 Agent
 
-**创建新 Agent：**
-
-```bash
-openclaw agents add work --workspace ~/.openclaw/workspace-work
-openclaw setup --workspace ~/.openclaw/workspace-work   # 为新 Agent 生成模板文件
-```
-
-**查看与删除：**
+**查看：**
 
 ```bash
 openclaw agents list              # 列出所有 Agent
 openclaw agents list --bindings   # 同时显示路由绑定
-openclaw agents delete work       # 删除 Agent（不删除工作目录文件）
+```
+
+**创建与删除：**
+
+```bash
+openclaw agents add coder
+openclaw agents delete work  # 危险操作
 ```
 
 **设置 Agent 身份：**
 
 ```bash
-# 从工作目录中的 IDENTITY.md 读取并写入配置
-openclaw agents set-identity --workspace ~/.openclaw/workspace --from-identity
-
-# 直接用命令行覆盖字段
 openclaw agents set-identity --agent main --name "Claw" --emoji "🦞" --avatar avatars/openclaw.png
 ```
 
 ### 多 Agent 渠道路由
 
 ```bash
-# 为 work Agent 绑定 Telegram 的 ops 账号和飞书的 group-a 群组
-openclaw agents bind --agent work --bind telegram:ops --bind feishu:group-a
+# 为 Agent 绑定 Whatsapp 的 group-a 群组 和 Telegram 的 ops 账号
+openclaw agents bind --agent work --bind --bind whatsapp:group-a telegram:ops
 
 # 查看当前所有绑定
 openclaw agents bindings
@@ -282,27 +278,52 @@ openclaw agents unbind --agent work --all   # 解除该 Agent 的全部绑定
         > 默认 Agent（default: true）
 ```
 
-**配置文件方式（等效，适合版本控制）：**
+**配置文件方式（等效，飞书不支持通过命令）：**
 
 ```json5
 // ~/.openclaw/openclaw.json
 {
   agents: {
     list: [
-      {
-        id: "home",
-        default: true,
-        workspace: "~/.openclaw/workspace-home",
-        identity: { name: "Home Claw", emoji: "🏠" }
-      },
+      { id: "main" },
       {
         id: "work",
-        workspace: "~/.openclaw/workspace-work",
-        model: "anthropic/claude-opus-4-6",
-        identity: { name: "Work Claw", emoji: "💼" }
-      }
-    ]
-  }
+        workspace: "/home/user/work",
+        agentDir: "/home/user/.openclaw/agents/work/agent",
+      },
+      {
+        id: "coder",
+        workspace: "/home/user/coder",
+        agentDir: "/home/user/.openclaw/agents/coder/agent",
+      },
+    ],
+  },
+  bindings: [
+    {
+      // 用户 A 的私聊 → main agent
+      agentId: "main",
+      match: {
+        channel: "feishu",
+        peer: { kind: "dm", id: "ou_xxx..." },
+      },
+    },
+    {
+      // 用户 B 的私聊 → clawd-fan agent
+      agentId: "lynn",
+      match: {
+        channel: "feishu",
+        peer: { kind: "dm", id: "ou_xxx..." },
+      },
+    },
+    {
+      // 某个群组 → clawd-xi agent
+      agentId: "coder",
+      match: {
+        channel: "feishu",
+        peer: { kind: "group", id: "oc_xxx..." },
+      },
+    },
+  ],
 }
 ```
 
@@ -365,6 +386,14 @@ openclaw sessions --all-agents       # 所有 Agent
 openclaw sessions --active 120       # 最近 120 分钟内活跃的会话
 ```
 
+### 删除会话
+
+```bash
+# 警告：此操作不可逆，会删除该 Agent 的所有聊天记录！
+rm -rf ~/.openclaw/agents/main/sessions/*
+# 如果是其他 Agent，替换路径即可
+```
+
 ### 会话隔离范围
 
 通过 `dmScope` 控制私信的会话如何隔离：
@@ -392,11 +421,33 @@ openclaw sessions --active 120       # 最近 120 分钟内活跃的会话
 ```
 
 ```bash
-openclaw sessions cleanup --dry-run          # 预览待清理内容
+openclaw sessions cleanup --dry-run                # 预览待清理内容
 openclaw sessions cleanup --all-agents --enforce   # 实际执行清理
 ```
 
 [更多内容](https://docs.openclaw.ai/zh-CN/concepts/session)
+
+### 会话内控制命令
+
+在实际使用中，用户经常会"说错话"或想中途打断当前执行。OpenClaw 约定了一组统一的对话内控制命令：
+
+```text
+/cancel                      # 取消当前这次执行（本轮回复 + 由其派生的子任务），会话本身继续
+/stop                        # 终止当前会话，并级联终止所有子 Agent（已有）
+/amend <新内容>               # 覆盖上一条用户消息的内容，并基于修改后上下文重新生成
+/append <补充内容>             # 在上一条用户消息基础上追加补充说明，再整体重新生成
+```
+
+- **`/cancel`**：用于中止当前正在进行的一次调用（包括本轮模型回复以及由本轮触发的工具 / 子任务），但不会关闭会话，下一条消息仍复用当前会话历史。
+- **`/stop`**：用于明确结束当前会话，并级联终止对应的子 Agent；后续再次发消息会进入新的会话（取决于 `dmScope` 配置）。
+- **`/amend`**：将上一条用户消息视为"写错了"，用 `<新内容>` 进行完全替换，模型看到的是**修订后的对话历史**。
+- **`/append`**：上一条消息是对的，只是内容不完整，用 `<补充内容>` 作为补充附加到上一条消息之后，再让模型基于"原消息 + 补充"整体重算。
+
+客户端可以在 UI 上对这些命令做友好封装，例如：
+
+- 点击"取消生成"按钮 → 触发 `/cancel`
+- 在上一条消息旁显示"编辑" → 触发 `/amend` 编辑模式
+- 在气泡下方提供"补充说明"输入框 → 触发 `/append`
 
 ---
 
