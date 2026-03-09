@@ -158,7 +158,7 @@ openclaw setup
 **初始化后修改：** 直接编辑工作目录下的 `.md` 文件。误删文件后再次运行 `openclaw setup` 只补全缺失项，不覆盖已有内容。若不想自动生成引导文件，可禁用：
 
 ```json5
-{ agent: { skipBootstrap: true } }
+{ "agent": { "skipBootstrap": true } }
 ```
 
 ### 系统 Prompt 注入体系
@@ -283,22 +283,22 @@ openclaw agents unbind --agent work --all   # 解除该 Agent 的全部绑定
 ```json5
 // ~/.openclaw/openclaw.json
 {
-  agents: {
-    list: [
-      { id: "main" },
+  "agents": {
+    "list": [
+      { "id": "main" },
       {
-        id: "work",
-        workspace: "/home/user/work",
-        agentDir: "/home/user/.openclaw/agents/work/agent",
+        "id": "work",
+        "workspace": "/home/user/work",
+        "agentDir": "/home/user/.openclaw/agents/work/agent",
       },
       {
-        id: "coder",
-        workspace: "/home/user/coder",
-        agentDir: "/home/user/.openclaw/agents/coder/agent",
+        "id": "coder",
+        "workspace": "/home/user/coder",
+        "agentDir": "/home/user/.openclaw/agents/coder/agent",
       },
     ],
   },
-  bindings: [
+  "bindings": [
     {
       // 默认 → main agent
       "agentId": "main",
@@ -309,18 +309,18 @@ openclaw agents unbind --agent work --all   # 解除该 Agent 的全部绑定
     },
     {
       // 用户 B 的私聊 → clawd-fan agent
-      agentId: "lynn",
-      match: {
-        channel: "feishu",
-        peer: { kind: "dm", id: "ou_xxx..." },
+      "agentId": "lynn",
+      "match": {
+        "channel": "feishu",
+        "peer": { "kind": "dm", "id": "ou_xxx..." },
       },
     },
     {
       // 某个群组 → clawd-xi agent
-      agentId: "coder",
-      match: {
-        channel: "feishu",
-        peer: { kind: "group", id: "oc_xxx..." },
+      "agentId": "coder",
+      "match": {
+        "channel": "feishu",
+        "peer": { "kind": "group", "id": "oc_xxx..." },
       },
     },
   ],
@@ -361,10 +361,10 @@ openclaw agents bind --agent work --bind whatsapp:biz --bind telegram:ops
 
 ```json5
 {
-  agents: {
-    list: [
-      { id: "chat", workspace: "~/.openclaw/workspace-chat", model: "anthropic/claude-sonnet-4-5" },
-      { id: "deep", workspace: "~/.openclaw/workspace-deep", model: "anthropic/claude-opus-4-6" }
+  "agents": {
+    "list": [
+      { "id": "chat", "workspace": "~/.openclaw/workspace-chat", "model": "anthropic/claude-sonnet-4-5" },
+      { "id": "deep", "workspace": "~/.openclaw/workspace-deep", "model": "anthropic/claude-opus-4-6" }
     ]
   }
 }
@@ -406,7 +406,7 @@ rm -rf ~/.openclaw/agents/main/sessions/*
 | `per-account-channel-peer` | 最细粒度隔离 |
 
 ```json5
-{ session: { dmScope: "per-channel-peer" } }
+{ "session": { "dmScope": "per-channel-peer" } }
 ```
 
 ### 自动重置与清理
@@ -414,8 +414,8 @@ rm -rf ~/.openclaw/agents/main/sessions/*
 ```json5
 // 每天凌晨 4 点自动重置，或空闲 2 小时后重置
 {
-  session: {
-    reset: { mode: "daily", atHour: 4, idleMinutes: 120 }
+  "session": {
+    "reset": { "mode": "daily", "atHour": 4, "idleMinutes": 120 }
   }
 }
 ```
@@ -477,10 +477,10 @@ Tool 是 AI 可调用的原子能力，通过 JSON Schema 传给模型 API（即
 ```json5
 // 全局工具策略
 {
-  tools: {
-    profile: "coding",       // minimal | coding | messaging | full
-    allow: ["browser"],      // 额外开启某个工具
-    deny: ["group:runtime"]  // 禁止某类工具
+  "tools": {
+    "profile": "coding",       // minimal | coding | messaging | full
+    "allow": ["browser"],      // 额外开启某个工具
+    "deny": ["group:runtime"]  // 禁止某类工具
   }
 }
 ```
@@ -488,12 +488,12 @@ Tool 是 AI 可调用的原子能力，通过 JSON Schema 传给模型 API（即
 ```json5
 // 为特定 Agent 单独设置（deny 优先于 allow）
 {
-  agents: {
-    list: [{
-      id: "family",
-      tools: {
-        allow: ["read", "sessions_list"],
-        deny: ["exec", "write", "edit", "apply_patch"]
+  "agents": {
+    "list": [{
+      "id": "family",
+      "tools": {
+        "allow": ["read", "sessions_list"],
+        "deny": ["exec", "write", "edit", "apply_patch"]
       }
     }]
   }
@@ -556,12 +556,12 @@ openclaw gateway restart
 ```json5
 // openclaw.json
 {
-  skills: {
-    entries: {
+  "skills": {
+    "entries": {
       "my-skill": {
-        enabled: true,
-        apiKey: "sk-...",            // 对应 primaryEnv 字段
-        env: { MY_API_KEY: "xxx" }  // 注入但不覆盖已有的环境变量
+        "enabled": true,
+        "apiKey": "sk-...",            // 对应 primaryEnv 字段
+        "env": { "MY_API_KEY": "xxx" }  // 注入但不覆盖已有的环境变量
       }
     }
   }
@@ -607,26 +607,26 @@ openclaw mcp install postgres
 ```json5
 // ~/.openclaw/openclaw.json
 {
-  mcpServers: {
-    github: {
-      command: "npx",
-      args: ["-y", "@modelcontextprotocol/server-github"],
-      env: {
-        GITHUB_TOKEN: "ghp_xxxxxxxxxxxx"
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "ghp_xxxxxxxxxxxx"
       }
     },
-    notion: {
-      command: "node",
-      args: ["/path/to/notion-mcp-server/index.js"],
-      env: {
-        NOTION_API_KEY: "secret_xxxxxxxxxxxx"
+    "notion": {
+      "command": "node",
+      "args": ["/path/to/notion-mcp-server/index.js"],
+      "env": {
+        "NOTION_API_KEY": "secret_xxxxxxxxxxxx"
       }
     },
-    postgres: {
-      command: "npx",
-      args: ["-y", "@modelcontextprotocol/server-postgres"],
-      env: {
-        POSTGRES_CONNECTION_STRING: "postgresql://user:pass@localhost:5432/mydb"
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://user:pass@localhost:5432/mydb"
       }
     }
   }
@@ -736,11 +736,11 @@ await server.connect(transport);
 
 ```json5
 {
-  mcpServers: {
+  "mcpServers": {
     "my-server": {
-      command: "node",
-      args: ["/path/to/my-server/index.js"],
-      env: { MY_API_KEY: "xxx" }
+      "command": "node",
+      "args": ["/path/to/my-server/index.js"],
+      "env": { "MY_API_KEY": "xxx" }
     }
   }
 }
@@ -845,12 +845,12 @@ if err := httpServer.Start(":8080"); err != nil {
 
 ```json5
 {
-  mcpServers: {
+  "mcpServers": {
     "order-service": {
-      command: "go",
-      args: ["run", "/path/to/mcp-server/main.go"],
+      "command": "go",
+      "args": ["run", "/path/to/mcp-server/main.go"],
       // 或编译后：command: "/path/to/order-mcp-server"
-      env: { DB_DSN: "postgres://user:pass@localhost/orders" }
+      "env": { "DB_DSN": "postgres://user:pass@localhost/orders" }
     }
   }
 }
@@ -952,7 +952,7 @@ func registerTools(s *mcp.McpServer) {
 
 ```json5
 {
-  mcpServers: {
+  "mcpServers": {
     "order-service": {
       "url": "http://localhost:8080/sse",
       "transport": "sse"
@@ -1011,14 +1011,14 @@ sessions_spawn({
 
 ```json5
 {
-  agents: {
-    defaults: {
-      subagents: {
-        maxSpawnDepth: 2,          // 允许子 Agent 再派生（默认 1）
-        maxChildrenPerAgent: 5,    // 每个会话最多同时 5 个子任务
-        maxConcurrent: 8,          // 全局并发上限
-        runTimeoutSeconds: 900,    // 全局默认超时（0 = 不限）
-        model: "anthropic/claude-sonnet-4-5"  // 子 Agent 默认使用更便宜的模型
+  "agents": {
+    "defaults": {
+      "subagents": {
+        "maxSpawnDepth": 2,          // 允许子 Agent 再派生（默认 1）
+        "maxChildrenPerAgent": 5,    // 每个会话最多同时 5 个子任务
+        "maxConcurrent": 8,          // 全局并发上限
+        "runTimeoutSeconds": 900,    // 全局默认超时（0 = 不限）
+        "model": "anthropic/claude-sonnet-4-5"  // 子 Agent 默认使用更便宜的模型
       }
     }
   }
@@ -1048,12 +1048,12 @@ sessions_spawn({
 
 ```json5
 {
-  agents: {
-    list: [{
-      id: "untrusted",
-      workspace: "~/.openclaw/workspace-untrusted",
-      sandbox: { mode: "all", scope: "agent" },
-      tools: { allow: ["read"], deny: ["exec", "write", "edit"] }
+  "agents": {
+    "list": [{
+      "id": "untrusted",
+      "workspace": "~/.openclaw/workspace-untrusted",
+      "sandbox": { "mode": "all", "scope": "agent" },
+      "tools": { "allow": ["read"], "deny": ["exec", "write", "edit"] }
     }]
   }
 }
@@ -1062,7 +1062,7 @@ sessions_spawn({
 ### 定时任务（Cron）
 
 ```json5
-{ cron: { enabled: true, maxConcurrentRuns: 2 } }
+{ "cron": { "enabled": true, "maxConcurrentRuns": 2 } }
 ```
 
 启用后可通过对话或 `openclaw cron` 命令管理定时触发的 Agent 任务。
@@ -1073,10 +1073,10 @@ sessions_spawn({
 
 ```json5
 {
-  hooks: {
-    enabled: true,
-    token: "your-secret",
-    mappings: [{ match: { path: "gmail" }, action: "agent", agentId: "main" }]
+  "hooks": {
+    "enabled": true,
+    "token": "your-secret",
+    "mappings": [{ "match": { "path": "gmail" }, "action": "agent", "agentId": "main" }]
   }
 }
 ```
