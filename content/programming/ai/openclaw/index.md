@@ -300,12 +300,12 @@ openclaw agents unbind --agent work --all   # 解除该 Agent 的全部绑定
   },
   bindings: [
     {
-      // 用户 A 的私聊 → main agent
-      agentId: "main",
-      match: {
-        channel: "feishu",
-        peer: { kind: "dm", id: "ou_xxx..." },
-      },
+      // 默认 → main agent
+      "agentId": "main",
+      "match": {
+        "channel": "feishu",
+        "accountId": "default"
+      }
     },
     {
       // 用户 B 的私聊 → clawd-fan agent
