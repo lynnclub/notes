@@ -1,0 +1,297 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="monospace">
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#f0f0f0" stroke-width="0.8"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#8b5cf6"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#f97316"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#fafbfc"/>
+  <rect width="1200" height="900" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <text x="600" y="38" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">🦞 OpenClaw Architecture Overview</text>
+  <text x="600" y="56" text-anchor="middle" font-size="10" fill="#94a3b8">Multi-Channel AI Gateway · Agent Runtime · WebSocket Protocol</text>
+
+  <!-- ==================== CLIENTS LAYER (Top) ==================== -->
+  <rect x="30" y="72" width="1140" height="100" rx="8" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="72" width="1140" height="24" rx="8" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="50" y="88" font-size="11" font-weight="bold" fill="#1e293b">CLIENTS</text>
+  <text x="1130" y="88" text-anchor="end" font-size="8" fill="#94a3b8">WebSocket Connection</text>
+
+  <!-- Client items -->
+  <rect x="50" y="106" width="130" height="52" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <circle cx="72" cy="126" r="12" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="72" y="130" text-anchor="middle" font-size="10">🖥</text>
+  <text x="90" y="124" font-size="10" font-weight="bold" fill="#1e293b">Control UI</text>
+  <text x="90" y="138" font-size="8" fill="#64748b">Web Dashboard</text>
+
+  <rect x="200" y="106" width="130" height="52" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <circle cx="222" cy="126" r="12" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="222" y="130" text-anchor="middle" font-size="10">⌨</text>
+  <text x="240" y="124" font-size="10" font-weight="bold" fill="#1e293b">CLI</text>
+  <text x="240" y="138" font-size="8" fill="#64748b">Terminal Client</text>
+
+  <rect x="350" y="106" width="130" height="52" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <circle cx="372" cy="126" r="12" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="372" y="130" text-anchor="middle" font-size="10">📱</text>
+  <text x="390" y="124" font-size="10" font-weight="bold" fill="#1e293b">macOS App</text>
+  <text x="390" y="138" font-size="8" fill="#64748b">Native Client</text>
+
+  <rect x="500" y="106" width="130" height="52" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <circle cx="522" cy="126" r="12" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="522" y="130" text-anchor="middle" font-size="10">🤖</text>
+  <text x="540" y="124" font-size="10" font-weight="bold" fill="#1e293b">Automations</text>
+  <text x="540" y="138" font-size="8" fill="#64748b">Cron / Hooks</text>
+
+  <rect x="650" y="106" width="130" height="52" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <circle cx="672" cy="126" r="12" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="672" y="130" text-anchor="middle" font-size="10">💬</text>
+  <text x="690" y="124" font-size="10" font-weight="bold" fill="#1e293b">WebChat</text>
+  <text x="690" y="138" font-size="8" fill="#64748b">Static Web UI</text>
+
+  <!-- Nodes -->
+  <rect x="810" y="106" width="340" height="52" rx="6" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <circle cx="832" cy="126" r="12" fill="#ffedd5" stroke="#f97316" stroke-width="1.5"/>
+  <text x="832" y="130" text-anchor="middle" font-size="10">📡</text>
+  <text x="852" y="124" font-size="10" font-weight="bold" fill="#1e293b">Nodes (Device Endpoints)</text>
+  <text x="852" y="138" font-size="8" fill="#64748b">macOS · iOS · Android · Headless — canvas, camera, screen, location</text>
+
+  <!-- ==================== GATEWAY CORE (Center) ==================== -->
+  <rect x="30" y="200" width="1140" height="260" rx="8" fill="#ffffff" stroke="#ddd6fe" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="200" width="1140" height="24" rx="8" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="50" y="216" font-size="11" font-weight="bold" fill="#7c3aed">GATEWAY (Daemon)</text>
+  <text x="1130" y="216" text-anchor="end" font-size="8" fill="#94a3b8">ws://127.0.0.1:18789 · JSON Schema Validation · Auth Token</text>
+
+  <!-- WebSocket Protocol -->
+  <rect x="50" y="234" width="220" height="90" rx="6" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="62" y="252" font-size="10" font-weight="bold" fill="#7c3aed">WebSocket Protocol</text>
+  <text x="62" y="268" font-size="8" fill="#475569">• connect → hello-ok</text>
+  <text x="62" y="280" font-size="8" fill="#475569">• req/res (id, method, params)</text>
+  <text x="62" y="292" font-size="8" fill="#475569">• events (seq, stateVersion)</text>
+  <text x="62" y="304" font-size="8" fill="#475569">• idempotency keys</text>
+
+  <!-- Agent Runtime -->
+  <rect x="290" y="234" width="280" height="90" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="302" y="252" font-size="10" font-weight="bold" fill="#059669">Agent Runtime (pi-mono)</text>
+  <text x="302" y="268" font-size="8" fill="#475569">• Bootstrap: AGENTS.md, SOUL.md, TOOLS.md</text>
+  <text x="302" y="280" font-size="8" fill="#475569">• Built-in: read, exec, edit, write, browser</text>
+  <text x="302" y="292" font-size="8" fill="#475569">• Skills: bundled + managed + workspace</text>
+  <text x="302" y="304" font-size="8" fill="#475569">• Subagents, LLM tasks, slash commands</text>
+
+  <!-- Agent Loop -->
+  <rect x="590" y="234" width="280" height="90" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="602" y="252" font-size="10" font-weight="bold" fill="#059669">Agent Loop</text>
+  <text x="602" y="268" font-size="8" fill="#475569">intake → context assembly</text>
+  <text x="602" y="280" font-size="8" fill="#475569">  → model inference → tool execution</text>
+  <text x="602" y="292" font-size="8" fill="#475569">  → streaming replies → persistence</text>
+  <text x="602" y="304" font-size="8" fill="#475569">• Serialized per-session queues</text>
+
+  <!-- Security -->
+  <rect x="890" y="234" width="260" height="90" rx="6" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="902" y="252" font-size="10" font-weight="bold" fill="#dc2626">Security</text>
+  <text x="902" y="268" font-size="8" fill="#475569">• Gateway auth token</text>
+  <text x="902" y="280" font-size="8" fill="#475569">• Device pairing + approval</text>
+  <text x="902" y="292" font-size="8" fill="#475569">• Challenge-response signing (v3)</text>
+  <text x="902" y="304" font-size="8" fill="#475569">• Local auto-approve (loopback)</text>
+
+  <!-- Sessions & Events -->
+  <rect x="50" y="338" width="340" height="56" rx="6" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="62" y="356" font-size="10" font-weight="bold" fill="#ca8a04">Sessions (JSONL)</text>
+  <text x="62" y="372" font-size="8" fill="#475569">~/.openclaw/agents/&lt;id&gt;/sessions/ · Compaction · Pruning · Context Window</text>
+
+  <rect x="410" y="338" width="340" height="56" rx="6" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="422" y="356" font-size="10" font-weight="bold" fill="#ca8a04">Events Stream</text>
+  <text x="422" y="372" font-size="8" fill="#475569">agent · chat · presence · health · heartbeat · cron · lifecycle</text>
+
+  <rect x="770" y="338" width="380" height="56" rx="6" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="782" y="356" font-size="10" font-weight="bold" fill="#ca8a04">Plugins &amp; Extensions</text>
+  <text x="782" y="372" font-size="8" fill="#475569">Plugin system · Feishu · Custom extensions · ~/.openclaw/extensions/</text>
+
+  <!-- Gateway Events -->
+  <rect x="50" y="406" width="1100" height="40" rx="6" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="62" y="424" font-size="9" font-weight="bold" fill="#7c3aed">Wire Protocol</text>
+  <text x="180" y="424" font-size="8" fill="#475569">WS text frames · JSON payloads · First frame: connect · {type:req, id, method, params} → {type:res, id, ok, payload|error} · {type:event, event, payload, seq}</text>
+
+  <!-- ==================== CHANNELS (Left Bottom) ==================== -->
+  <rect x="30" y="488" width="540" height="180" rx="8" fill="#ffffff" stroke="#fed7aa" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="488" width="540" height="24" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="50" y="504" font-size="11" font-weight="bold" fill="#ea580c">MESSAGING CHANNELS (30+)</text>
+
+  <!-- Channel grid -->
+  <rect x="50" y="522" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="100" y="540" text-anchor="middle" font-size="9" fill="#475569">WhatsApp</text>
+
+  <rect x="160" y="522" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="210" y="540" text-anchor="middle" font-size="9" fill="#475569">Telegram</text>
+
+  <rect x="270" y="522" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="320" y="540" text-anchor="middle" font-size="9" fill="#475569">Slack</text>
+
+  <rect x="380" y="522" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="430" y="540" text-anchor="middle" font-size="9" fill="#475569">Discord</text>
+
+  <rect x="490" y="522" width="60" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="520" y="540" text-anchor="middle" font-size="9" fill="#475569">Signal</text>
+
+  <rect x="50" y="558" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="100" y="576" text-anchor="middle" font-size="9" fill="#475569">iMessage</text>
+
+  <rect x="160" y="558" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="210" y="576" text-anchor="middle" font-size="9" fill="#475569">Feishu</text>
+
+  <rect x="270" y="558" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="320" y="576" text-anchor="middle" font-size="9" fill="#475569">MS Teams</text>
+
+  <rect x="380" y="558" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="430" y="576" text-anchor="middle" font-size="9" fill="#475569">Google Chat</text>
+
+  <rect x="490" y="558" width="60" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="520" y="576" text-anchor="middle" font-size="9" fill="#475569">IRC</text>
+
+  <rect x="50" y="594" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="100" y="612" text-anchor="middle" font-size="9" fill="#475569">Matrix</text>
+
+  <rect x="160" y="594" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="210" y="612" text-anchor="middle" font-size="9" fill="#475569">Line</text>
+
+  <rect x="270" y="594" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="320" y="612" text-anchor="middle" font-size="9" fill="#475569">Mattermost</text>
+
+  <rect x="380" y="594" width="100" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="430" y="612" text-anchor="middle" font-size="9" fill="#475569">Twitch</text>
+
+  <rect x="490" y="594" width="60" height="28" rx="4" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="520" y="612" text-anchor="middle" font-size="9" fill="#475569">Nostr</text>
+
+  <text x="300" y="652" text-anchor="middle" font-size="8" fill="#94a3b8">+ Zalo · Synology Chat · Nextcloud Talk · Tlon ...</text>
+
+  <!-- ==================== MODEL PROVIDERS (Right Bottom) ==================== -->
+  <rect x="590" y="488" width="580" height="180" rx="8" fill="#ffffff" stroke="#a7f3d0" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="590" y="488" width="580" height="24" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="610" y="504" font-size="11" font-weight="bold" fill="#059669">MODEL PROVIDERS</text>
+  <text x="1130" y="504" text-anchor="end" font-size="8" fill="#94a3b8">provider/model · Failover · Key Rotation</text>
+
+  <!-- Built-in providers -->
+  <text x="610" y="530" font-size="9" font-weight="bold" fill="#475569">Built-in</text>
+
+  <rect x="610" y="538" width="110" height="32" rx="4" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="665" y="558" text-anchor="middle" font-size="9" font-weight="bold" fill="#059669">Anthropic</text>
+
+  <rect x="730" y="538" width="110" height="32" rx="4" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="785" y="558" text-anchor="middle" font-size="9" font-weight="bold" fill="#059669">OpenAI</text>
+
+  <rect x="850" y="538" width="110" height="32" rx="4" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="905" y="558" text-anchor="middle" font-size="9" font-weight="bold" fill="#059669">Google</text>
+
+  <rect x="970" y="538" width="110" height="32" rx="4" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="1025" y="558" text-anchor="middle" font-size="9" font-weight="bold" fill="#059669">DeepSeek</text>
+
+  <!-- Custom providers -->
+  <text x="610" y="592" font-size="9" font-weight="bold" fill="#475569">Custom (models.providers)</text>
+
+  <rect x="610" y="600" width="140" height="32" rx="4" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="680" y="614" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c3aed">sparkcode</text>
+  <text x="680" y="626" text-anchor="middle" font-size="7" fill="#94a3b8">anthropic-messages</text>
+
+  <rect x="760" y="600" width="140" height="32" rx="4" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="830" y="614" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c3aed">glm</text>
+  <text x="830" y="626" text-anchor="middle" font-size="7" fill="#94a3b8">anthropic-messages</text>
+
+  <rect x="910" y="600" width="140" height="32" rx="4" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="980" y="614" text-anchor="middle" font-size="9" fill="#94a3b8">your-provider</text>
+  <text x="980" y="626" text-anchor="middle" font-size="7" fill="#94a3b8">openai-completions</text>
+
+  <!-- Failover -->
+  <rect x="610" y="642" width="540" height="18" rx="4" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="880" y="654" text-anchor="middle" font-size="8" fill="#ca8a04">Failover: primary → fallback#1 → fallback#2 · API Key Rotation · Retry on 429</text>
+
+  <!-- ==================== STORAGE LAYER (Bottom) ==================== -->
+  <rect x="30" y="700" width="1140" height="70" rx="8" fill="#ffffff" stroke="#fef08a" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="700" width="1140" height="24" rx="8" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="50" y="716" font-size="11" font-weight="bold" fill="#ca8a04">STORAGE &amp; CONFIG</text>
+
+  <rect x="50" y="732" width="200" height="28" rx="4" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="150" y="750" text-anchor="middle" font-size="8" fill="#475569">~/.openclaw/openclaw.json</text>
+
+  <rect x="265" y="732" width="200" height="28" rx="4" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="365" y="750" text-anchor="middle" font-size="8" fill="#475569">agents/*/auth-profiles.json</text>
+
+  <rect x="480" y="732" width="200" height="28" rx="4" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="580" y="750" text-anchor="middle" font-size="8" fill="#475569">agents/*/models.json</text>
+
+  <rect x="695" y="732" width="200" height="28" rx="4" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="795" y="750" text-anchor="middle" font-size="8" fill="#475569">agents/*/sessions/*.jsonl</text>
+
+  <rect x="910" y="732" width="240" height="28" rx="4" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="1030" y="750" text-anchor="middle" font-size="8" fill="#475569">logs/ · workspace/ · skills/ · extensions/</text>
+
+  <!-- ==================== CONNECTION ARROWS ==================== -->
+  <!-- Clients to Gateway -->
+  <line x1="115" y1="158" x2="115" y2="200" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <line x1="265" y1="158" x2="265" y2="200" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <line x1="415" y1="158" x2="415" y2="200" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <line x1="565" y1="158" x2="565" y2="200" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <line x1="715" y1="158" x2="715" y2="200" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+  <line x1="980" y1="158" x2="980" y2="200" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+
+  <!-- Gateway to Channels -->
+  <line x1="300" y1="460" x2="300" y2="488" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+
+  <!-- Gateway to Providers -->
+  <line x1="880" y1="460" x2="880" y2="488" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+
+  <!-- Gateway to Storage -->
+  <line x1="600" y1="460" x2="600" y2="700" stroke="#eab308" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrowOrange)"/>
+
+  <!-- ==================== LEGEND ==================== -->
+  <rect x="30" y="790" width="1140" height="90" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="50" y="812" font-size="10" font-weight="bold" fill="#1e293b">Legend</text>
+
+  <line x1="50" y1="830" x2="80" y2="830" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="90" y="834" font-size="8" fill="#475569">WebSocket (Client → Gateway)</text>
+
+  <line x1="260" y1="830" x2="290" y2="830" stroke="#f97316" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="300" y="834" font-size="8" fill="#475569">Channel / Node Connection</text>
+
+  <line x1="480" y1="830" x2="510" y2="830" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <text x="520" y="834" font-size="8" fill="#475569">Model Provider API</text>
+
+  <line x1="680" y1="830" x2="710" y2="830" stroke="#eab308" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="720" y="834" font-size="8" fill="#475569">Storage I/O</text>
+
+  <rect x="50" y="848" width="12" height="12" rx="2" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="70" y="858" font-size="8" fill="#475569">Gateway Core</text>
+
+  <rect x="180" y="848" width="12" height="12" rx="2" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="200" y="858" font-size="8" fill="#475569">Agent / Provider</text>
+
+  <rect x="310" y="848" width="12" height="12" rx="2" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="330" y="858" font-size="8" fill="#475569">Channels</text>
+
+  <rect x="420" y="848" width="12" height="12" rx="2" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <text x="440" y="858" font-size="8" fill="#475569">Storage / Config</text>
+
+  <rect x="550" y="848" width="12" height="12" rx="2" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="570" y="858" font-size="8" fill="#475569">Security</text>
+
+  <text x="1130" y="870" text-anchor="end" font-size="7" fill="#94a3b8">OpenClaw v2026.2.26 · Generated by Claude Opus 4</text>
+</svg>

@@ -8,6 +8,8 @@ OpenClaw 是一个**自托管的 AI 网关**，让你可以通过 WhatsApp、Tel
 
 官方文档：[docs.openclaw.ai](https://docs.openclaw.ai/)
 
+![architecture](architecture.svg)
+
 ---
 
 ## 一、核心概念
