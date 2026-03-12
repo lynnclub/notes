@@ -33,10 +33,10 @@ Tools / Skills       ← AI 的能力层
 | **Gateway** | 整个系统的唯一后台进程，管理渠道连接、Agent 调度、Web 控制台 |
 | **Channel** | 接入的聊天平台（WhatsApp、Telegram、飞书、iMessage…） |
 | **Agent** | 一个完全隔离的 AI"大脑"，有独立的人格、工作目录、会话历史 |
+| **Sub-Agent** | 主 Agent 在后台派生的子任务实例，完成后将结果公告回主会话 |
 | **Session** | 一段对话的历史记录，可按发送者/群组/渠道隔离 |
 | **Tool** | AI 可调用的原子能力（即 Function Calling），如读文件、执行命令、搜网页 |
 | **Skill** | 一个 `SKILL.md` 文件，教 AI 某类工具怎么用，在对话开始时注入 Prompt |
-| **Sub-Agent** | 主 Agent 在后台派生的子任务实例，完成后将结果公告回主会话 |
 | **Plugin** | npm 包形式的扩展，可增加新渠道或新工具 |
 
 ---
@@ -58,7 +58,7 @@ iwr -useb https://openclaw.ai/install.ps1 | iex
 npm install -g openclaw@latest
 ```
 
-配置文件位于 `~/.openclaw/openclaw.json`（JSON5 格式，支持注释）。
+核心配置文件位于 `~/.openclaw/openclaw.json`（JSON5 格式，支持注释）。
 
 [Docker、Nix等更多安装方式](https://docs.openclaw.ai/zh-CN/install/docker)
 
@@ -82,17 +82,18 @@ openclaw gateway start    # 启动
 openclaw gateway restart  # 重启
 
 openclaw doctor           # 故障诊断
+openclaw doctor --fix     # 自动修复，支持修复配置错误、误删文件等
 openclaw update           # 更新
-openclaw uninstall        # 卸载
+openclaw uninstall        # 卸载，危险！！！
 ```
 
-控制台无需任何渠道配置，直接就能在网页上与 AI 对话。
+控制台无需任何渠道配置，直接在网页上与 AI 对话。
 
 如果看到”unauthorized”或”disconnected (1008): pairing required”，获取新的仪表板链接并批准浏览器设备：
 ```bash
 openclaw dashboard --no-open
 openclaw devices list
-openclaw devices approve <requestId>
+openclaw devices approve <request_id>
 ```
 
 ---
@@ -101,7 +102,7 @@ openclaw devices approve <requestId>
 
 ```bash
 openclaw channels list     # 查看渠道
-openclaw channels add      # 添加渠道向导
+openclaw channels add      # 添加渠道-向导模式
 openclaw channels remove   # 移除渠道
 ```
 
