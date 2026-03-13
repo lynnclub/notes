@@ -4,7 +4,7 @@ type: "docs"
 weight: 3
 ---
 
-cloudflared提供免费的DNS、CDN服务，还提供cloudflared tunnel用于内网穿透。
+cloudflared不仅提供免费的DNS、CDN服务，还提供cloudflared tunnel用于内网穿透。
 
 ```bash
 # 安装客户端
@@ -21,6 +21,9 @@ cloudflared tunnel create <隧道名称>
 cloudflared tunnel route dns <隧道名称> <子域名>.<你的域名>
 # 临时启动
 cloudflared tunnel run <隧道名称>
+```
+
+```bash
 # 开机自启
 sudo systemctl daemon-reload
 sudo systemctl enable cloudflared
@@ -28,7 +31,6 @@ sudo systemctl start cloudflared
 ```
 
 /etc/systemd/system/cloudflared.service
-
 ```text
 [Unit]
 Description=Cloudflare Tunnel
