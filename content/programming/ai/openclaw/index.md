@@ -195,30 +195,8 @@ openclaw setup
 # Financial Boundaries
 - 单次 API 调用预估费用超过 $1 时，必须先征得用户确认
 
-# Operational Boundaries
-- 不得修改 SOUL.md 本身，除非用户明确要求
-
 # Escalation
 遇到涉及生产数据库或外部支付接口的操作时，暂停并请求确认。
-```
-
-**最佳实践——AGENTS.md 写法：**
-
-```markdown
-## Session Start（必须，优先于回复）
-1. 读取 SOUL.md（我是谁）
-2. 读取 USER.md（我在帮谁）
-3. 读取 memory/YYYY-MM-DD.md（今天和昨天）
-4. 读取 MEMORY.md（长期记忆）
-5. 完成后直接开始，不要询问是否已完成
-
-## Memory Rules
-- 每次对话结束前，将重要决策、偏好、未完成的事项写入当天的 memory/ 文件
-- 周期性将重要条目迁移到 MEMORY.md，删除过期的日志文件
-
-## 安全规则
-- 不要将私信内容转发到群组
-- 群聊中只在真正有价值时发言
 ```
 
 **推荐：将工作目录纳入 Git 管理：**
