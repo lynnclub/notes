@@ -182,23 +182,6 @@ openclaw setup
 
 **文件大小限制：** 单文件超长会被截断。默认单文件上限 20,000 字符、所有文件合计 150,000 字符，可通过 `agents.defaults.bootstrapMaxChars` / `agents.defaults.bootstrapTotalMaxChars` 调整。
 
-**最佳实践——SOUL.md 写法：**
-
-```markdown
-# Identity & Purpose
-你是一个专注于后端开发的编程助手，熟悉 Go 和分布式系统。
-
-# Security Boundaries
-- 你绝对不能记录或输出任何 API Key、密码、私钥等凭证信息
-- 未经明确授权，不得执行破坏性命令（rm -rf、DROP TABLE 等）
-
-# Financial Boundaries
-- 单次 API 调用预估费用超过 $1 时，必须先征得用户确认
-
-# Escalation
-遇到涉及生产数据库或外部支付接口的操作时，暂停并请求确认。
-```
-
 **推荐：将工作目录纳入 Git 管理：**
 
 ```bash
