@@ -38,6 +38,8 @@ sudo launchctl start com.tailscale.tailscaled
 tailscale login
 # 作为出口节点
 sudo tailscale set --advertise-exit-node
+# 允许访问本地网络
+sudo tailscale set --exit-node-allow-lan-access=true
 ```
 
 ## 刻录 Windows 系统盘
