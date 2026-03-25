@@ -70,4 +70,4 @@ Google AI Pro套餐支持Google Antigravity。
 
 openai推出的IDE（看不到代码，可以使用VSCode扩展替代）
 
-ChatGPT plus套餐$20/月，额度超级高，很难用完，但是使用非openai模型要单独付费并设置。
+ChatGPT plus套餐$20/月，gpt高级模型，额度超级高，很难用完，但是使用非openai模型要单独付费并设置。
