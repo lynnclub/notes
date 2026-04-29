@@ -178,6 +178,11 @@ du -h --max-depth=1 ./
 # 查看当前目录与文件大小
 du -sh ./* | sort -rh
 
+# 查找大于 500M 的文件，直接列出路径和大小
+find . -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+# 若想按文件大小排序
+find . -type f -printf '%s\t%p\n' | sort -nr | head -20
+
 # 查看io状态
 iostat -d -m 1 10
 

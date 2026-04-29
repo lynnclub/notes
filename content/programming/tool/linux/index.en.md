@@ -176,6 +176,11 @@ du -h --max-depth=1 ./
 # View current directory and file sizes
 du -sh ./* | sort -rh
 
+# Find files larger than 500M, list path and size directly
+find . -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+# If you want to sort by file size
+find . -type f -printf '%s\t%p\n' | sort -nr | head -20
+
 # View I/O status
 iostat -d -m 1 10
 
